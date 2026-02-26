@@ -1,0 +1,203 @@
+{
+  "name": "@UI/Skeleton/List",
+  "description": "Skeleton / List: шаблон-заглушка для списка (4 строки). Каждая строка: circle (аватар/иконка) + line (label, переменная ширина) + line (meta, фикс. ширина). Divider между строками. Оси: size (sm/md/lg) × shimmer (true/false).",
+  "variantProps": [
+    "size",
+    "shimmer"
+  ],
+  "variantAxes": {
+    "size": [
+      "sm",
+      "md",
+      "lg"
+    ],
+    "shimmer": [
+      "true",
+      "false"
+    ]
+  },
+  "variantRules": [
+    {
+      "when": {},
+      "style": {
+        "background": "color_bg_base",
+        "blockColor": "color_surface_3",
+        "shimmerHighlight": "color_surface_2",
+        "dividerColor": "color_divider",
+        "borderRadius": "radius_medium",
+        "paddingX": "space_list_item_x_md",
+        "paddingY": "space_list_item_y_md",
+        "gap": "space_list_item_gap_md",
+        "rowH": "space_list_item_h_md",
+        "lineH": "space_skeleton_line_h_md",
+        "circleD": "space_skeleton_circle_md",
+        "rowCount": 4,
+        "labelWidths": [
+          0.75,
+          0.5,
+          0.65,
+          0.45
+        ],
+        "metaWidth": 48,
+        "minWidth": "space_container_content_min",
+        "maxWidth": "space_container_content_max"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-bg-base)]",
+        "[--divider-color:var(--color-divider)]",
+        "px-[var(--space-list-item-x-md)]",
+        "py-[var(--space-list-item-y-md)]",
+        "gap-[var(--space-list-item-gap-md)]",
+        "min-w-[var(--space-container-content-min)]",
+        "max-w-[var(--space-container-content-max)]",
+        "rounded-medium"
+      ]
+    },
+    {
+      "when": {
+        "size": "sm"
+      },
+      "style": {
+        "paddingX": "space_list_item_x_sm",
+        "paddingY": "space_list_item_y_sm",
+        "gap": "space_list_item_gap_sm",
+        "rowH": "space_list_item_h_sm",
+        "lineH": "space_skeleton_line_h_sm",
+        "circleD": "space_skeleton_circle_sm",
+        "metaWidth": 36,
+        "minWidth": "space_container_compact_min",
+        "maxWidth": "space_container_compact_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-list-item-x-sm)]",
+        "py-[var(--space-list-item-y-sm)]",
+        "gap-[var(--space-list-item-gap-sm)]",
+        "min-w-[var(--space-container-compact-min)]",
+        "max-w-[var(--space-container-compact-max)]"
+      ]
+    },
+    {
+      "when": {
+        "size": "md"
+      },
+      "style": {
+        "paddingX": "space_list_item_x_md",
+        "paddingY": "space_list_item_y_md",
+        "gap": "space_list_item_gap_md",
+        "rowH": "space_list_item_h_md",
+        "lineH": "space_skeleton_line_h_md",
+        "circleD": "space_skeleton_circle_md",
+        "metaWidth": 48,
+        "minWidth": "space_container_content_min",
+        "maxWidth": "space_container_content_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-list-item-x-md)]",
+        "py-[var(--space-list-item-y-md)]",
+        "gap-[var(--space-list-item-gap-md)]",
+        "min-w-[var(--space-container-content-min)]",
+        "max-w-[var(--space-container-content-max)]"
+      ]
+    },
+    {
+      "when": {
+        "size": "lg"
+      },
+      "style": {
+        "paddingX": "space_list_item_x_lg",
+        "paddingY": "space_list_item_y_lg",
+        "gap": "space_list_item_gap_lg",
+        "rowH": "space_list_item_h_lg",
+        "lineH": "space_skeleton_line_h_lg",
+        "circleD": "space_skeleton_circle_lg",
+        "metaWidth": 60,
+        "minWidth": "space_container_wide_min",
+        "maxWidth": "space_container_wide_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-list-item-x-lg)]",
+        "py-[var(--space-list-item-y-lg)]",
+        "gap-[var(--space-list-item-gap-lg)]",
+        "min-w-[var(--space-container-wide-min)]",
+        "max-w-[var(--space-container-wide-max)]"
+      ]
+    },
+    {
+      "when": {
+        "shimmer": "true"
+      },
+      "style": {
+        "shimmer": true
+      },
+      "tailwindClasses": [
+        "[data-shimmer=\"true\"]"
+      ]
+    },
+    {
+      "when": {
+        "shimmer": "false"
+      },
+      "style": {
+        "shimmer": false
+      },
+      "tailwindClasses": [
+        "[data-shimmer=\"false\"]"
+      ]
+    }
+  ],
+  "focusRing": "focus:outline-none focus:shadow-focus-brand",
+  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "responsiveProps": {
+    "paddingX": {
+      "sm": "space_list_item_x_sm",
+      "md": "space_list_item_x_md",
+      "lg": "space_list_item_x_lg"
+    },
+    "paddingY": {
+      "sm": "space_list_item_y_sm",
+      "md": "space_list_item_y_md",
+      "lg": "space_list_item_y_lg"
+    },
+    "gap": {
+      "sm": "space_list_item_gap_sm",
+      "md": "space_list_item_gap_md",
+      "lg": "space_list_item_gap_lg"
+    },
+    "minWidth": {
+      "sm": "space_container_compact_min",
+      "md": "space_container_content_min",
+      "lg": "space_container_wide_min"
+    },
+    "maxWidth": {
+      "sm": "space_container_compact_max",
+      "md": "space_container_content_max",
+      "lg": "space_container_wide_max"
+    }
+  },
+  "element": "div",
+  "rootLayout": "vertical",
+  "rootSizing": {
+    "main": "hug",
+    "cross": "fixed"
+  },
+  "customStructure": "skeletonList",
+  "styleKeys": [
+    "paddingX",
+    "paddingY",
+    "gap",
+    "rowH",
+    "lineH",
+    "circleD",
+    "metaWidth",
+    "maxWidth",
+    "rowCount",
+    "blockColor",
+    "background",
+    "dividerColor",
+    "borderRadius",
+    "shimmer"
+  ],
+  "heightConstraint": "hug",
+  "generatorStrategy": "template",
+  "template": "SkeletonList"
+}

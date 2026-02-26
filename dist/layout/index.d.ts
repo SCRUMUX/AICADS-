@@ -1,0 +1,11 @@
+/**
+ * Layout System - Main Entry Point
+ *
+ * Exports all layout system abstractions for use in applications.
+ */
+export { type BreakpointName, type GridConfig, type GridSpan, type ResponsiveGridSpan, type GridLayoutIntent, type GridLayoutNode, BREAKPOINTS, GRID_CONFIGS, getCurrentBreakpoint, getGridConfig, getMaxColumns, validateGridSpan, normalizeSpan, spanToCSS, generateResponsiveGridCSS, generateGridContainerCSS, generateResponsiveGridContainerCSS, resolveLayoutIntent, } from './grid/grid-system';
+export { type SpaceSize, type SpaceCategory, type SpaceIntent, type SpacingSide, type SpacingSpec, type SpacingIntent, SPACE_PRIMITIVES, SPACE_SEMANTICS, SPACING_PROPERTY_MAP, getSpaceVarName, getSpaceVar, getPrimitiveSpaceVar, validateSpacingSpec, generatePaddingCSS, generateMarginCSS, generateGapCSS, resolveSpacingIntent, getSpacingTailwindClass, } from './spacing/spacing-system';
+export { type ContainerType, type ContainerVariant, type ContainerConfig, type RadiusToken, type ElevationToken, type BackgroundToken, type ContainerIntent, CONTAINER_DEFAULTS, resolveContainerConfig, getContainerMaxWidth, generateContainerCSS, generateContainerTailwindClasses, resolveContainerIntent, } from './containers/container-system';
+export { type ScrimVariant, type BlurVariant, type OverlayConfig, type OverlayPosition, type OverlayIntent, SCRIM_DEFAULTS, BLUR_DEFAULTS, DEFAULT_OVERLAY_CONFIG, Z_INDEX_LAYERS, generateScrimCSS, generateBackdropCSS, generateOverlayContainerCSS, getScrimTailwindClasses, getOverlayContainerTailwindClasses, resolveOverlayIntent, } from './overlays/overlay-system';
+export { type LayoutSpec, type LayoutNode as LayoutSpecNode, type LayoutNodeType, type ContainerConfig as SpecContainerConfig, type GridPlacement, type SpacingConfig as SpecSpacingConfig, type SpacingIntent as SpecSpacingIntent, type ResponsiveValue, type ResolvedNode, type ResolvedLayout, type ResolveResult, type NodeDiagnostic, type ValidationResult, validateLayoutSpec, loadLayoutSpec, loadLayoutSpecPartial, } from './spec';
+//# sourceMappingURL=index.d.ts.map

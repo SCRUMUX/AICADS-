@@ -1,0 +1,1 @@
+{"version":3,"file":"layout-spec-validator.d.ts","sourceRoot":"","sources":["../../../layout/spec/layout-spec-validator.ts"],"names":[],"mappings":"AAAA;;;;;;;;;GASG;AASH,MAAM,WAAW,gBAAgB;IAC/B,KAAK,EAAE,OAAO,CAAC;IACf,MAAM,EAAE,MAAM,EAAE,CAAC;CAClB;AA8JD;;GAEG;AACH,wBAAgB,kBAAkB,CAAC,IAAI,EAAE,OAAO,GAAG,gBAAgB,CAyBlE"}

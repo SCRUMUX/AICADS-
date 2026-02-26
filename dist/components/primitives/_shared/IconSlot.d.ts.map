@@ -1,0 +1,1 @@
+{"version":3,"file":"IconSlot.d.ts","sourceRoot":"","sources":["../../../../components/primitives/_shared/IconSlot.tsx"],"names":[],"mappings":"AAAA;;;GAGG;AACH,OAAO,KAAK,MAAM,OAAO,CAAC;AAE1B,UAAU,aAAa;IACrB,IAAI,EAAE,KAAK,CAAC,SAAS,CAAC;IACtB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,8EAA8E;IAC9E,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,SAAS,CAAC,EAAE,MAAM,CAAC;CACpB;AA0BD,eAAO,MAAM,QAAQ,2CAA4B,CAAC"}

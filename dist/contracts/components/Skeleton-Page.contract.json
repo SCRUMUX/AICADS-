@@ -1,0 +1,194 @@
+{
+  "name": "@UI/Skeleton/Page",
+  "description": "Skeleton / Page: шаблон-заглушка для полной страницы. Содержит nav-бар, hero-блок, строку тегов и сетку из 3 карточек-плейсхолдеров. Оси: size (sm/md/lg) × shimmer (true/false). Shimmer = анимированный градиент surface_3→surface_2→surface_3. Строки переменной ширины имитируют реальный контент.",
+  "variantProps": [
+    "size",
+    "shimmer"
+  ],
+  "variantAxes": {
+    "size": [
+      "sm",
+      "md",
+      "lg"
+    ],
+    "shimmer": [
+      "true",
+      "false"
+    ]
+  },
+  "variantRules": [
+    {
+      "when": {},
+      "style": {
+        "background": "color_bg_base",
+        "blockColor": "color_surface_3",
+        "shimmerHighlight": "color_surface_2",
+        "borderRadius": "radius_medium",
+        "paddingX": "space_inset_m",
+        "paddingY": "space_inset_m",
+        "gap": "space_skeleton_gap_md",
+        "headerH": "space_table_row_h_md",
+        "heroH": "space_skeleton_hero_h_md",
+        "lineH": "space_skeleton_line_h_md",
+        "cardH": "space_skeleton_media_h_md",
+        "cardGap": "space_6",
+        "cardCount": 3,
+        "minWidth": "space_container_content_min",
+        "maxWidth": "space_container_content_max"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-bg-base)]",
+        "px-[var(--space-inset-m)]",
+        "py-[var(--space-inset-m)]",
+        "gap-[var(--space-skeleton-gap-md)]",
+        "min-w-[var(--space-container-content-min)]",
+        "max-w-[var(--space-container-content-max)]",
+        "rounded-medium"
+      ]
+    },
+    {
+      "when": {
+        "size": "sm"
+      },
+      "style": {
+        "paddingX": "space_inset_s",
+        "paddingY": "space_inset_s",
+        "gap": "space_skeleton_gap_sm",
+        "headerH": "space_table_row_h_sm",
+        "heroH": "space_skeleton_hero_h_sm",
+        "lineH": "space_skeleton_line_h_sm",
+        "cardH": "space_skeleton_media_h_sm",
+        "minWidth": "space_container_compact_min",
+        "maxWidth": "space_container_compact_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-inset-s)]",
+        "py-[var(--space-inset-s)]",
+        "gap-[var(--space-skeleton-gap-sm)]",
+        "min-w-[var(--space-container-compact-min)]",
+        "max-w-[var(--space-container-compact-max)]"
+      ]
+    },
+    {
+      "when": {
+        "size": "md"
+      },
+      "style": {
+        "paddingX": "space_inset_m",
+        "paddingY": "space_inset_m",
+        "gap": "space_skeleton_gap_md",
+        "headerH": "space_table_row_h_md",
+        "heroH": "space_skeleton_hero_h_md",
+        "lineH": "space_skeleton_line_h_md",
+        "cardH": "space_skeleton_media_h_md",
+        "minWidth": "space_container_content_min",
+        "maxWidth": "space_container_content_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-inset-m)]",
+        "py-[var(--space-inset-m)]",
+        "gap-[var(--space-skeleton-gap-md)]",
+        "min-w-[var(--space-container-content-min)]",
+        "max-w-[var(--space-container-content-max)]"
+      ]
+    },
+    {
+      "when": {
+        "size": "lg"
+      },
+      "style": {
+        "paddingX": "space_inset_l",
+        "paddingY": "space_inset_l",
+        "gap": "space_skeleton_gap_lg",
+        "headerH": "space_table_row_h_lg",
+        "heroH": "space_skeleton_hero_h_lg",
+        "lineH": "space_skeleton_line_h_lg",
+        "cardH": "space_skeleton_media_h_lg",
+        "minWidth": "space_container_wide_min",
+        "maxWidth": "space_container_wide_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-inset-l)]",
+        "py-[var(--space-inset-l)]",
+        "gap-[var(--space-skeleton-gap-lg)]",
+        "min-w-[var(--space-container-wide-min)]",
+        "max-w-[var(--space-container-wide-max)]"
+      ]
+    },
+    {
+      "when": {
+        "shimmer": "true"
+      },
+      "style": {
+        "shimmer": true
+      },
+      "tailwindClasses": [
+        "[data-shimmer=\"true\"]"
+      ]
+    },
+    {
+      "when": {
+        "shimmer": "false"
+      },
+      "style": {
+        "shimmer": false
+      },
+      "tailwindClasses": [
+        "[data-shimmer=\"false\"]"
+      ]
+    }
+  ],
+  "focusRing": "focus:outline-none focus:shadow-focus-brand",
+  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "responsiveProps": {
+    "paddingX": {
+      "sm": "space_inset_s",
+      "md": "space_inset_m",
+      "lg": "space_inset_l"
+    },
+    "paddingY": {
+      "sm": "space_inset_s",
+      "md": "space_inset_m",
+      "lg": "space_inset_l"
+    },
+    "gap": {
+      "sm": "space_skeleton_gap_sm",
+      "md": "space_skeleton_gap_md",
+      "lg": "space_skeleton_gap_lg"
+    },
+    "minWidth": {
+      "sm": "space_container_compact_min",
+      "md": "space_container_content_min",
+      "lg": "space_container_wide_min"
+    },
+    "maxWidth": {
+      "sm": "space_container_compact_max",
+      "md": "space_container_content_max",
+      "lg": "space_container_wide_max"
+    }
+  },
+  "element": "div",
+  "rootLayout": "vertical",
+  "rootSizing": {
+    "main": "hug",
+    "cross": "fixed"
+  },
+  "customStructure": "skeletonPage",
+  "styleKeys": [
+    "paddingX",
+    "paddingY",
+    "gap",
+    "headerH",
+    "heroH",
+    "lineH",
+    "cardH",
+    "maxWidth",
+    "blockColor",
+    "background",
+    "borderRadius",
+    "shimmer"
+  ],
+  "heightConstraint": "hug",
+  "generatorStrategy": "template",
+  "template": "SkeletonPage"
+}

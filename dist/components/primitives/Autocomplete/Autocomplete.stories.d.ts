@@ -1,0 +1,21 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { Autocomplete } from './Autocomplete';
+declare const meta: Meta<typeof Autocomplete>;
+export default meta;
+type Story = StoryObj<typeof Autocomplete>;
+export declare const Default: Story;
+export declare const Open: Story;
+export declare const WithIcons: Story;
+export declare const WithCheckboxes: Story;
+export declare const WithBadges: Story;
+export declare const AllSizes: Story;
+export declare const WithTagRow: Story;
+export declare const MultiSelect: Story;
+export declare const MultiSelectOverflow: Story;
+export declare const AsyncSearch: Story;
+export declare const ControlledValue: Story;
+export declare const FullWidth: Story;
+export declare const Loading: Story;
+export declare const ExcludeMode: Story;
+export declare const ChipsOverflowBadge: Story;
+//# sourceMappingURL=Autocomplete.stories.d.ts.map
