@@ -362,6 +362,7 @@
   --color-brand-pressed: #3578D4;
   --color-brand-muted: #E7F0FF;
   --color-brand-hover-bg: #EEF2FF;
+  --color-brand-subtle: #E7F0FF;
   --color-link-default: #5B9CFF;
   --color-link-hover: #4A8AE6;
   --color-link-visited: #6B5BFF;
@@ -374,6 +375,7 @@
   --color-success-base: #1DB954;
   --color-success-surface: #D9F5E5;
   --color-success-hover-bg: #D9F5E5;
+  --color-success-subtle: #D9F5E5;
   --color-success-text: #FFFFFF;
   --color-warning-base: #FFB020;
   --color-warning-surface: #FAECD1;
@@ -382,6 +384,7 @@
   --color-danger-base: #FF4D4F;
   --color-danger-surface: #FEE5E5;
   --color-danger-hover-bg: #FEE5E5;
+  --color-danger-subtle: #FEE5E5;
   --color-danger-text: #FFFFFF;
   --color-info-base: #06B6D4;
   --color-info-surface: #D9F5F5;
@@ -435,6 +438,7 @@
   --color-brand-pressed: #3578D4;
   --color-brand-muted: #1A2330;
   --color-brand-hover-bg: #1A2330;
+  --color-brand-subtle: #1A2330;
   --color-link-default: #5B9CFF;
   --color-link-hover: #4A8AE6;
   --color-link-visited: #6B5BFF;
@@ -447,6 +451,7 @@
   --color-success-base: #1DB954;
   --color-success-surface: #11261B;
   --color-success-hover-bg: #11261B;
+  --color-success-subtle: #11261B;
   --color-success-text: #E6EEF8;
   --color-warning-base: #FFB020;
   --color-warning-surface: #2A210E;
@@ -455,6 +460,7 @@
   --color-danger-base: #FF4D4F;
   --color-danger-surface: #2A1314;
   --color-danger-hover-bg: #2A1314;
+  --color-danger-subtle: #2A1314;
   --color-danger-text: #E6EEF8;
   --color-info-base: #06B6D4;
   --color-info-surface: #161E28;
@@ -508,6 +514,7 @@
     --color-brand-pressed: #3578D4;
     --color-brand-muted: #1A2330;
     --color-brand-hover-bg: #1A2330;
+    --color-brand-subtle: #1A2330;
     --color-link-default: #5B9CFF;
     --color-link-hover: #4A8AE6;
     --color-link-visited: #6B5BFF;
@@ -520,6 +527,7 @@
     --color-success-base: #1DB954;
     --color-success-surface: #11261B;
     --color-success-hover-bg: #11261B;
+    --color-success-subtle: #11261B;
     --color-success-text: #E6EEF8;
     --color-warning-base: #FFB020;
     --color-warning-surface: #2A210E;
@@ -528,6 +536,7 @@
     --color-danger-base: #FF4D4F;
     --color-danger-surface: #2A1314;
     --color-danger-hover-bg: #2A1314;
+    --color-danger-subtle: #2A1314;
     --color-danger-text: #E6EEF8;
     --color-info-base: #06B6D4;
     --color-info-surface: #161E28;

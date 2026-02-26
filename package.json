@@ -1,6 +1,6 @@
 {
   "name": "@ai-ds/core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "AI Design System — reusable architectural core (tokens, contracts, components, hooks, Figma plugin)",
   "type": "module",
   "main": "src/index.ts",

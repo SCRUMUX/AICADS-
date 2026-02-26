@@ -3,6 +3,14 @@
 All notable changes to @ai-ds/core are documented here.
 Format follows [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] — 2026-02-26
+
+### Added
+- 5 new primitives: Select, RangeSlider, Rating, Drawer, FileUpload (spec, contracts, templates, components)
+- 5 new hooks: useDebounce, useLocalStorage, useMediaQuery, useScrollLock, useIntersectionObserver
+- Figma plugin builders for Select, RangeSlider, Rating, Drawer, FileUpload
+- New semantic tokens: color_brand_subtle, color_success_subtle, color_danger_subtle
+
 ## [0.2.0] — 2026-02-26
 
 ### Added

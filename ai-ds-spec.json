@@ -193,6 +193,10 @@
           "light": "core_ui_hover_bg",
           "dark": "core_gray_80"
         },
+        "color_brand_subtle": {
+          "light": "core_blue_5",
+          "dark": "core_gray_80"
+        },
         "color_link_default": {
           "light": "core_blue_50",
           "dark": "core_blue_50"
@@ -245,6 +249,10 @@
           "light": "core_green_5",
           "dark": "core_green_99"
         },
+        "color_success_subtle": {
+          "light": "core_green_5",
+          "dark": "core_green_99"
+        },
         "color_success_text": {
           "light": "core_white",
           "dark": "core_gray_10_alt"
@@ -274,6 +282,10 @@
           "dark": "core_red_99"
         },
         "color_danger_hover_bg": {
+          "light": "core_red_5",
+          "dark": "core_red_99"
+        },
+        "color_danger_subtle": {
           "light": "core_red_5",
           "dark": "core_red_99"
         },
@@ -6781,6 +6793,145 @@
           "when": { "chartType": "donut" },
           "style": { "chartMode": "donut", "donutInnerRadius": 0.55 }
         }
+      ]
+    },
+    {
+      "name": "@UI/Select",
+      "description": "Native-style select dropdown. 3 sizes (sm/md/lg), states base/hover/focus/disabled. Chevron icon on the right.",
+      "variantProps": ["size", "state"],
+      "variantAxes": {
+        "size": ["sm", "md", "lg"],
+        "state": ["base", "hover", "focus", "disabled"]
+      },
+      "variants": [],
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "textStyle": "Text/Body/MD",
+            "borderRadius": "radius_default",
+            "borderWidth": "border_default",
+            "iconRight": "chevron-down"
+          }
+        },
+        { "when": { "state": "base" }, "style": { "background": "color_surface_2", "textColor": "color_text_primary", "borderColor": "color_border_base", "iconColor": "color_icon_on_base" } },
+        { "when": { "state": "hover" }, "style": { "background": "color_surface_3", "textColor": "color_text_primary", "borderColor": "color_border_strong", "iconColor": "color_icon_on_base" } },
+        { "when": { "state": "focus" }, "style": { "background": "color_surface_2", "textColor": "color_text_primary", "borderColor": "color_brand_primary", "iconColor": "color_brand_primary" } },
+        { "when": { "state": "disabled" }, "style": { "background": "color_surface_2", "textColor": "color_text_muted", "borderColor": "color_border_base", "iconColor": "color_text_muted", "opacity": 0.5 } },
+        { "when": { "size": "sm" }, "style": { "height": "space_input_sm", "paddingX": "space_input_inset_x_sm", "textStyle": "Text/Body/SM", "iconSize": 14 } },
+        { "when": { "size": "md" }, "style": { "height": "space_input_md", "paddingX": "space_input_inset_x_md", "textStyle": "Text/Body/MD", "iconSize": 16 } },
+        { "when": { "size": "lg" }, "style": { "height": "space_input_lg", "paddingX": "space_input_inset_x_lg", "textStyle": "Text/Body/LG", "iconSize": 18 } }
+      ]
+    },
+    {
+      "name": "@UI/RangeSlider",
+      "description": "Dual-thumb range slider for min/max value selection. 3 sizes (sm/md/lg), states base/hover/disabled.",
+      "variantProps": ["size", "state"],
+      "variantAxes": {
+        "size": ["sm", "md", "lg"],
+        "state": ["base", "hover", "disabled"]
+      },
+      "variants": [],
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "trackColor": "color_surface_3",
+            "fillColor": "color_brand_primary",
+            "thumbColor": "color_bg_base",
+            "thumbBorder": "color_brand_primary",
+            "borderRadius": "radius_full"
+          }
+        },
+        { "when": { "state": "base" }, "style": { "fillColor": "color_brand_primary", "thumbBorder": "color_brand_primary" } },
+        { "when": { "state": "hover" }, "style": { "fillColor": "color_brand_hover", "thumbBorder": "color_brand_hover" } },
+        { "when": { "state": "disabled" }, "style": { "fillColor": "color_text_muted", "thumbBorder": "color_text_muted", "opacity": 0.5 } },
+        { "when": { "size": "sm" }, "style": { "trackHeight": 4, "thumbSize": 16 } },
+        { "when": { "size": "md" }, "style": { "trackHeight": 6, "thumbSize": 20 } },
+        { "when": { "size": "lg" }, "style": { "trackHeight": 8, "thumbSize": 24 } }
+      ]
+    },
+    {
+      "name": "@UI/Rating",
+      "description": "Star rating component. 3 sizes (sm/md/lg), readonly or interactive, values 0-5.",
+      "variantProps": ["size", "value"],
+      "variantAxes": {
+        "size": ["sm", "md", "lg"],
+        "value": ["0", "1", "2", "3", "4", "5"]
+      },
+      "variants": [],
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "filledColor": "color_warning_base",
+            "emptyColor": "color_surface_3",
+            "gap": "space_2"
+          }
+        },
+        { "when": { "size": "sm" }, "style": { "starSize": 16 } },
+        { "when": { "size": "md" }, "style": { "starSize": 20 } },
+        { "when": { "size": "lg" }, "style": { "starSize": 28 } }
+      ]
+    },
+    {
+      "name": "@UI/Drawer",
+      "description": "Side panel overlay. Slides from left/right. Sizes sm (320px), md (480px), lg (640px). Has close button, header, body.",
+      "variantProps": ["size", "side"],
+      "variantAxes": {
+        "size": ["sm", "md", "lg"],
+        "side": ["left", "right"]
+      },
+      "variants": [],
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "background": "color_bg_base",
+            "borderColor": "color_border_base",
+            "headerTextStyle": "Text/Heading/H3",
+            "headerTextColor": "color_text_primary",
+            "overlayColor": "color_overlay_scrim",
+            "closeIcon": "close-x",
+            "padding": "space_page_x"
+          }
+        },
+        { "when": { "size": "sm" }, "style": { "width": 320 } },
+        { "when": { "size": "md" }, "style": { "width": 480 } },
+        { "when": { "size": "lg" }, "style": { "width": 640 } },
+        { "when": { "side": "left" }, "style": { "origin": "left" } },
+        { "when": { "side": "right" }, "style": { "origin": "right" } }
+      ]
+    },
+    {
+      "name": "@UI/FileUpload",
+      "description": "File upload zone with drag-and-drop. States: idle, hover/dragover, uploading, done, error. Sizes sm/md/lg.",
+      "variantProps": ["size", "state"],
+      "variantAxes": {
+        "size": ["sm", "md", "lg"],
+        "state": ["idle", "dragover", "uploading", "done", "error"]
+      },
+      "variants": [],
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "borderRadius": "radius_medium",
+            "borderWidth": "border_default",
+            "borderStyle": "dashed",
+            "textStyle": "Text/Body/MD",
+            "icon": "upload",
+            "padding": "space_card_inset"
+          }
+        },
+        { "when": { "state": "idle" }, "style": { "background": "color_surface_2", "borderColor": "color_border_base", "textColor": "color_text_secondary", "iconColor": "color_icon_on_base" } },
+        { "when": { "state": "dragover" }, "style": { "background": "color_brand_subtle", "borderColor": "color_brand_primary", "textColor": "color_brand_primary", "iconColor": "color_brand_primary" } },
+        { "when": { "state": "uploading" }, "style": { "background": "color_surface_2", "borderColor": "color_brand_primary", "textColor": "color_text_secondary", "iconColor": "color_brand_primary" } },
+        { "when": { "state": "done" }, "style": { "background": "color_success_subtle", "borderColor": "color_success_base", "textColor": "color_success_text", "iconColor": "color_success_base" } },
+        { "when": { "state": "error" }, "style": { "background": "color_danger_subtle", "borderColor": "color_danger_base", "textColor": "color_danger_text", "iconColor": "color_danger_base" } },
+        { "when": { "size": "sm" }, "style": { "height": 80, "textStyle": "Text/Body/SM", "iconSize": 20 } },
+        { "when": { "size": "md" }, "style": { "height": 120, "textStyle": "Text/Body/MD", "iconSize": 28 } },
+        { "when": { "size": "lg" }, "style": { "height": 180, "textStyle": "Text/Body/LG", "iconSize": 36 } }
       ]
     }
   ]

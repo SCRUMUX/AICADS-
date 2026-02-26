@@ -6,3 +6,8 @@ export { useOverflowCounter } from './useOverflowCounter';
 export { useEscapeKey } from './useEscapeKey';
 export { usePopoverState } from './usePopoverState';
 export { mergeRefs } from './mergeRefs';
+export { useDebounce } from './useDebounce';
+export { useLocalStorage } from './useLocalStorage';
+export { useMediaQuery } from './useMediaQuery';
+export { useScrollLock } from './useScrollLock';
+export { useIntersectionObserver } from './useIntersectionObserver';
