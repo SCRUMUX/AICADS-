@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: var(--color-bg-base, #fff);
+  color: var(--color-text-primary, #1a1a1a);
+  margin: 0;
+}
+
+/* ── Scrollbar styling (scoped to preview area) ── */
+#storybook-root *,
+.docs-story * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-3, #9CA3AF) transparent;
+}
+
+#storybook-root ::-webkit-scrollbar,
+.docs-story ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+#storybook-root ::-webkit-scrollbar-track,
+.docs-story ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#storybook-root ::-webkit-scrollbar-thumb,
+.docs-story ::-webkit-scrollbar-thumb {
+  background: var(--color-surface-3, #9CA3AF);
+  border-radius: 999px;
+}
+
+#storybook-root ::-webkit-scrollbar-thumb:hover,
+.docs-story ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted, #6B7280);
+}
+
+/* ── Canvas mode: style story root only when Storybook shows it ── */
+.sb-show-main #storybook-root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* ── Docs mode: ensure proper scroll and layout ── */
+.sb-show-docs #storybook-docs {
+  overflow: auto;
+}

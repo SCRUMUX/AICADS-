@@ -1,0 +1,194 @@
+{
+  "name": "@UI/Skeleton/Card",
+  "description": "Skeleton / Card: шаблон-заглушка для карточки. Структура (сверху вниз): медиа-блок (rect), строка заголовка, 2 строки описания, строка действий. Оси: size (sm/md/lg) × shimmer (true/false).",
+  "variantProps": [
+    "size",
+    "shimmer"
+  ],
+  "variantAxes": {
+    "size": [
+      "sm",
+      "md",
+      "lg"
+    ],
+    "shimmer": [
+      "true",
+      "false"
+    ]
+  },
+  "variantRules": [
+    {
+      "when": {},
+      "style": {
+        "background": "color_surface_1",
+        "blockColor": "color_surface_3",
+        "shimmerHighlight": "color_surface_2",
+        "borderColor": "color_border_base",
+        "borderRadius": "radius_medium",
+        "paddingX": "space_inset_m",
+        "paddingY": "space_inset_m",
+        "gap": "space_skeleton_gap_md",
+        "mediaH": "space_skeleton_media_h_md",
+        "lineH": "space_skeleton_line_h_md",
+        "titleWidthPct": 0.6,
+        "descLine1Pct": 0.9,
+        "descLine2Pct": 0.7,
+        "actionW": 56,
+        "minWidth": "space_container_content_min",
+        "maxWidth": "space_container_content_max"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-surface-1)]",
+        "border",
+        "border-[var(--color-border-base)]",
+        "px-[var(--space-inset-m)]",
+        "py-[var(--space-inset-m)]",
+        "gap-[var(--space-skeleton-gap-md)]",
+        "min-w-[var(--space-container-content-min)]",
+        "max-w-[var(--space-container-content-max)]",
+        "rounded-medium"
+      ]
+    },
+    {
+      "when": {
+        "size": "sm"
+      },
+      "style": {
+        "paddingX": "space_inset_s",
+        "paddingY": "space_inset_s",
+        "gap": "space_4",
+        "mediaH": "space_skeleton_media_h_sm",
+        "lineH": "space_skeleton_line_h_sm",
+        "actionW": 44,
+        "minWidth": "space_container_compact_min",
+        "maxWidth": "space_container_compact_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-inset-s)]",
+        "py-[var(--space-inset-s)]",
+        "gap-[var(--space-4)]",
+        "min-w-[var(--space-container-compact-min)]",
+        "max-w-[var(--space-container-compact-max)]"
+      ]
+    },
+    {
+      "when": {
+        "size": "md"
+      },
+      "style": {
+        "paddingX": "space_inset_m",
+        "paddingY": "space_inset_m",
+        "gap": "space_6",
+        "mediaH": "space_skeleton_media_h_md",
+        "lineH": "space_skeleton_line_h_md",
+        "actionW": 56,
+        "minWidth": "space_container_content_min",
+        "maxWidth": "space_container_content_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-inset-m)]",
+        "py-[var(--space-inset-m)]",
+        "gap-[var(--space-6)]",
+        "min-w-[var(--space-container-content-min)]",
+        "max-w-[var(--space-container-content-max)]"
+      ]
+    },
+    {
+      "when": {
+        "size": "lg"
+      },
+      "style": {
+        "paddingX": "space_inset_l",
+        "paddingY": "space_inset_l",
+        "gap": "space_8",
+        "mediaH": "space_skeleton_media_h_lg",
+        "lineH": "space_skeleton_line_h_lg",
+        "actionW": 72,
+        "minWidth": "space_container_wide_min",
+        "maxWidth": "space_container_wide_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-inset-l)]",
+        "py-[var(--space-inset-l)]",
+        "gap-[var(--space-8)]",
+        "min-w-[var(--space-container-wide-min)]",
+        "max-w-[var(--space-container-wide-max)]"
+      ]
+    },
+    {
+      "when": {
+        "shimmer": "true"
+      },
+      "style": {
+        "shimmer": true
+      },
+      "tailwindClasses": [
+        "[data-shimmer=\"true\"]"
+      ]
+    },
+    {
+      "when": {
+        "shimmer": "false"
+      },
+      "style": {
+        "shimmer": false
+      },
+      "tailwindClasses": [
+        "[data-shimmer=\"false\"]"
+      ]
+    }
+  ],
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger",
+  "responsiveProps": {
+    "paddingX": {
+      "sm": "space_inset_s",
+      "md": "space_inset_m",
+      "lg": "space_inset_l"
+    },
+    "paddingY": {
+      "sm": "space_inset_s",
+      "md": "space_inset_m",
+      "lg": "space_inset_l"
+    },
+    "gap": {
+      "sm": "space_4",
+      "md": "space_6",
+      "lg": "space_8"
+    },
+    "minWidth": {
+      "sm": "space_container_compact_min",
+      "md": "space_container_content_min",
+      "lg": "space_container_wide_min"
+    },
+    "maxWidth": {
+      "sm": "space_container_compact_max",
+      "md": "space_container_content_max",
+      "lg": "space_container_wide_max"
+    }
+  },
+  "element": "div",
+  "rootLayout": "vertical",
+  "rootSizing": {
+    "main": "hug",
+    "cross": "fixed"
+  },
+  "customStructure": "skeletonCard",
+  "styleKeys": [
+    "paddingX",
+    "paddingY",
+    "gap",
+    "mediaH",
+    "lineH",
+    "maxWidth",
+    "actionW",
+    "blockColor",
+    "background",
+    "borderRadius",
+    "shimmer"
+  ],
+  "heightConstraint": "hug",
+  "clipsContent": true,
+  "generatorStrategy": "template",
+  "template": "SkeletonCard"
+}

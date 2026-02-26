@@ -1,0 +1,245 @@
+{
+  "name": "@UI/Skeleton/Chart",
+  "description": "Skeleton / Chart: шаблон-заглушка для области графика. Структура: строка заголовка, строка метрики (крупная), строка легенды, область графика. chartType: bar (5 прямоугольников разной высоты) | line (горизонтальная волна + area) | donut (кольцо). Оси: size (sm/md/lg) × shimmer (true/false) × chartType (bar/line/donut).",
+  "variantProps": [
+    "size",
+    "shimmer",
+    "chartType"
+  ],
+  "variantAxes": {
+    "size": [
+      "sm",
+      "md",
+      "lg"
+    ],
+    "shimmer": [
+      "true",
+      "false"
+    ],
+    "chartType": [
+      "bar",
+      "line",
+      "donut"
+    ]
+  },
+  "variantRules": [
+    {
+      "when": {},
+      "style": {
+        "background": "color_surface_1",
+        "blockColor": "color_surface_3",
+        "shimmerHighlight": "color_surface_2",
+        "borderColor": "color_border_base",
+        "borderRadius": "radius_medium",
+        "paddingX": "space_inset_m",
+        "paddingY": "space_inset_m",
+        "gap": "space_skeleton_gap_md",
+        "totalH": "space_skeleton_chart_h_md",
+        "barsH": "space_skeleton_bars_h_md",
+        "lineH": "space_skeleton_line_h_md",
+        "barCount": 5,
+        "barWidthPct": 0.12,
+        "barHeights": [
+          0.6,
+          0.85,
+          0.45,
+          0.95,
+          0.7
+        ],
+        "legendDotD": 8,
+        "legendCount": 3,
+        "minWidth": "space_container_content_min",
+        "maxWidth": "space_container_content_max"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-surface-1)]",
+        "border",
+        "border-[var(--color-border-base)]",
+        "px-[var(--space-inset-m)]",
+        "py-[var(--space-inset-m)]",
+        "gap-[var(--space-skeleton-gap-md)]",
+        "min-w-[var(--space-container-content-min)]",
+        "max-w-[var(--space-container-content-max)]",
+        "rounded-medium"
+      ]
+    },
+    {
+      "when": {
+        "size": "sm"
+      },
+      "style": {
+        "paddingX": "space_inset_s",
+        "paddingY": "space_inset_s",
+        "gap": "space_skeleton_gap_sm",
+        "totalH": "space_skeleton_chart_h_sm",
+        "barsH": "space_skeleton_bars_h_sm",
+        "lineH": "space_skeleton_line_h_sm",
+        "minWidth": "space_container_compact_min",
+        "maxWidth": "space_container_compact_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-inset-s)]",
+        "py-[var(--space-inset-s)]",
+        "gap-[var(--space-skeleton-gap-sm)]",
+        "min-w-[var(--space-container-compact-min)]",
+        "max-w-[var(--space-container-compact-max)]"
+      ]
+    },
+    {
+      "when": {
+        "size": "md"
+      },
+      "style": {
+        "paddingX": "space_inset_m",
+        "paddingY": "space_inset_m",
+        "gap": "space_skeleton_gap_md",
+        "totalH": "space_skeleton_chart_h_md",
+        "barsH": "space_skeleton_bars_h_md",
+        "lineH": "space_skeleton_line_h_md",
+        "minWidth": "space_container_content_min",
+        "maxWidth": "space_container_content_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-inset-m)]",
+        "py-[var(--space-inset-m)]",
+        "gap-[var(--space-skeleton-gap-md)]",
+        "min-w-[var(--space-container-content-min)]",
+        "max-w-[var(--space-container-content-max)]"
+      ]
+    },
+    {
+      "when": {
+        "size": "lg"
+      },
+      "style": {
+        "paddingX": "space_inset_l",
+        "paddingY": "space_inset_l",
+        "gap": "space_skeleton_gap_lg",
+        "totalH": "space_skeleton_chart_h_lg",
+        "barsH": "space_skeleton_bars_h_lg",
+        "lineH": "space_skeleton_line_h_lg",
+        "minWidth": "space_container_wide_min",
+        "maxWidth": "space_container_wide_max"
+      },
+      "tailwindClasses": [
+        "px-[var(--space-inset-l)]",
+        "py-[var(--space-inset-l)]",
+        "gap-[var(--space-skeleton-gap-lg)]",
+        "min-w-[var(--space-container-wide-min)]",
+        "max-w-[var(--space-container-wide-max)]"
+      ]
+    },
+    {
+      "when": {
+        "shimmer": "true"
+      },
+      "style": {
+        "shimmer": true
+      },
+      "tailwindClasses": [
+        "[data-shimmer=\"true\"]"
+      ]
+    },
+    {
+      "when": {
+        "shimmer": "false"
+      },
+      "style": {
+        "shimmer": false
+      },
+      "tailwindClasses": [
+        "[data-shimmer=\"false\"]"
+      ]
+    },
+    {
+      "when": {
+        "chartType": "bar"
+      },
+      "style": {
+        "chartMode": "bar"
+      },
+      "tailwindClasses": [
+        "[data-chart-mode=\"bar\"]"
+      ]
+    },
+    {
+      "when": {
+        "chartType": "line"
+      },
+      "style": {
+        "chartMode": "line",
+        "areaOpacity": 0.15
+      },
+      "tailwindClasses": [
+        "[data-chart-mode=\"line\"]",
+        "[--area-opacity:0.15]"
+      ]
+    },
+    {
+      "when": {
+        "chartType": "donut"
+      },
+      "style": {
+        "chartMode": "donut",
+        "donutInnerRadius": 0.55
+      },
+      "tailwindClasses": [
+        "[data-chart-mode=\"donut\"]",
+        "[--donut-inner:0.55]"
+      ]
+    }
+  ],
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger",
+  "responsiveProps": {
+    "paddingX": {
+      "sm": "space_inset_s",
+      "md": "space_inset_m",
+      "lg": "space_inset_l"
+    },
+    "paddingY": {
+      "sm": "space_inset_s",
+      "md": "space_inset_m",
+      "lg": "space_inset_l"
+    },
+    "gap": {
+      "sm": "space_skeleton_gap_sm",
+      "md": "space_skeleton_gap_md",
+      "lg": "space_skeleton_gap_lg"
+    },
+    "minWidth": {
+      "sm": "space_container_compact_min",
+      "md": "space_container_content_min",
+      "lg": "space_container_wide_min"
+    },
+    "maxWidth": {
+      "sm": "space_container_compact_max",
+      "md": "space_container_content_max",
+      "lg": "space_container_wide_max"
+    }
+  },
+  "element": "div",
+  "rootLayout": "vertical",
+  "rootSizing": {
+    "main": "hug",
+    "cross": "fixed"
+  },
+  "customStructure": "skeletonChart",
+  "styleKeys": [
+    "paddingX",
+    "paddingY",
+    "gap",
+    "lineH",
+    "barsH",
+    "maxWidth",
+    "blockColor",
+    "background",
+    "borderRadius",
+    "shimmer",
+    "chartMode",
+    "barCount"
+  ],
+  "heightConstraint": "hug",
+  "generatorStrategy": "template",
+  "template": "SkeletonChart"
+}

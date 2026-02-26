@@ -1,0 +1,29 @@
+{
+    "name":  "@UI/Toast",
+    "description":  "Toast: auto-dismiss notification with appearance variants (info, success, warning, danger). Includes Toaster container and global toast() function.",
+    "variantProps":  [
+
+                     ],
+    "variantAxes":  {
+
+                    },
+    "variantRules":  [
+
+                     ],
+    "element":  "div",
+    "rootLayout":  "horizontal",
+    "rootSizing":  {
+                       "main":  "hug",
+                       "cross":  "hug"
+                   },
+    "rootAlign":  {
+                      "main":  "start",
+                      "cross":  "start"
+                  },
+    "slots":  [
+
+              ],
+    "heightConstraint":  "hug",
+    "generatorStrategy":  "template",
+    "template":  "Toast"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@UI/TagRow",
+  "description": "Компонент-сет: один вариант — ряд из 3 тегов (@UI/Tag) в ряд. Генерируется после @UI/Tag.",
+  "variantProps": [],
+  "variantAxes": {},
+  "variantRules": [],
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger",
+  "generatorStrategy": "template",
+  "template": "TagRow"
+}

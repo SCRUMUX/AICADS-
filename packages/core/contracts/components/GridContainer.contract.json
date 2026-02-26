@@ -1,0 +1,9 @@
+{
+  "name": "@UI/GridContainer",
+  "description": "Responsive grid container (4→8→12 columns). Includes GridItem for column placement. Layout utility, no variant styles.",
+  "variantProps": [],
+  "variantAxes": {},
+  "variantRules": [],
+  "generatorStrategy": "template",
+  "template": "GridContainer"
+}

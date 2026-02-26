@@ -1,0 +1,153 @@
+---
+description: Архитектура генерации компонентов — где и что менять
+globs: packages/core/**/*.{tsx,ts,json}
+alwaysApply: false
+---
+
+# CONTRACT 6 — Архитектура генерации компонентов
+
+## Пайплайн
+
+```
+ai-ds-spec.json → contracts:generate → *.contract.json → components:generate → *.tsx
+```
+
+## Уровни и зоны ответственности
+
+| Уровень | Файлы | Что определяет | Когда менять |
+|---------|-------|----------------|--------------|
+| **Спека** | `ai-ds-spec.json` | Токены, оси вариативности, правила маппинга (цвета, отступы, размеры) | Только при добавлении новых компонентов или изменении дизайн-токенов |
+| **Генератор контрактов** | `scripts/spec-to-contracts.ts` | `styleToTailwindClasses` — маппинг style → Tailwind-классы | При добавлении новых style-ключей (bg, background, borderColor, etc.) |
+| **Контракт** | `contracts/components/*.contract.json` | variantRules (Tailwind-классы), focusRing, метаданные | НИКОГДА вручную для компонентов из спеки. Для компонентов НЕ в спеке (Select) — можно редактировать напрямую |
+| **Шаблон** | `scripts/templates/*.template.tsx` | JSX-структура, React-логика, hover/focus поведение, фильтрация классов | Любые визуальные правки компонента (бордеры, скругления, ховеры, анимации) |
+| **Типы** | `scripts/templates/*.template.types.ts` | Props компонента (дополнение к автогенерации) | Когда нужны пропы, которых нет в контракте (value, onChange, min, max, etc.) |
+| **Stories** | `scripts/templates/*.template.stories.tsx` | Storybook stories | При добавлении новых stories или вариантов |
+| **Shared** | `components/primitives/_shared/` | `cn`, `findClasses`, `IconSlot`, `ClearButton`, `Popover` | Общая логика для всех компонентов |
+
+## Правила
+
+### 1. НЕ менять спеку для визуальных правок компонентов
+
+Спека (`ai-ds-spec.json`) — это источник дизайн-токенов и маппинга. Если нужно изменить поведение конкретного компонента (убрать бордер, добавить ховер, изменить скругление), это делается в **шаблоне**.
+
+```tsx
+// ❌ НЕПРАВИЛЬНО — менять ai-ds-spec.json чтобы убрать border у Accordion
+// ❌ НЕПРАВИЛЬНО — добавлять CSS-правила в tailwind.config.cjs для icon hover
+
+// ✅ ПРАВИЛЬНО — фильтровать в шаблоне:
+const vc = findClasses(rules, { state, size, interaction });
+const vcFiltered = vc.filter(c => !c.startsWith('border') && !c.startsWith('rounded'));
+```
+
+### 2. Per-icon hover через IconSlot
+
+Каждая иконка должна иметь **свой собственный hover**, а не общий на весь контейнер. `IconSlot` управляет hover внутри себя через `hoverColor` prop:
+
+```tsx
+// ❌ НЕПРАВИЛЬНО — общий hover на весь контейнер:
+const [isHovered, setIsHovered] = useState(false);
+<div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+  <IconSlot icon={icon1} color={isHovered ? 'primary' : 'base'} />
+  <IconSlot icon={icon2} color={isHovered ? 'primary' : 'base'} />
+</div>
+
+// ✅ ПРАВИЛЬНО — per-icon hover через hoverColor:
+const iconBase = isOpen ? 'var(--color-brand-primary)' : 'var(--color-icon-on-base)';
+const iconHover = isOpen ? 'var(--color-icon-on-base)' : 'var(--color-brand-primary)';
+<IconSlot icon={icon1} color={iconBase} hoverColor={iconHover} />
+<IconSlot icon={icon2} color={iconBase} hoverColor={iconHover} />
+```
+
+### 2a. НЕ использовать CSS data-атрибуты для hover
+
+CSS-селекторы (`[data-icon-interactive]:hover`) проигрывают inline-стилям по специфичности. Hover-логика — только через React state внутри `IconSlot`.
+
+### 3. Все шаблоны используют shared `cn` и `findClasses`
+
+```tsx
+// ❌ НЕПРАВИЛЬНО — локальные определения:
+function cn(...c: (string | undefined | false)[]) { return c.filter(Boolean).join(' '); }
+function findClasses(args: Record<string, string>) { ... }
+
+// ✅ ПРАВИЛЬНО — импорт из _shared (cn использует tailwind-merge):
+import { cn, findClasses, type VR } from '../_shared';
+import { IconSlot } from '../_shared/IconSlot';
+```
+
+`cn` использует `tailwind-merge` (`extendTailwindMerge`) для автоматического разрешения конфликтующих Tailwind-классов. Это устраняет необходимость в `!important` (`!`-префикс) для SIZE_CLASSES.
+
+**ВАЖНО:** `text-style-*` классы (типографика из `addComponents`) зарегистрированы в `twMerge` как `font-size`, а НЕ как `text-color`. Без этой настройки `twMerge` путает `text-style-body` и `text-[var(--color-text-on-brand)]` как один тип, и выбрасывает один из них. При добавлении новых кастомных утилит с префиксом существующих Tailwind-групп — обновлять конфиг `extendTailwindMerge` в `_shared/utils.ts`.
+
+### 3a. НЕ использовать `!important` (`!`-префикс Tailwind)
+
+```tsx
+// ❌ НЕПРАВИЛЬНО:
+const SIZE_CLASSES = { sm: '!px-[var(--space-button-x-sm)] !gap-[var(--space-4)]' };
+
+// ✅ ПРАВИЛЬНО — tailwind-merge разрешит конфликты:
+const SIZE_CLASSES = { sm: 'px-[var(--space-button-x-sm)] gap-[var(--space-4)]' };
+```
+
+Единственное исключение: `[&::-webkit-resizer]:!appearance-none` в Textarea для override браузерных стилей.
+
+### 4. Все иконки через IconSlot
+
+```tsx
+// ❌ НЕПРАВИЛЬНО — ручной React.cloneElement для иконок:
+<span className="[&_svg]:!w-full [&_svg]:!h-full" style={{ color, width, height }}>
+  {React.cloneElement(icon, { style: { width: '100%', height: '100%' } })}
+</span>
+
+// ✅ ПРАВИЛЬНО:
+<IconSlot icon={icon} color={iconColor} size="var(--icon-size, 20px)" />
+```
+
+### 5. IconSlot — API
+
+`IconSlot` принимает:
+- `icon` — React-элемент иконки
+- `color` — базовый цвет иконки (inline style)
+- `hoverColor` — цвет при наведении конкретно на эту иконку (hover управляется внутри через useState)
+- `size` — размер (default: `var(--icon-size, 20px)`)
+- `className` — дополнительные CSS-классы
+- `onClick` — обработчик клика
+
+```tsx
+<IconSlot icon={icon} color={iconBase} hoverColor={iconHover} />
+```
+
+**Исключение:** `Select` — нативный `<select>` перекрывает chevron (`pointer-events-none`), поэтому per-icon hover невозможен; используется container-level hover.
+
+### 6. Контракт — read-only при генерации
+
+`contracts:generate` перезаписывает `variantRules`, `variantAxes`, `variantProps` и другие поля из спеки. Сохраняются только: `generatorStrategy`, `manualImplementation`, `template`, `enhancements`.
+
+Для компонентов **не в спеке** (Select, etc.) контракт редактируется напрямую.
+
+### 7. Генератор контрактов (`spec-to-contracts.ts`)
+
+Функция `styleToTailwindClasses` маппит style-объект из спеки в Tailwind-классы. При добавлении новых ключей в style (спеке) — нужно добавить обработку здесь.
+
+Ключи: `bg` / `background` → `bg-[var(...)]`, `borderColor` → `border-[var(...)]`, `textColor` → `text-[var(...)]`, etc.
+
+### 8. Порядок генерации
+
+```
+npm run contracts:generate   # спека → контракты
+npm run components:generate  # контракты + шаблоны → компоненты
+```
+
+После изменения шаблона — достаточно `components:generate`.
+После изменения спеки — сначала `contracts:generate`, потом `components:generate`.
+
+### 9. Маппинг состояний в шаблонах
+
+Если компонент имеет визуально одинаковые состояния с разным поведением (Checkbox: `exclude` = визуально `checked`, но с другой иконкой), маппинг делается в шаблоне, а не в контракте:
+
+```tsx
+const visualState = effectiveState
+  .replace('disabled-exclude', 'disabled-checked')
+  .replace('focus-exclude', 'focus-checked')
+  .replace('exclude', 'checked');
+const vc = findClasses(rules, { state: visualState, size });
+```

@@ -1,0 +1,21 @@
+{
+  "name": "ai-orchestrator",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "projects/*"
+  ],
+  "scripts": {
+    "core:build": "npm run build -w @ai-ds/core",
+    "core:icons": "npm run icons:generate -w @ai-ds/core",
+    "core:tokens": "npm run tokens:build -w @ai-ds/core",
+    "core:contracts": "npm run contracts:generate -w @ai-ds/core",
+    "core:validate": "npm run validate -w @ai-ds/core",
+    "new-project": "npx tsx packages/core/scripts/scaffold-project.ts",
+    "core:pack": "npm run build -w @ai-ds/core && npm pack -w @ai-ds/core",
+    "export-project": "npx tsx packages/core/scripts/export-project.ts",
+    "healthcheck": "npm run validate -w @ai-ds/core",
+    "core:release": "npm run release -w @ai-ds/core",
+    "publish-core": "npx tsx packages/core/scripts/publish-core.ts"
+  }
+}

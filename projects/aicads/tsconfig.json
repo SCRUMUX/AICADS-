@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ai-ds/core": ["../../packages/core/src/index.ts"],
+      "@ai-ds/core/components": ["../../packages/core/components/index.ts"],
+      "@ai-ds/core/components/*": ["../../packages/core/components/primitives/*/index.ts"],
+      "@ai-ds/core/icons": ["../../packages/core/components/icons/index.tsx"],
+      "@ai-ds/core/hooks": ["../../packages/core/hooks/index.ts"],
+      "@ai-ds/core/hooks/*": ["../../packages/core/hooks/*.ts"],
+      "@ai-ds/core/shared": ["../../packages/core/components/primitives/_shared/index.ts"],
+      "@ai-ds/core/layout": ["../../packages/core/layout/index.ts"],
+      "@ai-ds/core/behaviors": ["../../packages/core/behaviors/index.ts"],
+      "@ai-ds/core/utils": ["../../packages/core/utils/token-resolver.ts"]
+    }
+  },
+  "include": [
+    "pages/**/*.ts",
+    "pages/**/*.tsx",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
