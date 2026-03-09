@@ -1,11 +1,25 @@
-# @ai-ds/core v0.2.0
+# AICADS — AI Component Architecture Design System
 
-AI Design System — reusable architectural core.
+Универсальная система автоматической генерации дизайн-системы в Figma по стилям любого сайта.
 
-## Installation
+## Быстрый старт (Figma pipeline)
+
+```
+1. git clone https://github.com/SCRUMUX/AICADS-.git
+2. Откройте проект в Cursor
+3. Напишите "старт" в чат агента
+4. Вставьте ссылку на сайт-референс
+5. Утвердите палитру
+6. Скопируйте готовый ai-ds-spec.json в Figma-плагин
+```
+
+Агент автоматически установит зависимости, извлечёт стили, покажет отчёт и соберёт файл.
+Вы не запускаете ни одной команды вручную.
+
+## Установка как npm-пакет
 
 ```bash
-npm install git+https://github.com/SCRUMUX/AICADS-.git#v0.2.0
+npm install git+https://github.com/SCRUMUX/AICADS-.git
 ```
 
 ## Importing Components

@@ -19,23 +19,30 @@ then generates a complete `ai-ds-spec.json` ready to paste into the Figma plugin
 
 ## Prerequisites check
 
-Before starting, verify the environment:
+The agent runs ALL checks automatically. The user does NOT run any commands manually.
 
 ```
 1. Check if packages/core/node_modules exists
-   YES → continue
    NO  → run: cd packages/core && npm install
          Wait for completion. If it fails, report the error and stop.
 
-2. Check if packages/core/ai-ds-styles.json exists
-   YES → continue (existing style core will be preserved where possible)
-   NO  → it will be created from scratch during extraction
+2. Check if Playwright chromium is installed
+   Run: cd packages/core && npx playwright install chromium
+   This is idempotent (safe to re-run). Takes ~30 seconds on first install, instant if already there.
 
-3. Check if packages/core/ai-ds-components.json exists
+3. Check if packages/core/ai-ds-styles.json exists
+   YES → continue (existing style core will be preserved where possible)
+   NO  → check if ai-ds-spec.json exists:
+         YES → run: cd packages/core && npx tsx scripts/split-spec.ts
+         NO  → styles will be created from scratch during extraction
+
+4. Check if packages/core/ai-ds-components.json exists
    YES → continue
    NO  → run: cd packages/core && npx tsx scripts/split-spec.ts
-         This splits ai-ds-spec.json into 3 parts.
+         (splits ai-ds-spec.json into 3 parts)
 ```
+
+If any prerequisite fails, report the exact error and stop. Do not continue with a broken environment.
 
 ## Pipeline steps
 
