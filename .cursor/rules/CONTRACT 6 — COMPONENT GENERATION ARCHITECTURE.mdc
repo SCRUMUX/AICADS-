@@ -8,15 +8,25 @@ alwaysApply: false
 
 ## Пайплайн
 
+### Стилевой пайплайн (CONTRACT 7)
+```
+URL-референс → extract-styles.ts → ai-ds-styles.json
+ai-ds-styles.json + ai-ds-components.json + ai-ds-blocks.json → merge-spec.ts → ai-ds-spec.json
+```
+
+### Компонентный пайплайн
 ```
 ai-ds-spec.json → contracts:generate → *.contract.json → components:generate → *.tsx
 ```
+
+**ВАЖНО:** `ai-ds-spec.json` — генерируемый файл. Для изменения стилей (токенов, цветов, шрифтов) редактируйте `ai-ds-styles.json`, затем запускайте `merge-spec.ts`. Для компонентных изменений можно редактировать `ai-ds-spec.json` напрямую, но потом запустите `split-spec.ts` чтобы синхронизировать модули.
 
 ## Уровни и зоны ответственности
 
 | Уровень | Файлы | Что определяет | Когда менять |
 |---------|-------|----------------|--------------|
-| **Спека** | `ai-ds-spec.json` | Токены, оси вариативности, правила маппинга (цвета, отступы, размеры) | Только при добавлении новых компонентов или изменении дизайн-токенов |
+| **Стили** | `ai-ds-styles.json` | Токены (цвета, шрифты, отступы, радиусы), iconRoles | При изменении стиля проекта (CONTRACT 7) |
+| **Спека** | `ai-ds-spec.json` | Собранный файл: стили + компоненты + блоки. Генерируется merge-spec.ts | Только при добавлении новых компонентов или изменении вариантов |
 | **Генератор контрактов** | `scripts/spec-to-contracts.ts` | `styleToTailwindClasses` — маппинг style → Tailwind-классы | При добавлении новых style-ключей (bg, background, borderColor, etc.) |
 | **Контракт** | `contracts/components/*.contract.json` | variantRules (Tailwind-классы), focusRing, метаданные | НИКОГДА вручную для компонентов из спеки. Для компонентов НЕ в спеке (Select) — можно редактировать напрямую |
 | **Шаблон** | `scripts/templates/*.template.tsx` | JSX-структура, React-логика, hover/focus поведение, фильтрация классов | Любые визуальные правки компонента (бордеры, скругления, ховеры, анимации) |

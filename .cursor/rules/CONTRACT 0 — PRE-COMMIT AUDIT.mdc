@@ -1,0 +1,104 @@
+---
+description: Mandatory pre-commit audit checklist. Prevents stale files, broken references, and inconsistent state.
+globs: 
+alwaysApply: true
+---
+
+# CONTRACT 0 — PRE-COMMIT AUDIT
+
+**This rule is ALWAYS active. The agent MUST follow it before every commit.**
+
+## Golden rule
+
+**Never commit partial changes.** Before every `git commit`, the agent must audit the ENTIRE repository as if building it from scratch. If something is stale, broken, or inconsistent — fix it BEFORE committing.
+
+## Pre-commit checklist
+
+The agent MUST complete ALL items before running `git add` / `git commit`:
+
+### 1. No test/temp data in source files
+
+- [ ] `ai-ds-spec.json` contains the ORIGINAL project palette, not test extraction results
+- [ ] `ai-ds-styles.json` contains the ORIGINAL project palette
+- [ ] No `*.backup.json`, `*.extracted.json`, `*.zip` in staged files (they must be in `.gitignore`)
+- [ ] No `.cursor/debug-*.log` in staged files
+
+### 2. Modular spec consistency
+
+- [ ] `ai-ds-styles.json` exists and tokens match `ai-ds-spec.json` tokens section
+- [ ] `ai-ds-components.json` exists and matches `ai-ds-spec.json` components array
+- [ ] `ai-ds-blocks.json` exists and matches `ai-ds-spec.json` blocks array
+- [ ] If any of the 3 module files changed, `ai-ds-spec.json` was rebuilt via `merge-spec.ts`
+
+### 3. No duplicate cursor rules
+
+- [ ] `projects/*/. cursor/rules/` directories do NOT contain copies of root-level rules
+- [ ] All CONTRACT files exist ONLY in `.cursor/rules/` (root level)
+- [ ] No two `.mdc` files have the same contract name
+
+### 4. Cross-reference integrity
+
+- [ ] Every script mentioned in CONTRACT files exists in `packages/core/scripts/`
+- [ ] Every npm script in rules exists in `packages/core/package.json`
+- [ ] CONTRACT 4, 5, 6, 7 all reference the modular workflow (ai-ds-styles.json + merge-spec)
+- [ ] No CONTRACT references "edit ai-ds-spec.json directly" for style changes
+
+### 5. .gitignore covers all temp artifacts
+
+- [ ] `*.backup.json` is in `.gitignore`
+- [ ] `*.extracted.json` is in `.gitignore`
+- [ ] `*.zip` is in `.gitignore`
+- [ ] `.cursor/debug-*.log` is in `.gitignore`
+
+### 6. Package.json scripts are complete
+
+- [ ] `spec:split`, `spec:merge`, `spec:validate`, `spec:validate-styles`, `spec:extract` — all present
+- [ ] No broken script references
+
+### 7. Git status is clean after commit
+
+- [ ] Run `git status` after commit — must show `nothing to commit, working tree clean`
+- [ ] If files reappear as modified (CRLF issue), they were not real changes — verify with `git diff`
+
+## Dependency map
+
+When changing a file on the LEFT, you MUST check/update files on the RIGHT:
+
+```
+CHANGED                          → CHECK / UPDATE
+─────────────────────────────────────────────────────
+ai-ds-styles.json                → run merge-spec.ts → ai-ds-spec.json
+ai-ds-components.json            → run merge-spec.ts → ai-ds-spec.json
+ai-ds-blocks.json                → run merge-spec.ts → ai-ds-spec.json
+extract-styles.ts                → CONTRACT 7 (references)
+merge-spec.ts / split-spec.ts   → CONTRACT 6, CONTRACT 7 (pipeline description)
+validate-spec.ts                 → CONTRACT 7 (validation step)
+Any CONTRACT file                → check no duplicate in projects/*/
+package.json (scripts)           → all CONTRACT files that reference npm scripts
+.gitignore                       → verify temp files are excluded
+```
+
+## Forbidden actions
+
+1. **NEVER commit test extraction results** (palette from a test URL) into source files
+2. **NEVER leave duplicate rules** in `projects/*/` subdirectories
+3. **NEVER edit `ai-ds-spec.json` tokens directly** — use `ai-ds-styles.json` + `merge-spec.ts`
+4. **NEVER `git add .` blindly** — always review `git status` and `git diff --stat` first
+5. **NEVER skip the checklist** — even for "small changes"
+
+## How to run the audit
+
+```bash
+# 1. Check for temp files that shouldn't be committed
+git status
+
+# 2. Validate spec consistency
+cd packages/core
+npx tsx scripts/validate-spec.ts --styles-only
+
+# 3. Check for duplicate rules
+ls projects/*/.cursor/rules/ 2>$null
+
+# 4. Verify gitignore
+git ls-files --ignored --exclude-standard
+```
