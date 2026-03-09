@@ -11681,7 +11681,7 @@ async function buildDrawerLayout(spec, componentSpec, variant, style, context) {
   panel.strokes = [borderPaint];
   panel.strokeWeight = 1;
   panel.strokeAlign = 'INSIDE';
-  panel.effects = [{ type: 'DROP_SHADOW', color: { r: 0, g: 0, b: 0, a: 0.15 }, offset: { x: isLeft ? 4 : -4, y: 0 }, radius: 16, spread: 0, visible: true }];
+  panel.effects = [{ type: 'DROP_SHADOW', color: { r: 0, g: 0, b: 0, a: 0.15 }, offset: { x: isLeft ? 4 : -4, y: 0 }, radius: 16, spread: 0, visible: true, blendMode: 'NORMAL' }];
 
   // Order: overlay first for right-side, panel first for left-side
   if (isLeft) {
