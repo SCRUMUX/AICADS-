@@ -1,0 +1,82 @@
+{
+  "name": "@Block/ProductCard",
+  "description": "Product/listing card with image, title, price, and metadata. Used in marketplace grids.",
+  "category": "data-display",
+  "layout": "vertical",
+  "sizing": {
+    "width": "fill",
+    "height": "hug"
+  },
+  "tailwindClasses": [
+    "flex",
+    "flex-col",
+    "flex-1",
+    "min-w-0",
+    "bg-[var(--color-surface-1)]"
+  ],
+  "tokens": {
+    "background": "color_surface_1",
+    "elevation": "effect_elevation_1",
+    "borderRadius": "radius_medium"
+  },
+  "slots": [
+    {
+      "name": "image",
+      "description": "Product image with optional badge overlay",
+      "component": "@UI/Image",
+      "aspectRatio": "16/10",
+      "children": [
+        {
+          "name": "badge",
+          "component": "@UI/Badge",
+          "optional": true,
+          "position": "top-left",
+          "offset": {
+            "x": "space_8",
+            "y": "space_8"
+          }
+        }
+      ]
+    },
+    {
+      "name": "content",
+      "description": "Card content area",
+      "layout": "vertical",
+      "padding": {
+        "x": "space_12",
+        "y": "space_12"
+      },
+      "gap": "space_4",
+      "children": [
+        {
+          "name": "title",
+          "type": "text",
+          "textStyle": "Text/Body/Base",
+          "textColor": "color_text_primary",
+          "fontWeight": "semibold"
+        },
+        {
+          "name": "price",
+          "type": "text",
+          "textStyle": "Text/Body/LG",
+          "textColor": "color_brand_primary",
+          "fontWeight": "semibold",
+          "optional": true
+        },
+        {
+          "name": "meta",
+          "type": "text",
+          "textStyle": "Text/Caption/XS",
+          "textColor": "color_text_muted",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    "@UI/Badge",
+    "@UI/Image"
+  ],
+  "padding": "none",
+  "gap": "none"
+}

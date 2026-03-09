@@ -1,0 +1,215 @@
+---
+description: Figma style extraction and generation pipeline — triggered by "старт" or "start"
+globs: ["**/ai-ds-styles.json", "**/ai-ds-spec.json", "**/ai-ds-styles.extracted.json"]
+alwaysApply: false
+---
+
+# CONTRACT 7 — FIGMA STYLE PIPELINE
+
+## Trigger
+
+When the user writes **"старт"**, **"start"**, or **"Figma pipeline"**, execute this contract.
+
+## Overview
+
+This pipeline allows a user to change the design system style by providing a reference website URL,
+then generates a complete `ai-ds-spec.json` ready to paste into the Figma plugin.
+
+**No manual file renaming. No ambiguity. Agent runs scripts, checks exit codes, fixes errors.**
+
+## Prerequisites check
+
+Before starting, verify the environment:
+
+```
+1. Check if packages/core/node_modules exists
+   YES → continue
+   NO  → run: cd packages/core && npm install
+         Wait for completion. If it fails, report the error and stop.
+
+2. Check if packages/core/ai-ds-styles.json exists
+   YES → continue (existing style core will be preserved where possible)
+   NO  → it will be created from scratch during extraction
+
+3. Check if packages/core/ai-ds-components.json exists
+   YES → continue
+   NO  → run: cd packages/core && npx tsx scripts/split-spec.ts
+         This splits ai-ds-spec.json into 3 parts.
+```
+
+## Pipeline steps
+
+### Step 1 — Ask the user
+
+Present this message:
+
+> **AICADS Figma Pipeline**
+>
+> Хотите изменить стиль проекта?
+> Если да — вставьте ссылку на сайт-референс (например: https://stripe.com).
+> Можно указать несколько страниц через пробел.
+>
+> Если хотите оставить текущий стиль — напишите "пропустить".
+
+Wait for the user's response.
+
+- If user says "пропустить" / "skip" → go to **Step 5** (merge only)
+- If user provides a URL → continue to **Step 2**
+
+### Step 2 — Extract styles from reference
+
+Run the extraction script:
+
+```bash
+cd packages/core && npx tsx scripts/extract-styles.ts --url "<USER_URL>"
+```
+
+If the user provided multiple pages, add `--pages`:
+
+```bash
+cd packages/core && npx tsx scripts/extract-styles.ts --url "<BASE_URL>" --pages "/" "/about" "/pricing"
+```
+
+**Check the exit code:**
+- Exit 0 → continue
+- Exit 1 → show the error output to user, ask if they want to try a different URL
+
+### Step 3 — Show extraction report
+
+Read the file `packages/core/ai-ds-styles.extracted.json` and present the results to the user:
+
+1. **Color palette** — show all extracted colors as a table:
+   | Name | HEX | Usage count | Context |
+   |------|-----|-------------|---------|
+   | core_blue_50 | #3B82F6 | 245 | text(a), bg(button) |
+   | ... | ... | ... | ... |
+
+2. **Primary font** — show the detected font family
+3. **Font sizes** — list detected sizes
+4. **Border radii** — list detected radii
+
+Then ask:
+
+> Это извлечённая палитра из вашего референса.
+> Стили уже применены к `ai-ds-styles.json`.
+> Утверждаете? (да / нет / хочу изменить вручную)
+
+- "да" → continue to **Step 4**
+- "нет" → restore from backup: copy `ai-ds-styles.backup.json` → `ai-ds-styles.json`, go to **Step 1**
+- "хочу изменить вручную" → open `ai-ds-styles.json` for the user to edit, wait for confirmation
+
+### Step 4 — Validate
+
+Run validation:
+
+```bash
+cd packages/core && npx tsx scripts/validate-spec.ts --styles-only
+```
+
+**Check exit code:**
+- Exit 0 (no errors) → continue to **Step 5**
+- Exit 1 (errors found) → read the error output and fix the issues:
+
+**How to fix validation errors:**
+
+The most common error after style extraction is broken semantic references.
+For example: `brandLinkFocus.color_brand_primary.light: references primitive "core_blue_50" — NOT FOUND`
+
+This means the old primitive `core_blue_50` was replaced by a new name (e.g., `core_blue_47`).
+
+**Fix strategy:**
+1. Read `packages/core/ai-ds-styles.json`
+2. Find the broken semantic token
+3. Look at the available primitives in `tokens.color.primitives`
+4. Replace the broken reference with the closest matching primitive name
+5. Save the file
+6. Re-run validation
+
+The extract-styles script auto-fixes most of these, but edge cases may remain.
+
+**After fixing, re-run validation. Repeat until exit code is 0.**
+
+### Step 5 — Merge
+
+Run the merge script:
+
+```bash
+cd packages/core && npx tsx scripts/merge-spec.ts
+```
+
+**Check exit code:**
+- Exit 0 → continue to **Step 6**
+- Exit 1 → show errors. If they are only warnings (component token refs), run with `--force`:
+
+```bash
+cd packages/core && npx tsx scripts/merge-spec.ts --force
+```
+
+### Step 6 — Done
+
+Present this message:
+
+> **Готово!**
+>
+> Файл `ai-ds-spec.json` собран и готов к использованию.
+>
+> **Следующие шаги для Figma:**
+> 1. Откройте ваш Figma-файл
+> 2. Убедитесь, что на одной из страниц есть компоненты-иконки (страница Icons)
+> 3. Запустите плагин AI DS Generator
+> 4. Скопируйте содержимое файла `packages/core/ai-ds-spec.json` и вставьте в текстовое поле плагина
+> 5. Нажмите **Generate Tokens** — создаст переменные и стили
+> 6. Нажмите **Generate** (Components) — создаст все компоненты
+>
+> **Важно про иконки:**
+> Иконки ищутся по имени (не по nodeId). В `iconRoles` указаны подстроки для поиска.
+> Например, `accordion-chevron: ["chevron-down", "caret-down-fill"]` — плагин найдёт
+> любой компонент с "chevron-down" в имени.
+> Убедитесь, что ваши иконки названы так, чтобы совпадать с этими подстроками.
+
+## Error recovery
+
+### If extract-styles fails
+The backup file `ai-ds-styles.backup.json` contains the previous version.
+To restore: copy backup → `ai-ds-styles.json`.
+
+### If validation finds errors the agent can't fix
+Show the errors to the user and suggest editing `ai-ds-styles.json` manually.
+The file is ~880 lines — the agent can read it entirely and help with specific fixes.
+
+### If merge fails
+Check that all 3 source files exist:
+- `ai-ds-styles.json`
+- `ai-ds-components.json`
+- `ai-ds-blocks.json`
+
+If any is missing, run `npx tsx scripts/split-spec.ts` to regenerate from `ai-ds-spec.json`.
+
+## Script reference
+
+| Script | Command | What it does |
+|--------|---------|-------------|
+| `split-spec.ts` | `npm run spec:split` | Splits `ai-ds-spec.json` → 3 files |
+| `extract-styles.ts` | `npm run spec:extract -- --url "..."` | Extracts styles from URL → updates `ai-ds-styles.json` |
+| `validate-spec.ts` | `npm run spec:validate` | Validates all references |
+| `merge-spec.ts` | `npm run spec:merge` | Merges 3 files → `ai-ds-spec.json` |
+
+## File structure
+
+```
+packages/core/
+  ai-ds-styles.json          ← Style core (~880 lines) — EDIT THIS
+  ai-ds-components.json      ← Components (DO NOT edit for style changes)
+  ai-ds-blocks.json           ← Blocks (DO NOT edit for style changes)
+  ai-ds-spec.json             ← GENERATED — paste into Figma plugin
+  ai-ds-styles.backup.json    ← Auto-backup before extraction
+  ai-ds-styles.extracted.json ← Extraction report (colors, fonts, radii)
+```
+
+## Key rules
+
+1. **Never use nodeId in iconRoles** — always use name-based matching `["name1", "name2"]`
+2. **Every semantic token must reference an existing primitive** — validation catches this
+3. **All HEX values must be 6-digit format** — `#RRGGBB`, not 3-digit, not 8-digit
+4. **The agent runs scripts and checks exit codes** — never manually assembles JSON
+5. **Backup is always created before changes** — user can always roll back

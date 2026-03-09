@@ -24,13 +24,24 @@ If the project already exists, skip creation and proceed.
 
 ### Step 2 — Style customization
 
-Present the user with the style tuning checklist from `packages/core/ai-ds-spec.json`:
+**For Figma-only style generation**, use CONTRACT 7 — FIGMA STYLE PIPELINE.
+The user can trigger it by writing "старт" at any time.
 
-1. **Brand color**: `tokens.color.primitives.core_blue_*` — replace hex values for brand identity
-2. **Font family**: `tokens.typography.fontFamily.base` — default is "Inter"
-3. **Border radius**: `tokens.radius.default` — controls roundness (4 = sharp, 8 = soft, 12 = rounded)
-4. **Spacing scale**: `tokens.space` — adjust if needed
-5. **Dark theme overrides**: `tokens.color.backgroundSurface` dark values
+For full project builds, ask the user:
+
+> Хотите изменить стиль проекта?
+> Если да — вставьте ссылку на сайт-референс (я извлеку палитру автоматически).
+> Или напишите "пропустить" для текущего стиля.
+
+If the user provides a URL, run the style extraction pipeline:
+
+```bash
+cd packages/core && npx tsx scripts/extract-styles.ts --url "<URL>"
+cd packages/core && npx tsx scripts/validate-spec.ts --styles-only
+cd packages/core && npx tsx scripts/merge-spec.ts
+```
+
+Show the extraction report and get user approval before proceeding.
 
 After user confirms changes (or skips), run:
 

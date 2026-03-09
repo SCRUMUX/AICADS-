@@ -1,0 +1,96 @@
+{
+  "name": "@Block/ProgressCard",
+  "description": "Card with title and list of labelled progress bars with values.",
+  "category": "data-display",
+  "layout": "vertical",
+  "sizing": {
+    "width": "fill",
+    "height": "hug"
+  },
+  "tailwindClasses": [
+    "flex",
+    "flex-col",
+    "flex-1",
+    "min-w-0",
+    "p-[var(--space-inset-l)]",
+    "gap-[var(--space-content-m)]",
+    "bg-[var(--color-surface-1)]"
+  ],
+  "tokens": {
+    "background": "color_surface_1",
+    "elevation": "effect_elevation_1",
+    "borderRadius": "radius_medium"
+  },
+  "slots": [
+    {
+      "name": "header",
+      "description": "Card header",
+      "layout": "horizontal",
+      "align": "center",
+      "justify": "between",
+      "children": [
+        {
+          "name": "title",
+          "type": "text",
+          "textStyle": "Text/Body/LG",
+          "textColor": "color_text_primary",
+          "fontWeight": "semibold"
+        },
+        {
+          "name": "action",
+          "type": "icon",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "items",
+      "description": "List of progress items",
+      "layout": "vertical",
+      "gap": "space_content_m",
+      "repeat": true,
+      "itemSlots": [
+        {
+          "name": "row",
+          "layout": "horizontal",
+          "justify": "between",
+          "align": "start",
+          "children": [
+            {
+              "name": "label",
+              "type": "text",
+              "textStyle": "Text/Body/SM",
+              "textColor": "color_text_primary"
+            },
+            {
+              "name": "value",
+              "type": "text",
+              "textStyle": "Text/Body/LG",
+              "textColor": "color_brand_primary",
+              "fontWeight": "semibold"
+            }
+          ]
+        },
+        {
+          "name": "progressBar",
+          "component": "@UI/LinearProgress",
+          "defaultProps": {
+            "size": "lg"
+          }
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "textStyle": "Text/Caption/XS",
+          "textColor": "color_text_muted",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    "@UI/LinearProgress"
+  ],
+  "padding": "space_inset_l",
+  "gap": "space_content_m"
+}

@@ -1,0 +1,95 @@
+{
+  "name": "@Block/HeroBanner",
+  "description": "Hero banner/carousel section with navigation arrows and centered content.",
+  "category": "content",
+  "layout": "horizontal",
+  "sizing": {
+    "width": "fill",
+    "height": "hug"
+  },
+  "tailwindClasses": [
+    "flex",
+    "items-center",
+    "flex-1",
+    "min-w-0",
+    "px-[var(--space-24)]",
+    "py-[var(--space-48)]",
+    "gap-[var(--space-24)]",
+    "min-h-[var(--space-320)]",
+    "bg-[var(--color-surface-1)]"
+  ],
+  "tokens": {
+    "background": "color_surface_1",
+    "borderRadius": "radius_large"
+  },
+  "slots": [
+    {
+      "name": "prevButton",
+      "description": "Previous slide button",
+      "component": "@UI/Button",
+      "defaultProps": {
+        "appearance": "ghost",
+        "size": "lg"
+      },
+      "optional": true
+    },
+    {
+      "name": "content",
+      "description": "Central hero content",
+      "layout": "vertical",
+      "align": "center",
+      "grow": true,
+      "gap": "space_8",
+      "children": [
+        {
+          "name": "icon",
+          "type": "icon",
+          "optional": true
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "textStyle": "Text/Heading/H2",
+          "textColor": "color_text_primary",
+          "textAlign": "center"
+        },
+        {
+          "name": "subtitle",
+          "type": "text",
+          "textStyle": "Text/Body/Base",
+          "textColor": "color_text_muted",
+          "textAlign": "center",
+          "optional": true
+        },
+        {
+          "name": "cta",
+          "component": "@UI/Button",
+          "defaultProps": {
+            "appearance": "brand",
+            "size": "lg"
+          },
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "nextButton",
+      "description": "Next slide button",
+      "component": "@UI/Button",
+      "defaultProps": {
+        "appearance": "ghost",
+        "size": "lg"
+      },
+      "optional": true
+    }
+  ],
+  "dependencies": [
+    "@UI/Button"
+  ],
+  "padding": {
+    "x": "space_24",
+    "y": "space_48"
+  },
+  "gap": "space_24",
+  "minHeight": "space_320"
+}

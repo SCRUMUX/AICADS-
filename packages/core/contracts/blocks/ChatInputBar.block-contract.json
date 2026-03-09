@@ -1,0 +1,67 @@
+{
+  "name": "@Block/ChatInputBar",
+  "description": "Chat message input bar with text input and action buttons.",
+  "category": "forms",
+  "layout": "horizontal",
+  "sizing": {
+    "width": "fill",
+    "height": "hug"
+  },
+  "tailwindClasses": [
+    "flex",
+    "items-center",
+    "flex-1",
+    "min-w-0",
+    "px-[var(--space-24)]",
+    "py-[var(--space-12)]",
+    "gap-[var(--space-8)]",
+    "bg-[var(--color-surface-1)]",
+    "border-t",
+    "border-t-[var(--color-border-base)]"
+  ],
+  "tokens": {
+    "borderTop": "color_border_base",
+    "background": "color_surface_1"
+  },
+  "slots": [
+    {
+      "name": "attachButton",
+      "description": "Attach file button",
+      "component": "@UI/Button",
+      "defaultProps": {
+        "appearance": "ghost",
+        "size": "md"
+      },
+      "optional": true
+    },
+    {
+      "name": "input",
+      "description": "Message text input",
+      "grow": true,
+      "component": "@UI/Input",
+      "defaultProps": {
+        "appearance": "base",
+        "size": "md",
+        "placeholder": "Type a message..."
+      }
+    },
+    {
+      "name": "sendButton",
+      "description": "Send message button",
+      "component": "@UI/Button",
+      "defaultProps": {
+        "appearance": "brand",
+        "size": "md"
+      }
+    }
+  ],
+  "dependencies": [
+    "@UI/Button",
+    "@UI/Input"
+  ],
+  "padding": {
+    "x": "space_24",
+    "y": "space_12"
+  },
+  "gap": "space_8"
+}

@@ -62,5 +62,23 @@
   ],
   "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand",
   "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger",
+  "element": "div",
+  "rootLayout": "horizontal",
+  "rootSizing": {
+    "main": "hug",
+    "cross": "hug"
+  },
+  "rootAlign": {
+    "main": "start",
+    "cross": "center"
+  },
+  "customStructure": "rating",
+  "styleKeys": [
+    "filledColor",
+    "emptyColor",
+    "gap",
+    "starSize"
+  ],
+  "heightConstraint": "hug",
   "generatorStrategy": "template"
 }

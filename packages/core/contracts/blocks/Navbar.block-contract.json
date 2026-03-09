@@ -1,0 +1,98 @@
+{
+  "name": "@Block/Navbar",
+  "description": "Global top-level navigation bar: [Logo] [Nav?] [Search?] → [Bell] [Avatar] [Username ▾]. Supports default/compact density.",
+  "category": "navigation",
+  "layout": "horizontal",
+  "sizing": {
+    "width": "fill",
+    "height": "hug"
+  },
+  "tailwindClasses": [
+    "flex",
+    "items-center",
+    "w-full",
+    "px-[var(--space-24)]",
+    "bg-[var(--color-surface-1)]",
+    "border-b",
+    "border-b-[var(--color-border-base)]"
+  ],
+  "tokens": {
+    "background": "color_surface_1",
+    "borderBottom": "color_border_base"
+  },
+  "variantProps": ["size"],
+  "variantAxes": {
+    "size": ["default", "compact"]
+  },
+  "variantRules": [
+    {
+      "when": { "size": "default" },
+      "style": {
+        "height": 64,
+        "paddingY": "space_12",
+        "logoHeight": 28,
+        "navTextStyle": "Text/Body/Base",
+        "navGap": "space_8",
+        "actionGap": "space_12"
+      }
+    },
+    {
+      "when": { "size": "compact" },
+      "style": {
+        "height": 48,
+        "paddingY": "space_8",
+        "logoHeight": 24,
+        "navTextStyle": "Text/Caption/Base",
+        "navGap": "space_4",
+        "actionGap": "space_8"
+      }
+    }
+  ],
+  "responsiveRules": [
+    { "breakpoint": "desktop", "showNav": true, "showSearch": true, "showUsername": true },
+    { "breakpoint": "tablet", "showNav": true, "showSearch": true, "showUsername": false },
+    { "breakpoint": "mobile", "showNav": false, "showSearch": false, "showUsername": false }
+  ],
+  "slots": [
+    {
+      "name": "logo",
+      "type": "composite",
+      "description": "Aica icon + brand name text"
+    },
+    {
+      "name": "nav",
+      "description": "Primary navigation links. Optional, hidden on mobile.",
+      "layout": "horizontal",
+      "gap": "space_8",
+      "optional": true,
+      "repeat": true,
+      "component": "@UI/Link"
+    },
+    {
+      "name": "search",
+      "description": "Autocomplete search field. Optional, hidden on mobile.",
+      "component": "@UI/Autocomplete",
+      "optional": true
+    },
+    {
+      "name": "notifications",
+      "description": "Bell icon button for notifications",
+      "type": "icon-button",
+      "icon": "bell"
+    },
+    {
+      "name": "avatar",
+      "description": "User avatar",
+      "component": "@UI/Avatar"
+    },
+    {
+      "name": "userDropdown",
+      "description": "Username text + chevron-down icon — borderless dropdown trigger",
+      "layout": "horizontal",
+      "gap": "space_4"
+    }
+  ],
+  "dependencies": ["@UI/Link", "@UI/Autocomplete", "@UI/Avatar"],
+  "padding": { "x": "space_24", "y": "space_0" },
+  "gap": "space_0"
+}

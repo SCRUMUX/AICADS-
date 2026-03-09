@@ -171,6 +171,15 @@
           <button id="generate-components" class="primary">Generate</button>
         </div>
       </div>
+      <div class="action-group">
+        <label>Blocks</label>
+        <div class="row">
+          <select id="block-select">
+            <option value="">All blocks</option>
+          </select>
+          <button id="generate-blocks" class="primary">Generate Blocks</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -281,6 +290,22 @@
       if (current && Array.from(select.options).some(o => o.value === current)) {
         select.value = current;
       }
+
+      const blocks = Array.isArray(parsed.blocks) ? parsed.blocks : [];
+      const blockSelect = document.getElementById('block-select');
+      const currentBlock = blockSelect.value;
+      blockSelect.innerHTML = '<option value="">All blocks</option>';
+      blocks.forEach(function (b) {
+        if (b && b.name) {
+          const opt = document.createElement('option');
+          opt.value = b.name;
+          opt.textContent = b.name;
+          blockSelect.appendChild(opt);
+        }
+      });
+      if (currentBlock && Array.from(blockSelect.options).some(o => o.value === currentBlock)) {
+        blockSelect.value = currentBlock;
+      }
     }
 
     function send(type, extra) {
@@ -315,6 +340,11 @@
     document.getElementById('generate-components').onclick = function () {
       const selected = document.getElementById('component-select').value;
       send('generate-components', selected ? { componentName: selected } : {});
+    };
+
+    document.getElementById('generate-blocks').onclick = function () {
+      const selected = document.getElementById('block-select').value;
+      send('generate-blocks', selected ? { blockName: selected } : {});
     };
 
     document.getElementById('export-tokens').onclick = function () {

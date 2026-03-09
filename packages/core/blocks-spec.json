@@ -1,0 +1,675 @@
+{
+  "$schema": "blocks-spec-schema.json",
+  "$comment": "Declarative block specifications for reusable UI sections. Each block is a composition of DS primitives with fixed layout rules. Used by spec-to-block-contracts.ts (React generator) and Figma plugin (generate-blocks).",
+  "blocks": [
+    {
+      "name": "@Block/AppSidebar",
+      "description": "Application sidebar with navigation items, optional header/footer sections. Dark theme by default.",
+      "category": "navigation",
+      "layout": "vertical",
+      "sizing": { "width": 260, "height": "fill" },
+      "padding": { "x": "space_12", "y": "space_16" },
+      "gap": "space_8",
+      "tokens": {
+        "background": "color_bg_base",
+        "elevation": "effect_elevation_1"
+      },
+      "dataTheme": "dark",
+      "slots": [
+        {
+          "name": "navItems",
+          "description": "Primary navigation tabs",
+          "layout": "vertical",
+          "gap": "space_8",
+          "grow": true,
+          "repeat": true,
+          "component": "@UI/Tab",
+          "defaultProps": {
+            "appearance": "ghost",
+            "size": "md"
+          },
+          "itemClassName": "min-h-[var(--space-32)] px-[var(--space-16)] py-[var(--space-4)] gap-[var(--space-4)] justify-start"
+        },
+        {
+          "name": "infoCard",
+          "description": "Optional info/help card",
+          "optional": true,
+          "component": "@UI/Card",
+          "defaultProps": {
+            "variant": "base",
+            "size": "md"
+          }
+        },
+        {
+          "name": "footer",
+          "description": "Footer with settings/branding",
+          "layout": "vertical",
+          "gap": "space_8",
+          "optional": true
+        }
+      ],
+      "responsiveRules": [
+        { "breakpoint": "mobile", "hidden": true },
+        { "breakpoint": "tablet", "width": "18%", "minWidth": 200, "maxWidth": 280 }
+      ]
+    },
+    {
+      "name": "@Block/AppTopBar",
+      "description": "Top application bar with controls, search, and user info section.",
+      "category": "navigation",
+      "layout": "horizontal",
+      "sizing": { "width": "fill", "height": "hug" },
+      "padding": { "x": "space_24", "y": "space_12" },
+      "gap": "space_24",
+      "minHeight": "space_72",
+      "tokens": {
+        "background": "color_surface_1",
+        "borderBottom": "color_border_base"
+      },
+      "slots": [
+        {
+          "name": "controls",
+          "description": "Left control area (context selectors, role pickers)",
+          "layout": "horizontal",
+          "gap": "space_24",
+          "optional": true
+        },
+        {
+          "name": "search",
+          "description": "Search input",
+          "grow": true,
+          "maxWidth": 424,
+          "component": "@UI/Input",
+          "defaultProps": {
+            "appearance": "base",
+            "size": "md"
+          },
+          "optional": true
+        },
+        {
+          "name": "actions",
+          "description": "Right action buttons and user info",
+          "layout": "horizontal",
+          "gap": "space_12",
+          "align": "center",
+          "optional": true,
+          "children": [
+            {
+              "name": "notifications",
+              "type": "icon-button",
+              "optional": true
+            },
+            {
+              "name": "avatar",
+              "component": "@UI/Avatar",
+              "defaultProps": { "size": "sm" },
+              "optional": true
+            },
+            {
+              "name": "meta",
+              "type": "text",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "@Block/MetricCard",
+      "description": "Dashboard metric card with title, icon, and multiple MetricRow entries. Typically used in grid layouts.",
+      "category": "data-display",
+      "layout": "vertical",
+      "sizing": { "width": "fill", "height": "hug" },
+      "padding": "space_inset_l",
+      "gap": "space_content_m",
+      "tokens": {
+        "background": "color_surface_1",
+        "elevation": "effect_elevation_1",
+        "borderRadius": "radius_medium"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "description": "Card header with icon and title",
+          "layout": "horizontal",
+          "align": "center",
+          "justify": "between",
+          "gap": "space_content_m",
+          "children": [
+            {
+              "name": "icon",
+              "type": "icon",
+              "optional": true
+            },
+            {
+              "name": "title",
+              "type": "text",
+              "textStyle": "Text/Body/LG",
+              "textColor": "color_text_primary",
+              "fontWeight": "semibold"
+            },
+            {
+              "name": "action",
+              "type": "icon",
+              "optional": true,
+              "align": "end"
+            }
+          ]
+        },
+        {
+          "name": "metrics",
+          "description": "List of MetricRow entries",
+          "layout": "vertical",
+          "repeat": true,
+          "component": "@Block/MetricRow"
+        },
+        {
+          "name": "footer",
+          "description": "Optional footer content (agents list, links)",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/MetricRow",
+      "description": "Single metric display: label, value, optional delta indicator, optional description. Supports sm (compact/mobile) and md (desktop) sizes.",
+      "category": "data-display",
+      "layout": "vertical",
+      "sizing": { "width": "fill", "height": "hug" },
+      "padding": "none",
+      "gap": "space_2",
+      "tokens": {},
+      "variantProps": ["size"],
+      "variantAxes": {
+        "size": ["sm", "md"]
+      },
+      "variantRules": [
+        {
+          "when": { "size": "sm" },
+          "style": {
+            "gap": "space_2",
+            "labelStyle": "Text/Caption/XS",
+            "valueStyle": "Text/Body/Base",
+            "deltaStyle": "Text/Caption/XS",
+            "descriptionStyle": "Text/Caption/XS"
+          }
+        },
+        {
+          "when": { "size": "md" },
+          "style": {
+            "gap": "space_4",
+            "labelStyle": "Text/Caption/Base",
+            "valueStyle": "Text/Body/LG",
+            "deltaStyle": "Text/Body/SM",
+            "descriptionStyle": "Text/Body/SM"
+          }
+        }
+      ],
+      "responsiveRules": [
+        { "breakpoint": "mobile", "defaultSize": "sm" },
+        { "breakpoint": "desktop", "defaultSize": "md" }
+      ],
+      "slots": [
+        {
+          "name": "label",
+          "type": "text",
+          "textStyle": "Text/Caption/Base",
+          "textColor": "color_text_muted"
+        },
+        {
+          "name": "valueRow",
+          "layout": "horizontal",
+          "align": "baseline",
+          "gap": "space_4",
+          "children": [
+            {
+              "name": "value",
+              "type": "text",
+              "textStyle": "Text/Body/LG",
+              "textColor": "color_brand_primary",
+              "fontWeight": "semibold"
+            },
+            {
+              "name": "delta",
+              "type": "text",
+              "textStyle": "Text/Caption/XS",
+              "optional": true,
+              "variants": {
+                "positive": { "textColor": "color_success_base" },
+                "negative": { "textColor": "color_danger_base" },
+                "muted": { "textColor": "color_text_muted" }
+              }
+            }
+          ]
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "textStyle": "Text/Caption/XS",
+          "textColor": "color_text_muted",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/FiltersSidebar",
+      "description": "Sidebar with vertically stacked filter rows and action buttons (reset/apply).",
+      "category": "forms",
+      "layout": "vertical",
+      "sizing": { "width": 260, "height": "fill" },
+      "padding": { "x": "space_16", "y": "space_16" },
+      "gap": "space_8",
+      "tokens": {
+        "background": "color_surface_1",
+        "borderRight": "color_border_base"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "description": "Filter sidebar header with title",
+          "layout": "horizontal",
+          "justify": "between",
+          "align": "center",
+          "optional": true,
+          "children": [
+            {
+              "name": "title",
+              "type": "text",
+              "textStyle": "Text/Body/Base",
+              "textColor": "color_text_primary",
+              "fontWeight": "semibold",
+              "default": "Filters"
+            }
+          ]
+        },
+        {
+          "name": "filters",
+          "description": "List of FilterRow entries",
+          "layout": "vertical",
+          "gap": "space_8",
+          "grow": true,
+          "repeat": true,
+          "component": "@Block/FilterRow"
+        },
+        {
+          "name": "actions",
+          "description": "Action buttons (reset/apply)",
+          "layout": "horizontal",
+          "gap": "space_8",
+          "justify": "end",
+          "optional": true,
+          "children": [
+            {
+              "name": "resetButton",
+              "component": "@UI/Button",
+              "defaultProps": { "appearance": "ghost", "size": "sm" },
+              "optional": true
+            },
+            {
+              "name": "applyButton",
+              "component": "@UI/Button",
+              "defaultProps": { "appearance": "brand", "size": "sm" },
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "@Block/FilterRow",
+      "description": "Single filter row: label + input/dropdown control.",
+      "category": "forms",
+      "layout": "vertical",
+      "sizing": { "width": "fill", "height": "hug" },
+      "padding": "none",
+      "gap": "space_4",
+      "tokens": {},
+      "slots": [
+        {
+          "name": "label",
+          "type": "text",
+          "textStyle": "Text/Caption/XS",
+          "textColor": "color_text_muted"
+        },
+        {
+          "name": "control",
+          "description": "Filter control — Input, Dropdown, Select, RangeSlider, etc.",
+          "type": "component",
+          "component": "@UI/Input",
+          "defaultProps": { "size": "sm" }
+        }
+      ]
+    },
+    {
+      "name": "@Block/ProductCard",
+      "description": "Product/listing card with image, title, price, and metadata. Used in marketplace grids.",
+      "category": "data-display",
+      "layout": "vertical",
+      "sizing": { "width": "fill", "height": "hug" },
+      "padding": "none",
+      "gap": "none",
+      "tokens": {
+        "background": "color_surface_1",
+        "elevation": "effect_elevation_1",
+        "borderRadius": "radius_medium"
+      },
+      "slots": [
+        {
+          "name": "image",
+          "description": "Product image with optional badge overlay",
+          "component": "@UI/Image",
+          "aspectRatio": "16/10",
+          "children": [
+            {
+              "name": "badge",
+              "component": "@UI/Badge",
+              "optional": true,
+              "position": "top-left",
+              "offset": { "x": "space_8", "y": "space_8" }
+            }
+          ]
+        },
+        {
+          "name": "content",
+          "description": "Card content area",
+          "layout": "vertical",
+          "padding": { "x": "space_12", "y": "space_12" },
+          "gap": "space_4",
+          "children": [
+            {
+              "name": "title",
+              "type": "text",
+              "textStyle": "Text/Body/Base",
+              "textColor": "color_text_primary",
+              "fontWeight": "semibold"
+            },
+            {
+              "name": "price",
+              "type": "text",
+              "textStyle": "Text/Body/LG",
+              "textColor": "color_brand_primary",
+              "fontWeight": "semibold",
+              "optional": true
+            },
+            {
+              "name": "meta",
+              "type": "text",
+              "textStyle": "Text/Caption/XS",
+              "textColor": "color_text_muted",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "@Block/ChatInputBar",
+      "description": "Chat message input bar with text input and action buttons.",
+      "category": "forms",
+      "layout": "horizontal",
+      "sizing": { "width": "fill", "height": "hug" },
+      "padding": { "x": "space_24", "y": "space_12" },
+      "gap": "space_8",
+      "tokens": {
+        "borderTop": "color_border_base",
+        "background": "color_surface_1"
+      },
+      "slots": [
+        {
+          "name": "attachButton",
+          "description": "Attach file button",
+          "component": "@UI/Button",
+          "defaultProps": { "appearance": "ghost", "size": "md" },
+          "optional": true
+        },
+        {
+          "name": "input",
+          "description": "Message text input",
+          "grow": true,
+          "component": "@UI/Input",
+          "defaultProps": {
+            "appearance": "base",
+            "size": "md",
+            "placeholder": "Type a message..."
+          }
+        },
+        {
+          "name": "sendButton",
+          "description": "Send message button",
+          "component": "@UI/Button",
+          "defaultProps": { "appearance": "brand", "size": "md" }
+        }
+      ]
+    },
+    {
+      "name": "@Block/ProgressCard",
+      "description": "Card with title and list of labelled progress bars with values.",
+      "category": "data-display",
+      "layout": "vertical",
+      "sizing": { "width": "fill", "height": "hug" },
+      "padding": "space_inset_l",
+      "gap": "space_content_m",
+      "tokens": {
+        "background": "color_surface_1",
+        "elevation": "effect_elevation_1",
+        "borderRadius": "radius_medium"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "description": "Card header",
+          "layout": "horizontal",
+          "align": "center",
+          "justify": "between",
+          "children": [
+            {
+              "name": "title",
+              "type": "text",
+              "textStyle": "Text/Body/LG",
+              "textColor": "color_text_primary",
+              "fontWeight": "semibold"
+            },
+            {
+              "name": "action",
+              "type": "icon",
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "items",
+          "description": "List of progress items",
+          "layout": "vertical",
+          "gap": "space_content_m",
+          "repeat": true,
+          "itemSlots": [
+            {
+              "name": "row",
+              "layout": "horizontal",
+              "justify": "between",
+              "align": "start",
+              "children": [
+                {
+                  "name": "label",
+                  "type": "text",
+                  "textStyle": "Text/Body/SM",
+                  "textColor": "color_text_primary"
+                },
+                {
+                  "name": "value",
+                  "type": "text",
+                  "textStyle": "Text/Body/LG",
+                  "textColor": "color_brand_primary",
+                  "fontWeight": "semibold"
+                }
+              ]
+            },
+            {
+              "name": "progressBar",
+              "component": "@UI/LinearProgress",
+              "defaultProps": { "size": "lg" }
+            },
+            {
+              "name": "description",
+              "type": "text",
+              "textStyle": "Text/Caption/XS",
+              "textColor": "color_text_muted",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "@Block/HeroBanner",
+      "description": "Hero banner/carousel section with navigation arrows and centered content.",
+      "category": "content",
+      "layout": "horizontal",
+      "sizing": { "width": "fill", "height": "hug" },
+      "minHeight": "space_320",
+      "padding": { "x": "space_24", "y": "space_48" },
+      "gap": "space_24",
+      "tokens": {
+        "background": "color_surface_1",
+        "borderRadius": "radius_large"
+      },
+      "slots": [
+        {
+          "name": "prevButton",
+          "description": "Previous slide button",
+          "component": "@UI/Button",
+          "defaultProps": { "appearance": "ghost", "size": "lg" },
+          "optional": true
+        },
+        {
+          "name": "content",
+          "description": "Central hero content",
+          "layout": "vertical",
+          "align": "center",
+          "grow": true,
+          "gap": "space_8",
+          "children": [
+            {
+              "name": "icon",
+              "type": "icon",
+              "optional": true
+            },
+            {
+              "name": "title",
+              "type": "text",
+              "textStyle": "Text/Heading/H2",
+              "textColor": "color_text_primary",
+              "textAlign": "center"
+            },
+            {
+              "name": "subtitle",
+              "type": "text",
+              "textStyle": "Text/Body/Base",
+              "textColor": "color_text_muted",
+              "textAlign": "center",
+              "optional": true
+            },
+            {
+              "name": "cta",
+              "component": "@UI/Button",
+              "defaultProps": { "appearance": "brand", "size": "lg" },
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "nextButton",
+          "description": "Next slide button",
+          "component": "@UI/Button",
+          "defaultProps": { "appearance": "ghost", "size": "lg" },
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/Navbar",
+      "description": "Global top-level navigation bar: [Logo] [Nav?] [Search?] → [Bell] [Avatar] [Username ▾]. Supports default/compact density.",
+      "category": "navigation",
+      "layout": "horizontal",
+      "sizing": { "width": "fill", "height": "hug" },
+      "padding": { "x": "space_24", "y": "space_0" },
+      "gap": "space_0",
+      "tokens": {
+        "background": "color_surface_1",
+        "borderBottom": "color_border_base"
+      },
+      "variantProps": ["size"],
+      "variantAxes": {
+        "size": ["default", "compact"]
+      },
+      "variantRules": [
+        {
+          "when": { "size": "default" },
+          "style": {
+            "height": 64,
+            "paddingY": "space_12",
+            "logoHeight": 28,
+            "navTextStyle": "Text/Body/Base",
+            "navGap": "space_8",
+            "actionGap": "space_12"
+          }
+        },
+        {
+          "when": { "size": "compact" },
+          "style": {
+            "height": 48,
+            "paddingY": "space_8",
+            "logoHeight": 24,
+            "navTextStyle": "Text/Caption/Base",
+            "navGap": "space_4",
+            "actionGap": "space_8"
+          }
+        }
+      ],
+      "responsiveRules": [
+        { "breakpoint": "desktop", "showNav": true, "showSearch": true, "showUsername": true },
+        { "breakpoint": "tablet", "showNav": true, "showSearch": true, "showUsername": false },
+        { "breakpoint": "mobile", "showNav": false, "showSearch": false, "showUsername": false }
+      ],
+      "slots": [
+        {
+          "name": "logo",
+          "description": "Aica icon + brand name text",
+          "type": "composite"
+        },
+        {
+          "name": "nav",
+          "description": "Primary navigation links. Optional, hidden on mobile.",
+          "layout": "horizontal",
+          "gap": "space_8",
+          "optional": true,
+          "repeat": true,
+          "component": "@UI/Link"
+        },
+        {
+          "name": "search",
+          "description": "Autocomplete search field. Optional, hidden on mobile.",
+          "component": "@UI/Autocomplete",
+          "optional": true
+        },
+        {
+          "name": "notifications",
+          "description": "Bell icon button for notifications",
+          "type": "icon-button",
+          "icon": "bell"
+        },
+        {
+          "name": "avatar",
+          "description": "User avatar",
+          "component": "@UI/Avatar"
+        },
+        {
+          "name": "userDropdown",
+          "description": "Username text + chevron-down icon — borderless dropdown trigger",
+          "layout": "horizontal",
+          "gap": "space_4"
+        }
+      ]
+    }
+  ]
+}

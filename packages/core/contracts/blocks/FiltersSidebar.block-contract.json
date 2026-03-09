@@ -1,0 +1,93 @@
+{
+  "name": "@Block/FiltersSidebar",
+  "description": "Sidebar with vertically stacked filter rows and action buttons (reset/apply).",
+  "category": "forms",
+  "layout": "vertical",
+  "sizing": {
+    "width": 260,
+    "height": "fill"
+  },
+  "tailwindClasses": [
+    "flex",
+    "flex-col",
+    "w-[260px]",
+    "min-w-[260px]",
+    "shrink-0",
+    "h-full",
+    "px-[var(--space-16)]",
+    "py-[var(--space-16)]",
+    "gap-[var(--space-8)]",
+    "bg-[var(--color-surface-1)]",
+    "border-r",
+    "border-r-[var(--color-border-base)]"
+  ],
+  "tokens": {
+    "background": "color_surface_1",
+    "borderRight": "color_border_base"
+  },
+  "slots": [
+    {
+      "name": "header",
+      "description": "Filter sidebar header with title",
+      "layout": "horizontal",
+      "justify": "between",
+      "align": "center",
+      "optional": true,
+      "children": [
+        {
+          "name": "title",
+          "type": "text",
+          "textStyle": "Text/Body/Base",
+          "textColor": "color_text_primary",
+          "fontWeight": "semibold",
+          "default": "Filters"
+        }
+      ]
+    },
+    {
+      "name": "filters",
+      "description": "List of FilterRow entries",
+      "layout": "vertical",
+      "gap": "space_8",
+      "grow": true,
+      "repeat": true,
+      "component": "@Block/FilterRow"
+    },
+    {
+      "name": "actions",
+      "description": "Action buttons (reset/apply)",
+      "layout": "horizontal",
+      "gap": "space_8",
+      "justify": "end",
+      "optional": true,
+      "children": [
+        {
+          "name": "resetButton",
+          "component": "@UI/Button",
+          "defaultProps": {
+            "appearance": "ghost",
+            "size": "sm"
+          },
+          "optional": true
+        },
+        {
+          "name": "applyButton",
+          "component": "@UI/Button",
+          "defaultProps": {
+            "appearance": "brand",
+            "size": "sm"
+          },
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    "@UI/Button"
+  ],
+  "padding": {
+    "x": "space_16",
+    "y": "space_16"
+  },
+  "gap": "space_8"
+}

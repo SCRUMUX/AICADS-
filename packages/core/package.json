@@ -52,11 +52,25 @@
       "types": "./dist/utils/token-resolver.d.ts",
       "default": "./dist/utils/token-resolver.js"
     },
-    "./images/*": "./images/*"
+    "./images/*": "./images/*",
+    "./blocks-spec": "./blocks-spec.json",
+    "./blocks": {
+      "types": "./dist/components/blocks/index.d.ts",
+      "default": "./dist/components/blocks/index.js"
+    },
+    "./blocks/*": {
+      "types": "./dist/components/blocks/*/index.d.ts",
+      "default": "./dist/components/blocks/*/index.js"
+    },
+    "./block-contracts/*": "./contracts/blocks/*.block-contract.json"
   },
   "files": [
     "dist/",
     "ai-ds-spec.json",
+    "ai-ds-styles.json",
+    "ai-ds-components.json",
+    "ai-ds-blocks.json",
+    "blocks-spec.json",
     "component-structures.json",
     "postcss.config.cjs",
     "config/",
@@ -72,8 +86,16 @@
     "stories:generate": "npx tsx scripts/spec-to-stories.ts",
     "icons:generate": "npx tsx scripts/icons-to-components.ts",
     "structures:enrich": "npx tsx scripts/figma-to-structures.ts",
+    "blocks:generate-contracts": "npx tsx scripts/spec-to-block-contracts.ts",
+    "blocks:generate-components": "npx tsx scripts/spec-to-block-components.ts",
+    "blocks:generate": "npm run blocks:generate-contracts && npm run blocks:generate-components",
+    "spec:split": "npx tsx scripts/split-spec.ts",
+    "spec:merge": "npx tsx scripts/merge-spec.ts",
+    "spec:validate": "npx tsx scripts/validate-spec.ts",
+    "spec:validate-styles": "npx tsx scripts/validate-spec.ts --styles-only",
+    "spec:extract": "npx tsx scripts/extract-styles.ts",
     "validate": "npx tsx scripts/validate-pipeline.ts",
-    "build": "npm run structures:enrich && npm run tokens:build && npm run contracts:generate && npm run components:generate && npm run behaviors:generate && npm run stories:generate && npm run validate",
+    "build": "npm run structures:enrich && npm run tokens:build && npm run contracts:generate && npm run components:generate && npm run behaviors:generate && npm run stories:generate && npm run blocks:generate && npm run validate",
     "build:dist": "npx tsx scripts/build-dist.ts",
     "release": "npx tsx scripts/release.ts",
     "publish-core": "npx tsx scripts/publish-core.ts",
@@ -86,6 +108,7 @@
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/react": "^18.0.0",
+    "playwright": "^1.58.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tsx": "^4.0.0",

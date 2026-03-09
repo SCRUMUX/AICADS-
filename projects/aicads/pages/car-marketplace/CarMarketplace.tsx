@@ -2,6 +2,13 @@
  * Каталог автомобилей (encar.ab-korea.ru)
  * Максимальная точность по скриншоту: навбар, hero-баннер, фильтры, сетка карточек.
  * Только компоненты ДС и токены.
+ *
+ * Block components available via @ai-ds/core/blocks for future composition:
+ * import { FiltersSidebar } from '@ai-ds/core/blocks/FiltersSidebar';
+ * import { FilterRow } from '@ai-ds/core/blocks/FilterRow';
+ * import { ProductCard } from '@ai-ds/core/blocks/ProductCard';
+ * import { HeroBanner } from '@ai-ds/core/blocks/HeroBanner';
+ * See Storybook → Blocks/ for interactive previews.
  */
 import React, { useState } from 'react';
 import { Link } from '@ai-ds/core/components/Link';

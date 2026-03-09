@@ -1,0 +1,86 @@
+{
+  "name": "@Block/AppTopBar",
+  "description": "Top application bar with controls, search, and user info section.",
+  "category": "navigation",
+  "layout": "horizontal",
+  "sizing": {
+    "width": "fill",
+    "height": "hug"
+  },
+  "tailwindClasses": [
+    "flex",
+    "items-center",
+    "flex-1",
+    "min-w-0",
+    "px-[var(--space-24)]",
+    "py-[var(--space-12)]",
+    "gap-[var(--space-24)]",
+    "min-h-[var(--space-72)]",
+    "bg-[var(--color-surface-1)]",
+    "border-b",
+    "border-b-[var(--color-border-base)]"
+  ],
+  "tokens": {
+    "background": "color_surface_1",
+    "borderBottom": "color_border_base"
+  },
+  "slots": [
+    {
+      "name": "controls",
+      "description": "Left control area (context selectors, role pickers)",
+      "layout": "horizontal",
+      "gap": "space_24",
+      "optional": true
+    },
+    {
+      "name": "search",
+      "description": "Search input",
+      "grow": true,
+      "maxWidth": 424,
+      "component": "@UI/Input",
+      "defaultProps": {
+        "appearance": "base",
+        "size": "md"
+      },
+      "optional": true
+    },
+    {
+      "name": "actions",
+      "description": "Right action buttons and user info",
+      "layout": "horizontal",
+      "gap": "space_12",
+      "align": "center",
+      "optional": true,
+      "children": [
+        {
+          "name": "notifications",
+          "type": "icon-button",
+          "optional": true
+        },
+        {
+          "name": "avatar",
+          "component": "@UI/Avatar",
+          "defaultProps": {
+            "size": "sm"
+          },
+          "optional": true
+        },
+        {
+          "name": "meta",
+          "type": "text",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    "@UI/Avatar",
+    "@UI/Input"
+  ],
+  "padding": {
+    "x": "space_24",
+    "y": "space_12"
+  },
+  "gap": "space_24",
+  "minHeight": "space_72"
+}

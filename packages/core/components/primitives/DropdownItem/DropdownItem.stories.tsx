@@ -37,7 +37,6 @@ const meta: Meta<typeof DropdownItem> = {
     iconRight: { options: ICON_KEYS, mapping: ICON_MAP, control: { type: 'select' } },
     checkbox: { control: false },
     badge: { control: false },
-    submenuItems: { control: false, table: { disable: true } },
   },
 };
 export default meta;

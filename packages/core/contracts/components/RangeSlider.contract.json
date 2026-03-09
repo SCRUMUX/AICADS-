@@ -134,5 +134,19 @@
   },
   "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand",
   "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger",
+  "element": "div",
+  "rootLayout": "none",
+  "customStructure": "range-slider",
+  "styleKeys": [
+    "trackHeight",
+    "thumbSize",
+    "trackColor",
+    "fillColor",
+    "thumbColor",
+    "thumbBorder",
+    "borderRadius",
+    "opacity"
+  ],
+  "heightConstraint": "hug",
   "generatorStrategy": "template"
 }

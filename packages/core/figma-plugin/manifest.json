@@ -1,0 +1,9 @@
+{
+  "name": "AI DS Generator",
+  "id": "0000000000000000001",
+  "api": "1.0.0",
+  "main": "figma-ai-ds-code.js",
+  "ui": "figma-ai-ds-ui.html",
+  "documentAccess": "dynamic-page",
+  "editorType": ["figma"]
+}

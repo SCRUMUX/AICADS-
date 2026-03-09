@@ -1,6 +1,11 @@
 /**
  * AI Assistant / Chat — три колонки по референсу.
  * Только компоненты ДС и токены (--space-*, --color-*, --font-*, --radius-*, --effect-*).
+ *
+ * Block components available via @ai-ds/core/blocks for future composition:
+ * import { AppSidebar } from '@ai-ds/core/blocks/AppSidebar';
+ * import { ChatInputBar } from '@ai-ds/core/blocks/ChatInputBar';
+ * See Storybook → Blocks/ for interactive previews.
  */
 import React, { useState } from 'react';
 import { Button } from '@ai-ds/core/components/Button';

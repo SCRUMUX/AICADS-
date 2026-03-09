@@ -1,0 +1,69 @@
+{
+  "name": "@Block/MetricCard",
+  "description": "Dashboard metric card with title, icon, and multiple MetricRow entries. Typically used in grid layouts.",
+  "category": "data-display",
+  "layout": "vertical",
+  "sizing": {
+    "width": "fill",
+    "height": "hug"
+  },
+  "tailwindClasses": [
+    "flex",
+    "flex-col",
+    "flex-1",
+    "min-w-0",
+    "p-[var(--space-inset-l)]",
+    "gap-[var(--space-content-m)]",
+    "bg-[var(--color-surface-1)]"
+  ],
+  "tokens": {
+    "background": "color_surface_1",
+    "elevation": "effect_elevation_1",
+    "borderRadius": "radius_medium"
+  },
+  "slots": [
+    {
+      "name": "header",
+      "description": "Card header with icon and title",
+      "layout": "horizontal",
+      "align": "center",
+      "justify": "between",
+      "gap": "space_content_m",
+      "children": [
+        {
+          "name": "icon",
+          "type": "icon",
+          "optional": true
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "textStyle": "Text/Body/LG",
+          "textColor": "color_text_primary",
+          "fontWeight": "semibold"
+        },
+        {
+          "name": "action",
+          "type": "icon",
+          "optional": true,
+          "align": "end"
+        }
+      ]
+    },
+    {
+      "name": "metrics",
+      "description": "List of MetricRow entries",
+      "layout": "vertical",
+      "repeat": true,
+      "component": "@Block/MetricRow"
+    },
+    {
+      "name": "footer",
+      "description": "Optional footer content (agents list, links)",
+      "optional": true
+    }
+  ],
+  "dependencies": [],
+  "padding": "space_inset_l",
+  "gap": "space_content_m"
+}

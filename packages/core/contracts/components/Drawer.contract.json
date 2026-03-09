@@ -82,5 +82,84 @@
   ],
   "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand",
   "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger",
+  "element": "div",
+  "rootLayout": "vertical",
+  "rootSizing": {
+    "main": "fixed",
+    "cross": "fill"
+  },
+  "rootAlign": {
+    "main": "start",
+    "cross": "start"
+  },
+  "slots": [
+    {
+      "name": "overlay",
+      "figmaName": "Overlay",
+      "type": "overlay",
+      "optional": false,
+      "sizing": "fixed"
+    },
+    {
+      "name": "panel",
+      "figmaName": "Panel",
+      "type": "frame",
+      "optional": false,
+      "sizing": "fill",
+      "layout": "vertical",
+      "children": [
+        {
+          "name": "header",
+          "figmaName": "Header",
+          "type": "frame",
+          "sizing": "fill",
+          "layout": "horizontal",
+          "children": [
+            {
+              "name": "title",
+              "figmaName": "Title",
+              "type": "text",
+              "default": "Drawer Title",
+              "sizing": "fill"
+            },
+            {
+              "name": "closeButton",
+              "figmaName": "Close",
+              "type": "icon",
+              "optional": true,
+              "sizing": "fixed"
+            }
+          ]
+        },
+        {
+          "name": "content",
+          "figmaName": "Content",
+          "type": "frame",
+          "optional": false,
+          "sizing": "fill",
+          "layout": "vertical"
+        }
+      ]
+    }
+  ],
+  "textProps": [
+    {
+      "name": "title",
+      "figmaName": "Title",
+      "default": "Drawer Title"
+    }
+  ],
+  "styleKeys": [
+    "width",
+    "background",
+    "borderColor",
+    "headerTextStyle",
+    "headerTextColor",
+    "overlayColor",
+    "closeIcon",
+    "padding",
+    "origin"
+  ],
+  "heightConstraint": "hug",
   "generatorStrategy": "template"
 }

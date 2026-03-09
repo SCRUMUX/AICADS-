@@ -1,29 +1,95 @@
 {
-    "name":  "@UI/Toast",
-    "description":  "Toast: auto-dismiss notification with appearance variants (info, success, warning, danger). Includes Toaster container and global toast() function.",
-    "variantProps":  [
-
-                     ],
-    "variantAxes":  {
-
-                    },
-    "variantRules":  [
-
-                     ],
-    "element":  "div",
-    "rootLayout":  "horizontal",
-    "rootSizing":  {
-                       "main":  "hug",
-                       "cross":  "hug"
-                   },
-    "rootAlign":  {
-                      "main":  "start",
-                      "cross":  "start"
-                  },
-    "slots":  [
-
-              ],
-    "heightConstraint":  "hug",
-    "generatorStrategy":  "template",
-    "template":  "Toast"
+  "name": "@UI/Toast",
+  "description": "Toast: auto-dismiss notification with appearance variants (info, success, warning, danger). Includes Toaster container and global toast() function.",
+  "variantProps": [],
+  "variantAxes": {},
+  "variantRules": [],
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger",
+  "element": "div",
+  "rootLayout": "horizontal",
+  "rootSizing": {
+    "main": "hug",
+    "cross": "hug"
+  },
+  "rootAlign": {
+    "main": "start",
+    "cross": "center"
+  },
+  "slots": [
+    {
+      "name": "icon",
+      "figmaName": "Icon",
+      "type": "icon",
+      "optional": true,
+      "defaultVisible": true,
+      "sizing": "fixed"
+    },
+    {
+      "name": "message",
+      "figmaName": "Message",
+      "type": "text",
+      "optional": false,
+      "default": "Notification message",
+      "sizing": "fill"
+    },
+    {
+      "name": "action",
+      "figmaName": "Action",
+      "type": "component",
+      "component": "@UI/Button",
+      "optional": true,
+      "defaultVisible": false,
+      "sizing": "hug"
+    },
+    {
+      "name": "closeButton",
+      "figmaName": "Close",
+      "type": "icon",
+      "optional": true,
+      "defaultVisible": true,
+      "sizing": "fixed"
+    }
+  ],
+  "booleanProps": [
+    {
+      "name": "showIcon",
+      "figmaName": "Icon",
+      "controls": "icon",
+      "default": true
+    },
+    {
+      "name": "showAction",
+      "figmaName": "Action",
+      "controls": "action",
+      "default": false
+    },
+    {
+      "name": "showClose",
+      "figmaName": "Close",
+      "controls": "closeButton",
+      "default": true
+    }
+  ],
+  "textProps": [
+    {
+      "name": "message",
+      "figmaName": "Message",
+      "default": "Notification message"
+    }
+  ],
+  "styleKeys": [
+    "background",
+    "textColor",
+    "iconColor",
+    "borderRadius",
+    "paddingX",
+    "paddingY",
+    "gap",
+    "borderColor",
+    "elevationToken"
+  ],
+  "heightConstraint": "hug",
+  "generatorStrategy": "template",
+  "template": "Toast"
 }

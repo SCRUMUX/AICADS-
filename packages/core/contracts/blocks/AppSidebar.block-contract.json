@@ -1,0 +1,81 @@
+{
+  "name": "@Block/AppSidebar",
+  "description": "Application sidebar with navigation items, optional header/footer sections. Dark theme by default.",
+  "category": "navigation",
+  "layout": "vertical",
+  "sizing": {
+    "width": 260,
+    "height": "fill"
+  },
+  "tailwindClasses": [
+    "flex",
+    "flex-col",
+    "w-[260px]",
+    "min-w-[260px]",
+    "shrink-0",
+    "h-full",
+    "px-[var(--space-12)]",
+    "py-[var(--space-16)]",
+    "gap-[var(--space-8)]",
+    "bg-[var(--color-bg-base)]"
+  ],
+  "tokens": {
+    "background": "color_bg_base",
+    "elevation": "effect_elevation_1"
+  },
+  "slots": [
+    {
+      "name": "navItems",
+      "description": "Primary navigation tabs",
+      "layout": "vertical",
+      "gap": "space_8",
+      "grow": true,
+      "repeat": true,
+      "component": "@UI/Tab",
+      "defaultProps": {
+        "appearance": "ghost",
+        "size": "md"
+      },
+      "itemClassName": "min-h-[var(--space-32)] px-[var(--space-16)] py-[var(--space-4)] gap-[var(--space-4)] justify-start"
+    },
+    {
+      "name": "infoCard",
+      "description": "Optional info/help card",
+      "optional": true,
+      "component": "@UI/Card",
+      "defaultProps": {
+        "variant": "base",
+        "size": "md"
+      }
+    },
+    {
+      "name": "footer",
+      "description": "Footer with settings/branding",
+      "layout": "vertical",
+      "gap": "space_8",
+      "optional": true
+    }
+  ],
+  "dependencies": [
+    "@UI/Card",
+    "@UI/Tab"
+  ],
+  "padding": {
+    "x": "space_12",
+    "y": "space_16"
+  },
+  "gap": "space_8",
+  "dataTheme": "dark",
+  "responsiveRules": [
+    {
+      "breakpoint": "mobile",
+      "hidden": true
+    },
+    {
+      "breakpoint": "tablet",
+      "width": "18%",
+      "minWidth": 200,
+      "maxWidth": 280
+    }
+  ]
+}

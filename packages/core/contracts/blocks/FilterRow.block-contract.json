@@ -1,0 +1,40 @@
+{
+  "name": "@Block/FilterRow",
+  "description": "Single filter row: label + input/dropdown control.",
+  "category": "forms",
+  "layout": "vertical",
+  "sizing": {
+    "width": "fill",
+    "height": "hug"
+  },
+  "tailwindClasses": [
+    "flex",
+    "flex-col",
+    "flex-1",
+    "min-w-0",
+    "gap-[var(--space-4)]"
+  ],
+  "tokens": {},
+  "slots": [
+    {
+      "name": "label",
+      "type": "text",
+      "textStyle": "Text/Caption/XS",
+      "textColor": "color_text_muted"
+    },
+    {
+      "name": "control",
+      "description": "Filter control — Input, Dropdown, Select, RangeSlider, etc.",
+      "type": "component",
+      "component": "@UI/Input",
+      "defaultProps": {
+        "size": "sm"
+      }
+    }
+  ],
+  "dependencies": [
+    "@UI/Input"
+  ],
+  "padding": "none",
+  "gap": "space_4"
+}

@@ -1036,7 +1036,8 @@ async function generateTokensPage(spec) {
 
     var page = figma.createPage();
     page.name = 'Tokens';
-    figma.currentPage = page;
+    await figma.loadAllPagesAsync();
+    await figma.setCurrentPageAsync(page);
 
     var rootFrame = figma.createFrame();
     rootFrame.name = 'Tokens root';
@@ -1094,9 +1095,9 @@ async function generateTokensPage(spec) {
     for (var tst = 0; tst < localTextStylesTokens.length; tst++) {
       textStyleByNameTokens[localTextStylesTokens[tst].name] = localTextStylesTokens[tst];
     }
-    function applyStyleToNode(node, styleName) {
+    async function applyStyleToNode(node, styleName) {
       var s = textStyleByNameTokens[styleName];
-      if (s) node.textStyleId = s.id;
+      if (s) await node.setTextStyleIdAsync(s.id);
     }
 
     for (var groupName in colors) {
@@ -1114,7 +1115,7 @@ async function generateTokensPage(spec) {
 
       var title = figma.createText();
       title.characters = groupName;
-      applyStyleToNode(title, 'Text/Body/Base');
+      await applyStyleToNode(title, 'Text/Body/Base');
       applyColorVariable(title, 'fills', 'color_text_primary', '#111827', colorVarByName);
       groupFrame.appendChild(title);
 
@@ -1230,7 +1231,7 @@ async function generateTokensPage(spec) {
           labelText += ' (dark: ' + hexDark + ')';
         }
         label.characters = labelText;
-        applyStyleToNode(label, 'Text/Body/SM');
+        await applyStyleToNode(label, 'Text/Body/SM');
         applyColorVariable(label, 'fills', 'color_text_primary', '#111827', colorVarByName);
 
         row.appendChild(swatchesFrame);
@@ -1274,9 +1275,9 @@ async function generateTokensPage(spec) {
 
       var boundStyle = textStyleByName[styleName];
       if (boundStyle) {
-        sample.textStyleId = boundStyle.id;
+        await sample.setTextStyleIdAsync(boundStyle.id);
       } else {
-        applyStyleToNode(sample, 'Text/Body/Base');
+        await applyStyleToNode(sample, 'Text/Body/Base');
         postStatus('Текстовый стиль «' + styleName + '» не найден. Показ через Text/Body/Base.');
       }
       applyColorVariable(sample, 'fills', 'color_text_primary', '#111827', colorVarByName);
@@ -1295,7 +1296,7 @@ async function generateTokensPage(spec) {
     var spaceTitle = figma.createText();
     await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
     spaceTitle.characters = 'Spacing (primitives + semantic)';
-    applyStyleToNode(spaceTitle, 'Text/Body/Base');
+    await applyStyleToNode(spaceTitle, 'Text/Body/Base');
     applyColorVariable(spaceTitle, 'fills', 'color_text_primary', '#111827', colorVarByName);
     spaceSection.appendChild(spaceTitle);
 
@@ -1362,7 +1363,7 @@ async function generateTokensPage(spec) {
 
       var labelSp = figma.createText();
       labelSp.characters = spName + ' = ' + spVal + 'px';
-      applyStyleToNode(labelSp, 'Text/Body/SM');
+      await applyStyleToNode(labelSp, 'Text/Body/SM');
       applyColorVariable(labelSp, 'fills', 'color_text_primary', '#111827', colorVarByName);
 
       rowSp.appendChild(bar);
@@ -1402,7 +1403,7 @@ async function generateTokensPage(spec) {
         ' → ' +
         aliasName +
         (aliasVal != null ? ' = ' + aliasVal + 'px' : '');
-      applyStyleToNode(labelSem, 'Text/Body/SM');
+      await applyStyleToNode(labelSem, 'Text/Body/SM');
       applyColorVariable(labelSem, 'fills', 'color_text_primary', '#111827', colorVarByName);
 
       rowSem.appendChild(barSem);
@@ -1420,7 +1421,7 @@ async function generateTokensPage(spec) {
 
     var radiusTitle = figma.createText();
     radiusTitle.characters = 'Radius';
-    applyStyleToNode(radiusTitle, 'Text/Body/Base');
+    await applyStyleToNode(radiusTitle, 'Text/Body/Base');
     applyColorVariable(radiusTitle, 'fills', 'color_text_primary', '#111827', colorVarByName);
     radiusSection.appendChild(radiusTitle);
 
@@ -1499,7 +1500,7 @@ async function generateTokensPage(spec) {
 
       var labelR = figma.createText();
       labelR.characters = rName + ' (' + rVal + 'px)';
-      applyStyleToNode(labelR, 'Text/Caption/XS');
+      await applyStyleToNode(labelR, 'Text/Caption/XS');
       applyColorVariable(labelR, 'fills', 'color_text_primary', '#111827', colorVarByName);
 
       rFrame.appendChild(rectR);
@@ -1517,7 +1518,7 @@ async function generateTokensPage(spec) {
 
     var effectTitle = figma.createText();
     effectTitle.characters = 'Effects (Elevation, Focus, etc.)';
-    applyStyleToNode(effectTitle, 'Text/Body/Base');
+    await applyStyleToNode(effectTitle, 'Text/Body/Base');
     applyColorVariable(effectTitle, 'fills', 'color_text_primary', '#111827', colorVarByName);
     effectSection.appendChild(effectTitle);
 
@@ -1555,7 +1556,7 @@ async function generateTokensPage(spec) {
       // Если есть Effect Style для этого токена – используем его
       var styleForToken = effectStyleByName['Effect/' + effName];
       if (styleForToken) {
-        card.effectStyleId = styleForToken.id;
+        await card.setEffectStyleIdAsync(styleForToken.id);
       } else {
         // Fallback: прямое применение параметров эффекта
         card.effects = layersArray.map(function (l) {
@@ -1581,7 +1582,7 @@ async function generateTokensPage(spec) {
 
       var labelEff = figma.createText();
       labelEff.characters = effName;
-      applyStyleToNode(labelEff, 'Text/Body/SM');
+      await applyStyleToNode(labelEff, 'Text/Body/SM');
       applyColorVariable(labelEff, 'fills', 'color_text_primary', '#111827', colorVarByName);
 
       card.appendChild(labelEff);
@@ -1602,11 +1603,11 @@ async function generateTokensPage(spec) {
       var layoutTitle = figma.createText();
       await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
       layoutTitle.characters = 'Layout grids & breakpoints';
-      applyStyleToNode(layoutTitle, 'Text/Body/Base');
+      await applyStyleToNode(layoutTitle, 'Text/Body/Base');
       applyColorVariable(layoutTitle, 'fills', 'color_text_primary', '#111827', colorVarByName);
       layoutSection.appendChild(layoutTitle);
 
-      function createGridPreviewSimple(name, def) {
+      async function createGridPreviewSimple(name, def) {
         var frame = figma.createFrame();
         frame.name = 'Layout/' + name;
         frame.layoutMode = 'VERTICAL';
@@ -1632,7 +1633,7 @@ async function generateTokensPage(spec) {
           ' cols, gutter ' +
           (def.gutterSize || 0) +
           'px)';
-        applyStyleToNode(label, 'Text/Body/SM');
+        await applyStyleToNode(label, 'Text/Body/SM');
         applyColorVariable(label, 'fills', 'color_text_muted', '#6B7280', colorVarByName);
         frame.appendChild(label);
 
@@ -1667,13 +1668,13 @@ async function generateTokensPage(spec) {
       }
 
       if (layout.desktop && typeof layout.desktop === 'object') {
-        createGridPreviewSimple('Desktop', layout.desktop);
+        await createGridPreviewSimple('Desktop', layout.desktop);
       }
       if (layout.tablet && typeof layout.tablet === 'object') {
-        createGridPreviewSimple('Tablet', layout.tablet);
+        await createGridPreviewSimple('Tablet', layout.tablet);
       }
       if (layout.mobile && typeof layout.mobile === 'object') {
-        createGridPreviewSimple('Mobile', layout.mobile);
+        await createGridPreviewSimple('Mobile', layout.mobile);
       }
 
       if (layout.baseline && typeof layout.baseline === 'object') {
@@ -1690,7 +1691,7 @@ async function generateTokensPage(spec) {
         labelB.characters =
           'Baseline — ' + (base.description || 'Baseline grid') +
           ' (step ' + (base.unit || 8) + 'px)';
-        applyStyleToNode(labelB, 'Text/Body/SM');
+        await applyStyleToNode(labelB, 'Text/Body/SM');
         applyColorVariable(labelB, 'fills', 'color_text_muted', '#6B7280', colorVarByName);
         frameB.appendChild(labelB);
 
@@ -1729,7 +1730,7 @@ async function generateTokensPage(spec) {
       var alTitle = figma.createText();
       await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
       alTitle.characters = 'AutoLayout patterns (using space & radius tokens)';
-      applyStyleToNode(alTitle, 'Text/Body/Base');
+      await applyStyleToNode(alTitle, 'Text/Body/Base');
       alTitle.fills = [{ type: 'SOLID', color: hexToRgb01('#111827') }];
       autoLayoutSection.appendChild(alTitle);
 
@@ -2141,8 +2142,8 @@ async function buildButtonLayout(spec, componentSpec, variant, style, context) {
   var rightIconRole = 'brand';
   var iconColorToken = style.iconColor;
   var iconPx = iconSizeForButtonSize(buttonSize);
-  var iconMasterLeft = getIconMasterForRole(allIconComponents, leftIconRole, spec);
-  var iconMasterRight = getIconMasterForRole(allIconComponents, rightIconRole, spec);
+  var iconMasterLeft = await getIconMasterForRole(allIconComponents, leftIconRole, spec);
+  var iconMasterRight = await getIconMasterForRole(allIconComponents, rightIconRole, spec);
   if (!iconMasterLeft) notifyIconMissing('Button', 'левого');
   if (!iconMasterRight) notifyIconMissing('Button', 'правого');
 
@@ -2176,7 +2177,7 @@ async function buildButtonLayout(spec, componentSpec, variant, style, context) {
   var textStyleName = style.textStyle || 'Text/Body/Base';
   var boundTextStyle = textStyleByName[textStyleName];
   if (boundTextStyle) {
-    textNode.textStyleId = boundTextStyle.id;
+    await textNode.setTextStyleIdAsync(boundTextStyle.id);
   } else {
     postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   }
@@ -2187,7 +2188,7 @@ async function buildButtonLayout(spec, componentSpec, variant, style, context) {
   textNode.textAlignVertical = 'CENTER';
 
   var iconColorTokenForApply = style.iconColor;
-  function applyIconColorToInstance(instance) {
+  async function applyIconColorToInstance(instance) {
     if (!iconColorTokenForApply) return;
     var iconHex = resolveColorTokenToHex(spec, iconColorTokenForApply, themeMode) || '#6B7280';
     var paint = { type: 'SOLID', color: hexToRgb01(iconHex), visible: true, opacity: 1 };
@@ -2208,8 +2209,8 @@ async function buildButtonLayout(spec, componentSpec, variant, style, context) {
       if (!glyphNodes || glyphNodes.length === 0) return;
       for (var gi = 0; gi < glyphNodes.length; gi++) {
         var node = glyphNodes[gi];
-        try { if ('fillStyleId' in node) node.fillStyleId = ''; } catch (eFS) {}
-        try { if ('strokeStyleId' in node) node.strokeStyleId = ''; } catch (eSS) {}
+        try { if ('fillStyleId' in node) await node.setFillStyleIdAsync(''); } catch (eFS) {}
+        try { if ('strokeStyleId' in node) await node.setStrokeStyleIdAsync(''); } catch (eSS) {}
         try {
           if ('fills' in node && Array.isArray(node.fills)) {
             if (node.fills.length > 0) {
@@ -2286,8 +2287,8 @@ async function buildButtonLayout(spec, componentSpec, variant, style, context) {
   if (leftInstance && leftIconSwapKey) leftInstance.componentPropertyReferences = { mainComponent: leftIconSwapKey };
   if (rightInstance && rightIconSwapKey) rightInstance.componentPropertyReferences = { mainComponent: rightIconSwapKey };
 
-  if (leftInstance) applyIconColorToInstance(leftInstance);
-  if (rightInstance) applyIconColorToInstance(rightInstance);
+  if (leftInstance) await applyIconColorToInstance(leftInstance);
+  if (rightInstance) await applyIconColorToInstance(rightInstance);
 
   page.appendChild(comp);
   return comp;
@@ -2376,7 +2377,7 @@ async function buildBadgeLayout(spec, componentSpec, variant, style, context) {
   var textStyleName = style.textStyle || 'Text/Caption/Base';
   var boundTextStyle = textStyleByName[textStyleName];
   if (boundTextStyle) {
-    textNode.textStyleId = boundTextStyle.id;
+    await textNode.setTextStyleIdAsync(boundTextStyle.id);
   } else {
     postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   }
@@ -2428,14 +2429,14 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
   comp.strokeWeight = 0;
 
   // Helper: apply text style and color
-  function createLabelNode(useFilledColor) {
+  async function createLabelNode(useFilledColor) {
     var node = figma.createText();
     node.name = 'Label';
     node.characters = 'Tab';
     var textStyleName = style.textStyle || 'Text/Caption/Base';
     var boundTextStyle = textStyleByName[textStyleName];
     if (boundTextStyle) {
-      node.textStyleId = boundTextStyle.id;
+      await node.setTextStyleIdAsync(boundTextStyle.id);
     } else {
       postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
     }
@@ -2524,11 +2525,11 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
     }
   }
   var iconPx = iconSizeForButtonSize ? iconSizeForButtonSize(tabSize) : 20;
-  var iconMasterForVariant = getIconMasterForRole ? getIconMasterForRole(allIconComponents, leftIconRole, spec) : null;
+  var iconMasterForVariant = getIconMasterForRole ? await getIconMasterForRole(allIconComponents, leftIconRole, spec) : null;
   if (!iconMasterForVariant) notifyIconMissing('Tab', 'левого и правого');
 
   var iconColorTokenForApply = iconColorToken;
-  function applyIconColorToInstance(instance) {
+  async function applyIconColorToInstance(instance) {
     if (!iconColorTokenForApply) return;
     var iconHex = resolveColorTokenToHex(spec, iconColorTokenForApply, themeMode) || '#6B7280';
     var paint = { type: 'SOLID', color: hexToRgb01(iconHex), visible: true, opacity: 1 };
@@ -2549,8 +2550,8 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
       if (!glyphNodes || glyphNodes.length === 0) return;
       for (var gi = 0; gi < glyphNodes.length; gi++) {
         var node = glyphNodes[gi];
-        try { if ('fillStyleId' in node) node.fillStyleId = ''; } catch (eFS) {}
-        try { if ('strokeStyleId' in node) node.strokeStyleId = ''; } catch (eSS) {}
+        try { if ('fillStyleId' in node) await node.setFillStyleIdAsync(''); } catch (eFS) {}
+        try { if ('strokeStyleId' in node) await node.setStrokeStyleIdAsync(''); } catch (eSS) {}
         try {
           if ('fills' in node && Array.isArray(node.fills)) {
             if (node.fills.length > 0) {
@@ -2617,6 +2618,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
   if (badgeContainer) {
     badgeContainer.name = 'Badge';
   }
+  var badgeContainerMainComp = badgeContainer ? await getMainComponentSafe(badgeContainer) : null;
 
   // --- kind-specific visuals ---
   if (kind === 'solid') {
@@ -2633,7 +2635,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
       if (radVarSolid && comp.setBoundVariable) comp.setBoundVariable('cornerRadius', radVarSolid);
     }
     applyBackground(comp);
-    var labelSolid = createLabelNode(true);
+    var labelSolid = await createLabelNode(true);
     comp.appendChild(leftIconSlot.wrapper);
     comp.appendChild(labelSolid);
     if (badgeContainer) comp.appendChild(badgeContainer);
@@ -2645,7 +2647,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
     var rightIconOnKeySolid = comp.addComponentProperty('Right icon', 'BOOLEAN', true);
     var leftIconSwapKeySolid = iconMasterForVariant ? comp.addComponentProperty('Left Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
     var rightIconSwapKeySolid = iconMasterForVariant ? comp.addComponentProperty('Right Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
-    var badgeSwapKeySolid = (badgeContainer && badgeContainer.mainComponent) ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainer.mainComponent.id) : null;
+    var badgeSwapKeySolid = badgeContainerMainComp ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainerMainComp.id) : null;
 
     labelSolid.componentPropertyReferences = { characters: labelKeySolid };
     leftIconSlot.wrapper.componentPropertyReferences = { visible: leftIconOnKeySolid };
@@ -2659,8 +2661,8 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
       badgeContainer.componentPropertyReferences = refs;
     }
 
-    if (leftIconSlot.instance) applyIconColorToInstance(leftIconSlot.instance);
-    if (rightIconSlot.instance) applyIconColorToInstance(rightIconSlot.instance);
+    if (leftIconSlot.instance) await applyIconColorToInstance(leftIconSlot.instance);
+    if (rightIconSlot.instance) await applyIconColorToInstance(rightIconSlot.instance);
     page.appendChild(comp);
     return comp;
   }
@@ -2679,7 +2681,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
       var radVarTicket = radiusVarByName[ticketRadiusToken];
       if (radVarTicket && comp.setBoundVariable) comp.setBoundVariable('cornerRadius', radVarTicket);
     }
-    var labelTicket = createLabelNode(false);
+    var labelTicket = await createLabelNode(false);
     comp.appendChild(leftIconSlot.wrapper);
     comp.appendChild(labelTicket);
     if (badgeContainer) comp.appendChild(badgeContainer);
@@ -2694,7 +2696,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
     var rightIconOnKeyTicket = comp.addComponentProperty('Right icon', 'BOOLEAN', true);
     var leftIconSwapKeyTicket = iconMasterForVariant ? comp.addComponentProperty('Left Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
     var rightIconSwapKeyTicket = iconMasterForVariant ? comp.addComponentProperty('Right Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
-    var badgeSwapKeyTicket = (badgeContainer && badgeContainer.mainComponent) ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainer.mainComponent.id) : null;
+    var badgeSwapKeyTicket = badgeContainerMainComp ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainerMainComp.id) : null;
 
     labelTicket.componentPropertyReferences = { characters: labelKeyTicket };
     leftIconSlot.wrapper.componentPropertyReferences = { visible: leftIconOnKeyTicket };
@@ -2708,8 +2710,8 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
       badgeContainer.componentPropertyReferences = refsT;
     }
 
-    if (leftIconSlot.instance) applyIconColorToInstance(leftIconSlot.instance);
-    if (rightIconSlot.instance) applyIconColorToInstance(rightIconSlot.instance);
+    if (leftIconSlot.instance) await applyIconColorToInstance(leftIconSlot.instance);
+    if (rightIconSlot.instance) await applyIconColorToInstance(rightIconSlot.instance);
     page.appendChild(comp);
     return comp;
   }
@@ -2723,7 +2725,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
     comp.counterAxisAlignItems = 'CENTER';
     comp.itemSpacing = 4;
     applyPadding(comp);
-    var labelUnderline = createLabelNode(false);
+    var labelUnderline = await createLabelNode(false);
     comp.appendChild(leftIconSlot.wrapper);
     comp.appendChild(labelUnderline);
     if (badgeContainer) comp.appendChild(badgeContainer);
@@ -2744,7 +2746,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
     var rightIconOnKeyUnderline = comp.addComponentProperty('Right icon', 'BOOLEAN', true);
     var leftIconSwapKeyUnderline = iconMasterForVariant ? comp.addComponentProperty('Left Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
     var rightIconSwapKeyUnderline = iconMasterForVariant ? comp.addComponentProperty('Right Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
-    var badgeSwapKeyUnderline = (badgeContainer && badgeContainer.mainComponent) ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainer.mainComponent.id) : null;
+    var badgeSwapKeyUnderline = badgeContainerMainComp ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainerMainComp.id) : null;
 
     labelUnderline.componentPropertyReferences = { characters: labelKeyUnderline };
     leftIconSlot.wrapper.componentPropertyReferences = { visible: leftIconOnKeyUnderline };
@@ -2758,8 +2760,8 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
       badgeContainer.componentPropertyReferences = refsU;
     }
 
-    if (leftIconSlot.instance) applyIconColorToInstance(leftIconSlot.instance);
-    if (rightIconSlot.instance) applyIconColorToInstance(rightIconSlot.instance);
+    if (leftIconSlot.instance) await applyIconColorToInstance(leftIconSlot.instance);
+    if (rightIconSlot.instance) await applyIconColorToInstance(rightIconSlot.instance);
     page.appendChild(comp);
     return comp;
   }
@@ -2773,7 +2775,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
     comp.counterAxisAlignItems = 'CENTER';
     comp.itemSpacing = 4;
     applyPadding(comp);
-    var labelOutline = createLabelNode(false);
+    var labelOutline = await createLabelNode(false);
     comp.appendChild(leftIconSlot.wrapper);
     comp.appendChild(labelOutline);
     if (badgeContainer) comp.appendChild(badgeContainer);
@@ -2787,7 +2789,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
     var rightIconOnKeyOutline = comp.addComponentProperty('Right icon', 'BOOLEAN', true);
     var leftIconSwapKeyOutline = iconMasterForVariant ? comp.addComponentProperty('Left Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
     var rightIconSwapKeyOutline = iconMasterForVariant ? comp.addComponentProperty('Right Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
-    var badgeSwapKeyOutline = (badgeContainer && badgeContainer.mainComponent) ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainer.mainComponent.id) : null;
+    var badgeSwapKeyOutline = badgeContainerMainComp ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainerMainComp.id) : null;
 
     labelOutline.componentPropertyReferences = { characters: labelKeyOutline };
     leftIconSlot.wrapper.componentPropertyReferences = { visible: leftIconOnKeyOutline };
@@ -2801,8 +2803,8 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
       badgeContainer.componentPropertyReferences = refsO;
     }
 
-    if (leftIconSlot.instance) applyIconColorToInstance(leftIconSlot.instance);
-    if (rightIconSlot.instance) applyIconColorToInstance(rightIconSlot.instance);
+    if (leftIconSlot.instance) await applyIconColorToInstance(leftIconSlot.instance);
+    if (rightIconSlot.instance) await applyIconColorToInstance(rightIconSlot.instance);
     page.appendChild(comp);
     return comp;
   }
@@ -2815,7 +2817,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
   comp.counterAxisAlignItems = 'CENTER';
   comp.itemSpacing = 4;
   applyPadding(comp);
-  var labelBase = createLabelNode(false);
+  var labelBase = await createLabelNode(false);
   comp.appendChild(leftIconSlot.wrapper);
   comp.appendChild(labelBase);
   if (badgeContainer) comp.appendChild(badgeContainer);
@@ -2827,7 +2829,7 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
   var rightIconOnKeyBase = comp.addComponentProperty('Right icon', 'BOOLEAN', true);
   var leftIconSwapKeyBase = iconMasterForVariant ? comp.addComponentProperty('Left Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
   var rightIconSwapKeyBase = iconMasterForVariant ? comp.addComponentProperty('Right Icon', 'INSTANCE_SWAP', iconMasterForVariant.id) : null;
-  var badgeSwapKeyBase = (badgeContainer && badgeContainer.mainComponent) ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainer.mainComponent.id) : null;
+  var badgeSwapKeyBase = badgeContainerMainComp ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainerMainComp.id) : null;
 
   labelBase.componentPropertyReferences = { characters: labelKeyBase };
   leftIconSlot.wrapper.componentPropertyReferences = { visible: leftIconOnKeyBase };
@@ -2841,8 +2843,8 @@ async function buildTabLayout(spec, componentSpec, variant, style, context) {
     badgeContainer.componentPropertyReferences = refsB;
   }
 
-  if (leftIconSlot.instance) applyIconColorToInstance(leftIconSlot.instance);
-  if (rightIconSlot.instance) applyIconColorToInstance(rightIconSlot.instance);
+  if (leftIconSlot.instance) await applyIconColorToInstance(leftIconSlot.instance);
+  if (rightIconSlot.instance) await applyIconColorToInstance(rightIconSlot.instance);
   page.appendChild(comp);
   return comp;
 }
@@ -2895,14 +2897,22 @@ function getIconRoles(spec) {
   return merged;
 }
 
+async function getMainComponentSafe(instance) {
+  if (!instance) return null;
+  if (typeof instance.getMainComponentAsync === 'function') {
+    return await instance.getMainComponentAsync();
+  }
+  return instance.mainComponent || null;
+}
+
 /** Мастер-иконка по роли: по nodeId — точный узел; иначе по имени из spec.iconRoles[roleName].
  * iconRoles.role может быть { "nodeId": "61:27924" } для ссылки на конкретную иконку по Figma node-id. */
-function getIconMasterForRole(allIconComponents, roleName, spec) {
+async function getIconMasterForRole(allIconComponents, roleName, spec) {
   var roles = getIconRoles(spec);
   var roleVal = roles[roleName];
   if (roleVal && typeof roleVal === 'object' && roleVal.nodeId) {
     var nodeId = String(roleVal.nodeId).replace(/-/g, ':');
-    var node = figma.getNodeById(nodeId);
+    var node = await figma.getNodeByIdAsync(nodeId);
     if (node && node.type === 'COMPONENT') return node;
     postStatus('Checkbox: иконка по nodeId ' + nodeId + ' не найдена или не COMPONENT.');
     return null;
@@ -3023,8 +3033,8 @@ async function buildTagLayout(spec, componentSpec, variant, style, context) {
   var leftIconRole = 'brand';
   var rightIconRole = 'close';
   var iconPx = (typeof iconSizeForButtonSize === 'function') ? iconSizeForButtonSize(tagSize) : (tagSize === 'md' ? 20 : 16);
-  var iconMasterLeft = getIconMasterForRole(allIconComponents, leftIconRole, spec);
-  var iconMasterRight = getIconMasterForRole(allIconComponents, rightIconRole, spec);
+  var iconMasterLeft = await getIconMasterForRole(allIconComponents, leftIconRole, spec);
+  var iconMasterRight = await getIconMasterForRole(allIconComponents, rightIconRole, spec);
   if (!iconMasterLeft) notifyIconMissing('Тег', 'левого');
   if (!iconMasterRight) notifyIconMissing('Тег', 'правого');
 
@@ -3057,7 +3067,7 @@ async function buildTagLayout(spec, componentSpec, variant, style, context) {
   var textStyleName = style.textStyle || 'Text/Caption/Base';
   var boundTextStyle = textStyleByName[textStyleName];
   if (boundTextStyle) {
-    textNode.textStyleId = boundTextStyle.id;
+    await textNode.setTextStyleIdAsync(boundTextStyle.id);
   } else {
     postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   }
@@ -3067,7 +3077,7 @@ async function buildTagLayout(spec, componentSpec, variant, style, context) {
   textNode.textAlignHorizontal = 'CENTER';
   textNode.textAlignVertical = 'CENTER';
 
-  function applyIconColorToInstanceTag(instance, iconColorTokenForApply) {
+  async function applyIconColorToInstanceTag(instance, iconColorTokenForApply) {
     if (!iconColorTokenForApply || !instance) return;
     var iconHex = resolveColorTokenToHex(spec, iconColorTokenForApply, themeMode) || '#6B7280';
     var paint = { type: 'SOLID', color: hexToRgb01(iconHex), visible: true, opacity: 1 };
@@ -3088,8 +3098,8 @@ async function buildTagLayout(spec, componentSpec, variant, style, context) {
       if (!glyphNodes || glyphNodes.length === 0) return;
       for (var gi = 0; gi < glyphNodes.length; gi++) {
         var node = glyphNodes[gi];
-        try { if ('fillStyleId' in node) node.fillStyleId = ''; } catch (eFS) {}
-        try { if ('strokeStyleId' in node) node.strokeStyleId = ''; } catch (eSS) {}
+        try { if ('fillStyleId' in node) await node.setFillStyleIdAsync(''); } catch (eFS) {}
+        try { if ('strokeStyleId' in node) await node.setStrokeStyleIdAsync(''); } catch (eSS) {}
         try {
           if ('fills' in node && Array.isArray(node.fills)) {
             if (node.fills.length > 0) {
@@ -3165,8 +3175,8 @@ async function buildTagLayout(spec, componentSpec, variant, style, context) {
   if (leftInstance && leftIconSwapKey) leftInstance.componentPropertyReferences = { mainComponent: leftIconSwapKey };
   if (rightInstance && rightIconSwapKey) rightInstance.componentPropertyReferences = { mainComponent: rightIconSwapKey };
 
-  if (leftInstance) applyIconColorToInstanceTag(leftInstance, style.iconColor);
-  if (rightInstance) applyIconColorToInstanceTag(rightInstance, style.iconColor);
+  if (leftInstance) await applyIconColorToInstanceTag(leftInstance, style.iconColor);
+  if (rightInstance) await applyIconColorToInstanceTag(rightInstance, style.iconColor);
 
   page.appendChild(comp);
   return comp;
@@ -3275,7 +3285,7 @@ async function buildChipLayout(spec, componentSpec, variant, style, context) {
   }
 
   // Вспомогательная функция создания слота иконки
-  function makeIconSlot(slotName, iconRole, defaultVisible) {
+  async function makeIconSlot(slotName, iconRole, defaultVisible) {
     var wrapper = figma.createFrame();
     wrapper.name = slotName;
     wrapper.layoutMode = 'HORIZONTAL';
@@ -3287,7 +3297,7 @@ async function buildChipLayout(spec, componentSpec, variant, style, context) {
     wrapper.visible = defaultVisible !== false;
     wrapper.fills = [];
     wrapper.strokes = [];
-    var master = (typeof getIconMasterForRole === 'function') ? getIconMasterForRole(allIconComponents, iconRole, spec) : null;
+    var master = (typeof getIconMasterForRole === 'function') ? await getIconMasterForRole(allIconComponents, iconRole, spec) : null;
     var inst = master ? master.createInstance() : null;
     if (inst) {
       inst.name = slotName + ' Icon';
@@ -3299,7 +3309,7 @@ async function buildChipLayout(spec, componentSpec, variant, style, context) {
   }
 
   // Left icon (опциональная, скрыта по умолчанию)
-  var leftSlot = makeIconSlot('Left icon', 'brand', false);
+  var leftSlot = await makeIconSlot('Left icon', 'brand', false);
   comp.appendChild(leftSlot.wrapper);
 
   // Label
@@ -3308,7 +3318,7 @@ async function buildChipLayout(spec, componentSpec, variant, style, context) {
   textNode.characters = 'Chip';
   var textStyleName = style.textStyle || 'Text/Caption/Base';
   var boundTextStyle = textStyleByName && textStyleByName[textStyleName];
-  if (boundTextStyle) textNode.textStyleId = boundTextStyle.id;
+  if (boundTextStyle) await textNode.setTextStyleIdAsync(boundTextStyle.id);
   var textColorToken = style.textColor || 'color_text_primary';
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
   applyColorVariable(textNode, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
@@ -3317,7 +3327,7 @@ async function buildChipLayout(spec, componentSpec, variant, style, context) {
   comp.appendChild(textNode);
 
   // Close icon (видима по умолчанию — ключевое отличие от Tag)
-  var closeSlot = makeIconSlot('Close icon', 'close', true);
+  var closeSlot = await makeIconSlot('Close icon', 'close', true);
   comp.appendChild(closeSlot.wrapper);
 
   // Component Properties
@@ -3441,7 +3451,7 @@ async function buildInputLayout(spec, componentSpec, variant, style, context) {
 
   var iconPx = (typeof iconSizeForButtonSize === 'function') ? iconSizeForButtonSize(inputSize) : (inputSize === 'md' ? 20 : inputSize === 'lg' ? 24 : 16);
   var iconRole = 'brand';
-  var iconMaster = getIconMasterForRole ? getIconMasterForRole(allIconComponents, iconRole, spec) : null;
+  var iconMaster = getIconMasterForRole ? await getIconMasterForRole(allIconComponents, iconRole, spec) : null;
   if (!iconMaster) postStatus('Input: иконки не найдены (ищем по роли brand). Создайте Icon с «aica» в имени.');
 
   function createIconSlot(name) {
@@ -3470,7 +3480,7 @@ async function buildInputLayout(spec, componentSpec, variant, style, context) {
     return { wrapper: wrapper, instance: inst };
   }
 
-  function applyIconColorToInstanceInput(instance, iconColorToken) {
+  async function applyIconColorToInstanceInput(instance, iconColorToken) {
     if (!iconColorToken || !instance) return;
     var iconHex = resolveColorTokenToHex(spec, iconColorToken, themeMode) || '#6B7280';
     var paint = { type: 'SOLID', color: hexToRgb01(iconHex), visible: true, opacity: 1 };
@@ -3489,7 +3499,7 @@ async function buildInputLayout(spec, componentSpec, variant, style, context) {
       if (glyphNodes && glyphNodes.length > 0) {
         for (var gii = 0; gii < glyphNodes.length; gii++) {
           var node = glyphNodes[gii];
-          try { if ('fillStyleId' in node) node.fillStyleId = ''; } catch (eFS) {}
+          try { if ('fillStyleId' in node) await node.setFillStyleIdAsync(''); } catch (eFS) {}
           try { if ('fills' in node && Array.isArray(node.fills)) {
             var gFills = node.fills.slice();
             gFills[0] = paint;
@@ -3526,7 +3536,7 @@ async function buildInputLayout(spec, componentSpec, variant, style, context) {
   var textStyleName = style.textStyle || 'Text/Body/Base';
   var boundTextStyle = textStyleByName[textStyleName];
   if (boundTextStyle) {
-    textNode.textStyleId = boundTextStyle.id;
+    await textNode.setTextStyleIdAsync(boundTextStyle.id);
   } else {
     postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   }
@@ -3605,7 +3615,8 @@ async function buildInputLayout(spec, componentSpec, variant, style, context) {
   var left2SwapKey = iconMaster && left2.instance ? comp.addComponentProperty('Left Icon 2', 'INSTANCE_SWAP', iconMaster.id) : null;
   var right1SwapKey = iconMaster && right1.instance ? comp.addComponentProperty('Right Icon 1', 'INSTANCE_SWAP', iconMaster.id) : null;
   var right2SwapKey = iconMaster && right2.instance ? comp.addComponentProperty('Right Icon 2', 'INSTANCE_SWAP', iconMaster.id) : null;
-  var badgeSwapKeyInput = (badgeContainerInput && badgeContainerInput.mainComponent) ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainerInput.mainComponent.id) : null;
+  var badgeContainerInputMain = badgeContainerInput ? await getMainComponentSafe(badgeContainerInput) : null;
+  var badgeSwapKeyInput = badgeContainerInputMain ? comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainerInputMain.id) : null;
   var badgeLabelKeyInput = badgeContainerInput ? comp.addComponentProperty('Badge Label', 'TEXT', '99') : null;
   if (left1.instance && left1SwapKey) left1.instance.componentPropertyReferences = { mainComponent: left1SwapKey };
   if (left2.instance && left2SwapKey) left2.instance.componentPropertyReferences = { mainComponent: left2SwapKey };
@@ -3616,10 +3627,10 @@ async function buildInputLayout(spec, componentSpec, variant, style, context) {
     badgeContainerInput.componentPropertyReferences = badgeRefsInput;
   }
 
-  if (left1.instance) applyIconColorToInstanceInput(left1.instance, style.iconColor);
-  if (left2.instance) applyIconColorToInstanceInput(left2.instance, style.iconColor);
-  if (right1.instance) applyIconColorToInstanceInput(right1.instance, style.iconColor);
-  if (right2.instance) applyIconColorToInstanceInput(right2.instance, style.iconColor);
+  if (left1.instance) await applyIconColorToInstanceInput(left1.instance, style.iconColor);
+  if (left2.instance) await applyIconColorToInstanceInput(left2.instance, style.iconColor);
+  if (right1.instance) await applyIconColorToInstanceInput(right1.instance, style.iconColor);
+  if (right2.instance) await applyIconColorToInstanceInput(right2.instance, style.iconColor);
 
   var op = null;
   if (style.opacityToken) op = resolveEffectToken(spec, style.opacityToken);
@@ -3744,9 +3755,9 @@ async function buildSelectDropdownTrigger(spec, componentSpec, variant, style, c
   comp.maxHeight = minH;
 
   var iconPx = (typeof context.iconSizeForButtonSize === 'function') ? context.iconSizeForButtonSize(triggerSize) : (triggerSize === 'md' ? 20 : triggerSize === 'lg' ? 24 : 16);
-  var iconMaster = getIconMasterForRole ? getIconMasterForRole(allIconComponents, iconRole, spec) : null;
+  var iconMaster = getIconMasterForRole ? await getIconMasterForRole(allIconComponents, iconRole, spec) : null;
 
-  function applyIconColorToInstance(instance, iconColorToken) {
+  async function applyIconColorToInstance(instance, iconColorToken) {
     if (!iconColorToken || !instance) return;
     var iconHex = resolveColorTokenToHex(spec, iconColorToken, themeMode) || '#6B7280';
     var paint = { type: 'SOLID', color: hexToRgb01(iconHex), visible: true, opacity: 1 };
@@ -3761,7 +3772,7 @@ async function buildSelectDropdownTrigger(spec, componentSpec, variant, style, c
       if (glyphNodes && glyphNodes.length > 0) {
         for (var gii = 0; gii < glyphNodes.length; gii++) {
           var node = glyphNodes[gii];
-          try { if ('fillStyleId' in node) node.fillStyleId = ''; } catch (eFS) {}
+          try { if ('fillStyleId' in node) await node.setFillStyleIdAsync(''); } catch (eFS) {}
           try { if ('fills' in node && Array.isArray(node.fills)) { var gFills = node.fills.slice(); gFills[0] = paint; node.fills = gFills; } } catch (eF) {}
         }
       }
@@ -3789,7 +3800,7 @@ async function buildSelectDropdownTrigger(spec, componentSpec, variant, style, c
   textNode.characters = defaultLabel;
   var textStyleName = style.textStyle || 'Text/Body/Base';
   var boundTextStyle = textStyleByName && textStyleByName[textStyleName];
-  if (boundTextStyle) textNode.textStyleId = boundTextStyle.id;
+  if (boundTextStyle) await textNode.setTextStyleIdAsync(boundTextStyle.id);
   var textColorToken = style.textColor || 'color_text_primary';
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
   applyColorVariable(textNode, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
@@ -3819,14 +3830,14 @@ async function buildSelectDropdownTrigger(spec, componentSpec, variant, style, c
       iconInst.rescale(scale);
     } catch (eR) {}
     iconWrapper.appendChild(iconInst);
-    applyIconColorToInstance(iconInst, style.iconColor);
+    await applyIconColorToInstance(iconInst, style.iconColor);
   }
 
   var iconLeftMaster = getIconMasterForRole
-    ? (getIconMasterForRole(allIconComponents, triggerIconRole, spec) || getIconMasterForRole(allIconComponents, 'user', spec))
+    ? (await getIconMasterForRole(allIconComponents, triggerIconRole, spec) || await getIconMasterForRole(allIconComponents, 'user', spec))
     : null;
 
-  function createIconLeftSlot() {
+  async function createIconLeftSlot() {
     var wrapper = figma.createFrame();
     wrapper.name = 'Icon (left)';
     wrapper.layoutMode = 'HORIZONTAL';
@@ -3843,12 +3854,12 @@ async function buildSelectDropdownTrigger(spec, componentSpec, variant, style, c
       iconLeftInst.name = 'Icon';
       try { var w = iconLeftInst.width || 24; var h = iconLeftInst.height || 24; var s = Math.min(iconPx / w, iconPx / h); iconLeftInst.rescale(s); } catch (eR) {}
       wrapper.appendChild(iconLeftInst);
-      applyIconColorToInstance(iconLeftInst, style.iconColor);
+      await applyIconColorToInstance(iconLeftInst, style.iconColor);
     }
     return wrapper;
   }
 
-  var iconLeftSlot = createIconLeftSlot();
+  var iconLeftSlot = await createIconLeftSlot();
   comp.appendChild(iconLeftSlot);
   comp.appendChild(labelFill);
 
@@ -3889,8 +3900,9 @@ async function buildSelectDropdownTrigger(spec, componentSpec, variant, style, c
       badgeContainer.name = 'Badge';
       try {
         var badgeLabel = style.triggerBadgeLabel || '3';
-        if (badgeContainer.mainComponent && badgeContainer.mainComponent.parent && badgeContainer.mainComponent.parent.type === 'COMPONENT_SET') {
-          var badgeSet = badgeContainer.mainComponent.parent;
+        var badgeContainerMain = await getMainComponentSafe(badgeContainer);
+        if (badgeContainerMain && badgeContainerMain.parent && badgeContainerMain.parent.type === 'COMPONENT_SET') {
+          var badgeSet = badgeContainerMain.parent;
           for (var pk in badgeSet.componentPropertyDefinitions || {}) {
             if (badgeSet.componentPropertyDefinitions[pk].name === 'Label') {
               badgeContainer.setProperties({ [pk]: badgeLabel });
@@ -3918,7 +3930,7 @@ async function buildSelectDropdownTrigger(spec, componentSpec, variant, style, c
   return comp;
 }
 
-function buildDropdownItem(spec, componentSpec, itemConfig, dropdownSize, style, context) {
+async function buildDropdownItem(spec, componentSpec, itemConfig, dropdownSize, style, context) {
   var colorVarByName = context.colorVarByName;
   var spaceVarByName = context.spaceVarByName;
   var textStyleByName = context.textStyleByName;
@@ -4012,9 +4024,9 @@ function buildDropdownItem(spec, componentSpec, itemConfig, dropdownSize, style,
     } catch (e) {}
   }
 
-  function addIconInstance(role, name, token) {
+  async function addIconInstance(role, name, token) {
     if (typeof getIconMasterForRole !== 'function') return;
-    var master = getIconMasterForRole(allIconComponents, role, spec);
+    var master = await getIconMasterForRole(allIconComponents, role, spec);
     if (master && typeof master.createInstance === 'function') {
       var inst = master.createInstance();
       inst.name = name;
@@ -4026,14 +4038,14 @@ function buildDropdownItem(spec, componentSpec, itemConfig, dropdownSize, style,
   }
 
   // Порядок: Icon (слева) | Label | Badge | Check или Chevron (справа)
-  if (itemConfig.hasIcon) addIconInstance(itemConfig.iconRole || 'user', 'Icon (left)', iconColorToken);
+  if (itemConfig.hasIcon) await addIconInstance(itemConfig.iconRole || 'user', 'Icon (left)', iconColorToken);
 
   var labelText = figma.createText();
   labelText.name = 'Label';
   labelText.characters = itemConfig.label || 'Option';
   var textStyleName = style.textStyle || 'Text/Body/Base';
   var boundStyle = textStyleByName && textStyleByName[textStyleName];
-  if (boundStyle) labelText.textStyleId = boundStyle.id;
+  if (boundStyle) await labelText.setTextStyleIdAsync(boundStyle.id);
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
   applyColorVariable(labelText, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, textColorToken);
   labelText.textAlignHorizontal = 'LEFT';
@@ -4055,8 +4067,9 @@ function buildDropdownItem(spec, componentSpec, itemConfig, dropdownSize, style,
         var badgeInst = badgeComp.createInstance();
         badgeInst.name = 'Badge';
         try {
-          var labelProp = badgeInst.mainComponent && badgeInst.mainComponent.parent && badgeInst.mainComponent.parent.type === 'COMPONENT_SET'
-            ? badgeInst.mainComponent.parent : badgeInst.mainComponent;
+          var badgeInstMain = await getMainComponentSafe(badgeInst);
+          var labelProp = badgeInstMain && badgeInstMain.parent && badgeInstMain.parent.type === 'COMPONENT_SET'
+            ? badgeInstMain.parent : badgeInstMain;
           if (labelProp && labelProp.componentPropertyDefinitions) {
             for (var pk in labelProp.componentPropertyDefinitions) {
               if (labelProp.componentPropertyDefinitions[pk].name === 'Label') {
@@ -4087,10 +4100,10 @@ function buildDropdownItem(spec, componentSpec, itemConfig, dropdownSize, style,
       if (checkboxInst.layoutGrow !== undefined) checkboxInst.layoutGrow = 0;
       itemFrame.appendChild(checkboxInst);
     } else {
-      addIconInstance('check', 'Check', 'color_brand_primary');
+      await addIconInstance('check', 'Check', 'color_brand_primary');
     }
   } else if (itemConfig.hasSubmenu) {
-    addIconInstance('chevron-right', 'Chevron', iconColorToken);
+    await addIconInstance('chevron-right', 'Chevron', iconColorToken);
   }
 
   return itemFrame;
@@ -4187,7 +4200,7 @@ async function buildDropdownItemLayout(spec, componentSpec, variant, style, cont
 
   // Создаёт FRAME-обёртку иконки с INSTANCE внутри.
   // visible=false по умолчанию — управляется BOOLEAN prop.
-  function makeIconWrapper(slotName, iconRole) {
+  async function makeIconWrapper(slotName, iconRole) {
     var wrapper = figma.createFrame();
     wrapper.name = slotName;
     wrapper.layoutMode = 'HORIZONTAL';
@@ -4199,7 +4212,7 @@ async function buildDropdownItemLayout(spec, componentSpec, variant, style, cont
     wrapper.visible = false;
     wrapper.fills   = [];
     wrapper.strokes = [];
-    var master = (typeof getIconMasterForRole === 'function') ? getIconMasterForRole(allIconComponents, iconRole, spec) : null;
+    var master = (typeof getIconMasterForRole === 'function') ? await getIconMasterForRole(allIconComponents, iconRole, spec) : null;
     var inst = master && typeof master.createInstance === 'function' ? master.createInstance() : null;
     if (inst) {
       inst.name = slotName;
@@ -4253,7 +4266,7 @@ async function buildDropdownItemLayout(spec, componentSpec, variant, style, cont
   comp.appendChild(checkboxWrapper);
 
   // ── слот 1: Icon (left) ────────────────────────────────────
-  var iconLeft = makeIconWrapper('Icon Left', 'user');
+  var iconLeft = await makeIconWrapper('Icon Left', 'user');
   comp.appendChild(iconLeft.wrapper);
 
   // ── слот 2: Label ──────────────────────────────────────────
@@ -4261,7 +4274,7 @@ async function buildDropdownItemLayout(spec, componentSpec, variant, style, cont
   labelText.name = 'Label';
   labelText.characters = 'Option';
   var boundTStyle = textStyleByName && textStyleByName[textStyleName];
-  if (boundTStyle) labelText.textStyleId = boundTStyle.id;
+  if (boundTStyle) await labelText.setTextStyleIdAsync(boundTStyle.id);
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
   applyColorVariable(labelText, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, textColorToken);
   labelText.textAlignHorizontal = 'LEFT';
@@ -4305,7 +4318,7 @@ async function buildDropdownItemLayout(spec, componentSpec, variant, style, cont
   // ── слот 4: Icon (right) ───────────────────────────────────
   // По умолчанию используем chevron-right. Через INSTANCE_SWAP
   // дизайнер может переключить на check-icon или любую другую иконку.
-  var iconRight = makeIconWrapper('Icon Right', 'chevron-right');
+  var iconRight = await makeIconWrapper('Icon Right', 'chevron-right');
   comp.appendChild(iconRight.wrapper);
 
   // ── component properties ───────────────────────────────────
@@ -4354,7 +4367,8 @@ async function buildDropdownItemLayout(spec, componentSpec, variant, style, cont
     var badgeLabelKey = comp.addComponentProperty('Badge Label', 'TEXT', '3');
     var brefs = badgeInstance.componentPropertyReferences ? Object.assign({}, badgeInstance.componentPropertyReferences) : {};
     brefs.mainComponent = badgeSwapKey;
-    var badgeSet = badgeInstance.mainComponent && badgeInstance.mainComponent.parent;
+    var badgeInstanceMain = await getMainComponentSafe(badgeInstance);
+    var badgeSet = badgeInstanceMain && badgeInstanceMain.parent;
     if (badgeSet && badgeSet.type === 'COMPONENT_SET' && badgeSet.componentPropertyDefinitions) {
       for (var bpk in badgeSet.componentPropertyDefinitions) {
         if (badgeSet.componentPropertyDefinitions[bpk].name === 'Label') { brefs[bpk] = badgeLabelKey; break; }
@@ -4692,19 +4706,21 @@ async function buildDropdownLayout(spec, componentSpec, variant, style, context)
       var tc = trigger.children[ti];
       if (tc.name === 'Icon (left)') {
         tc.componentPropertyReferences = { visible: iconLeftKey };
-        if (tc.children && tc.children[0] && tc.children[0].type === 'INSTANCE' && tc.children[0].mainComponent) {
-          var iconLeftSwapKey = comp.addComponentProperty('Icon (left) variant', 'INSTANCE_SWAP', tc.children[0].mainComponent.id);
+        var iconLeftMain = (tc.children && tc.children[0] && tc.children[0].type === 'INSTANCE') ? await getMainComponentSafe(tc.children[0]) : null;
+        if (iconLeftMain) {
+          var iconLeftSwapKey = comp.addComponentProperty('Icon (left) variant', 'INSTANCE_SWAP', iconLeftMain.id);
           tc.children[0].componentPropertyReferences = { mainComponent: iconLeftSwapKey };
         }
       } else if (tc.name === 'Badge') {
         tc.componentPropertyReferences = { visible: badgeKey };
-        if (tc.children && tc.children[0] && tc.children[0].type === 'INSTANCE' && tc.children[0].mainComponent) {
-          var badgeSwapKey = comp.addComponentProperty('Badge variant', 'INSTANCE_SWAP', tc.children[0].mainComponent.id);
+        var badgeChildMain = (tc.children && tc.children[0] && tc.children[0].type === 'INSTANCE') ? await getMainComponentSafe(tc.children[0]) : null;
+        if (badgeChildMain) {
+          var badgeSwapKey = comp.addComponentProperty('Badge variant', 'INSTANCE_SWAP', badgeChildMain.id);
           var badgeLabelKey = comp.addComponentProperty('Badge label', 'TEXT', '3');
           var badgeInst = tc.children[0];
           var brefs = badgeInst.componentPropertyReferences ? Object.assign({}, badgeInst.componentPropertyReferences) : {};
           brefs.mainComponent = badgeSwapKey;
-          var badgeSet = badgeInst.mainComponent.parent;
+          var badgeSet = badgeChildMain.parent;
           if (badgeSet && badgeSet.type === 'COMPONENT_SET' && badgeSet.componentPropertyDefinitions) {
             for (var pk in badgeSet.componentPropertyDefinitions) {
               if (badgeSet.componentPropertyDefinitions[pk].name === 'Label') { brefs[pk] = badgeLabelKey; break; }
@@ -4756,13 +4772,15 @@ async function buildDropdownLayout(spec, componentSpec, variant, style, context)
       submenuNode = submenuWrapper.children[0]; // Submenu frame
     }
 
-    function bindSlotChildren(panelNode, labelPrefix) {
+    async function bindSlotChildren(panelNode, labelPrefix) {
       if (!panelNode || !panelNode.children) return;
       for (var ci = 0; ci < panelNode.children.length; ci++) {
         var slotNode = panelNode.children[ci];
         if (!slotNode) continue;
         var slotInst = (slotNode.type === 'INSTANCE') ? slotNode : null;
-        if (!slotInst || !slotInst.mainComponent) continue;
+        if (!slotInst) continue;
+        var slotMain = await getMainComponentSafe(slotInst);
+        if (!slotMain) continue;
         try {
           var swapKey = comp.addComponentProperty(slotNode.name || (labelPrefix + (ci + 1)), 'INSTANCE_SWAP', defaultItemComp.id, optionsForSwap);
           var refs = slotInst.componentPropertyReferences ? Object.assign({}, slotInst.componentPropertyReferences) : {};
@@ -4774,8 +4792,8 @@ async function buildDropdownLayout(spec, componentSpec, variant, style, context)
       }
     }
 
-    bindSlotChildren(popoverNode, 'Item ');
-    bindSlotChildren(submenuNode, 'Submenu Item ');
+    await bindSlotChildren(popoverNode, 'Item ');
+    await bindSlotChildren(submenuNode, 'Submenu Item ');
   }
 
   page.appendChild(comp);
@@ -4894,7 +4912,7 @@ async function buildTextareaLayout(spec, componentSpec, variant, style, context)
   textNode.characters = 'Enter text...';
   var textStyleName = style.textStyle || 'Text/Body/Base';
   var boundTextStyle = textStyleByName && textStyleByName[textStyleName];
-  if (boundTextStyle) textNode.textStyleId = boundTextStyle.id;
+  if (boundTextStyle) await textNode.setTextStyleIdAsync(boundTextStyle.id);
   var textColorToken = style.textColor || 'color_text_primary';
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
   applyColorVariable(textNode, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
@@ -4904,7 +4922,7 @@ async function buildTextareaLayout(spec, componentSpec, variant, style, context)
   textFrame.appendChild(textNode);
 
   var iconPx = resolveSpaceTokenToPixels(spec, 'space_16') || 16;
-  var iconMaster = getIconMasterForRole ? getIconMasterForRole(allIconComponents, 'resizer', spec) : null;
+  var iconMaster = getIconMasterForRole ? await getIconMasterForRole(allIconComponents, 'resizer', spec) : null;
   var iconWrapper = figma.createFrame();
   iconWrapper.name = 'Resizer';
   iconWrapper.layoutMode = 'HORIZONTAL';
@@ -4939,7 +4957,7 @@ async function buildTextareaLayout(spec, componentSpec, variant, style, context)
       if (!glyphs || glyphs.length === 0) glyphs = iconInst.findAll ? iconInst.findAll(function (n) { return n.name === 'Glyph'; }) : [];
       for (var gi = 0; gi < (glyphs || []).length; gi++) {
         var gn = glyphs[gi];
-        try { if ('fillStyleId' in gn) gn.fillStyleId = ''; } catch (eFS) {}
+        try { if ('fillStyleId' in gn) await gn.setFillStyleIdAsync(''); } catch (eFS) {}
         try { if ('fills' in gn) gn.fills = []; } catch (eF) {}
         try {
           if ('strokes' in gn) gn.strokes = [strokePaint];
@@ -5027,7 +5045,7 @@ async function buildSectionHeaderLayout(spec, componentSpec, variant, style, con
 
   var headerSize = variant.size || 'md';
   var iconPx = headerSize === 'sm' ? 16 : headerSize === 'lg' ? 24 : 20;
-  var iconMaster = getIconMasterForRole(allIconComponents, 'brand', spec);
+  var iconMaster = await getIconMasterForRole(allIconComponents, 'brand', spec);
 
   function createIconSlot(name) {
     var w = figma.createFrame();
@@ -5076,7 +5094,7 @@ async function buildSectionHeaderLayout(spec, componentSpec, variant, style, con
   textNode.characters = 'Section';
   var textStyleName = style.textStyle || 'Text/Body/Base';
   var boundStyle = textStyleByName[textStyleName];
-  if (boundStyle) textNode.textStyleId = boundStyle.id;
+  if (boundStyle) await textNode.setTextStyleIdAsync(boundStyle.id);
   else postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   var textColorToken = style.textColor || 'color_text_primary';
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
@@ -5125,8 +5143,9 @@ async function buildSectionHeaderLayout(spec, componentSpec, variant, style, con
     var rk = comp.addComponentProperty('Right Icon', 'INSTANCE_SWAP', iconMaster.id);
     rightIcon.instance.componentPropertyReferences = { mainComponent: rk };
   }
-  if (badgeContainerHeader && badgeContainerHeader.mainComponent) {
-    var badgeSwapKeyHeader = comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainerHeader.mainComponent.id);
+  var badgeHeaderMain = badgeContainerHeader ? await getMainComponentSafe(badgeContainerHeader) : null;
+  if (badgeHeaderMain) {
+    var badgeSwapKeyHeader = comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeHeaderMain.id);
     var badgeLabelKeyHeader = comp.addComponentProperty('Badge Label', 'TEXT', '99');
     badgeContainerHeader.componentPropertyReferences = { mainComponent: badgeSwapKeyHeader };
   }
@@ -5191,13 +5210,13 @@ async function buildAccordionLayout(spec, componentSpec, variant, style, context
 
   var headerSize = variant.size || 'md';
   var iconPx = headerSize === 'sm' ? 16 : headerSize === 'lg' ? 24 : 20;
-  var leftIconMaster = getIconMasterForRole(allIconComponents, 'brand', spec);
-  var chevronClosedMaster = getIconMasterForRole(allIconComponents, 'accordion-chevron', spec);
+  var leftIconMaster = await getIconMasterForRole(allIconComponents, 'brand', spec);
+  var chevronClosedMaster = await getIconMasterForRole(allIconComponents, 'accordion-chevron', spec);
   if (!chevronClosedMaster) {
     postStatus('Accordion: иконка accordion-chevron (nodeId 61:28017) не найдена. Остановка генерации.');
     return null;
   }
-  var chevronOpenMaster = showContent ? getIconMasterForRole(allIconComponents, 'accordion-chevron-open', spec) : null;
+  var chevronOpenMaster = showContent ? await getIconMasterForRole(allIconComponents, 'accordion-chevron-open', spec) : null;
   if (showContent && !chevronOpenMaster) {
     postStatus('Accordion: иконка caret-up-fill для открытого состояния не найдена. Остановка генерации.');
     return null;
@@ -5253,7 +5272,7 @@ async function buildAccordionLayout(spec, componentSpec, variant, style, context
   textNode.characters = 'Accordion';
   var textStyleName = style.textStyle || 'Text/Body/Base';
   var boundStyle = textStyleByName[textStyleName];
-  if (boundStyle) textNode.textStyleId = boundStyle.id;
+  if (boundStyle) await textNode.setTextStyleIdAsync(boundStyle.id);
   else postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   var textColorToken = style.textColor || 'color_text_primary';
   var textHexAccordion = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
@@ -5368,7 +5387,7 @@ async function buildAccordionLayout(spec, componentSpec, variant, style, context
   contentText.textAlignVertical = 'TOP';
   if (contentText.textAutoResize !== undefined) contentText.textAutoResize = 'HEIGHT';
   var contentBoundStyle = textStyleByName[contentTextStyleName];
-  if (contentBoundStyle) contentText.textStyleId = contentBoundStyle.id;
+  if (contentBoundStyle) await contentText.setTextStyleIdAsync(contentBoundStyle.id);
   else postStatus('Текстовый стиль «' + contentTextStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   var contentTextColor = style.textColor || 'color_text_primary';
   var contentTextHex = resolveColorTokenToHex(spec, contentTextColor, themeMode) || '#111827';
@@ -5422,8 +5441,9 @@ async function buildAccordionLayout(spec, componentSpec, variant, style, context
     var l2k = comp.addComponentProperty('Left Icon 2', 'INSTANCE_SWAP', leftIconMaster.id);
     leftIcon2.instance.componentPropertyReferences = { mainComponent: l2k };
   }
-  if (badgeContainerAccordion && badgeContainerAccordion.mainComponent) {
-    var badgeSwapKeyAccordion = comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeContainerAccordion.mainComponent.id);
+  var badgeAccordionMain = badgeContainerAccordion ? await getMainComponentSafe(badgeContainerAccordion) : null;
+  if (badgeAccordionMain) {
+    var badgeSwapKeyAccordion = comp.addComponentProperty('Badge Variant', 'INSTANCE_SWAP', badgeAccordionMain.id);
     var badgeLabelKeyAccordion = comp.addComponentProperty('Badge Label', 'TEXT', '99');
     badgeContainerAccordion.componentPropertyReferences = { mainComponent: badgeSwapKeyAccordion };
   }
@@ -5570,7 +5590,7 @@ async function buildModalLayout(spec, componentSpec, variant, style, context) {
   titleText.characters = 'Modal title';
   var titleStyleName = style.titleStyle || 'Text/Heading/H4';
   var titleStyle = textStyleByName[titleStyleName];
-  if (titleStyle) titleText.textStyleId = titleStyle.id;
+  if (titleStyle) await titleText.setTextStyleIdAsync(titleStyle.id);
   var titleColorToken = style.titleColor || style.textColor || 'color_text_primary';
   var titleHex = resolveColorTokenToHex(spec, titleColorToken, themeMode) || '#111827';
   applyColorVariable(titleText, 'fills', titleColorToken, titleHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
@@ -5591,7 +5611,7 @@ async function buildModalLayout(spec, componentSpec, variant, style, context) {
   titleFill.appendChild(titleText);
 
   var closeIconPx = 20;
-  var closeMaster = getIconMasterForRole ? getIconMasterForRole(allIconComponents, 'close', spec) : null;
+  var closeMaster = getIconMasterForRole ? await getIconMasterForRole(allIconComponents, 'close', spec) : null;
   var closeWrapper = figma.createFrame();
   closeWrapper.name = 'Close';
   closeWrapper.layoutMode = 'HORIZONTAL';
@@ -5611,13 +5631,13 @@ async function buildModalLayout(spec, componentSpec, variant, style, context) {
   if (closeIconVar && figma.variables && figma.variables.setBoundVariableForPaint) {
     try { closeIconPaint = figma.variables.setBoundVariableForPaint(closeIconPaint, 'color', closeIconVar); } catch (e) {}
   }
-  function applyCloseIconColor(inst) {
+  async function applyCloseIconColor(inst) {
     if (!inst || !inst.findAll) return;
     var glyphs = inst.findAll(function (n) { return n.name === 'Glyph'; });
     if (!glyphs || glyphs.length === 0) glyphs = inst.findAll(function (n) { return n.type === 'VECTOR' || n.type === 'BOOLEAN_OPERATION' || n.type === 'ELLIPSE' || n.type === 'RECTANGLE' || (n.type === 'FRAME' && n.fills && n.fills.length > 0); });
     for (var gi = 0; gi < (glyphs || []).length; gi++) {
       var node = glyphs[gi];
-      try { if ('fillStyleId' in node) node.fillStyleId = ''; } catch (e) {}
+      try { if ('fillStyleId' in node) await node.setFillStyleIdAsync(''); } catch (e) {}
       try { if ('fills' in node && Array.isArray(node.fills)) { var f = node.fills.length > 0 ? node.fills.slice() : []; f[0] = closeIconPaint; node.fills = f.length ? f : [closeIconPaint]; } } catch (e) {}
     }
   }
@@ -5625,7 +5645,7 @@ async function buildModalLayout(spec, componentSpec, variant, style, context) {
     var closeInst = closeMaster.createInstance();
     closeInst.name = 'Close Icon';
     try { var s = Math.min(closeIconPx / (closeInst.width || 24), closeIconPx / (closeInst.height || 24)); closeInst.rescale(s); } catch (e) {}
-    applyCloseIconColor(closeInst);
+    await applyCloseIconColor(closeInst);
     closeWrapper.appendChild(closeInst);
   }
   headerRow.appendChild(titleFill);
@@ -5636,7 +5656,7 @@ async function buildModalLayout(spec, componentSpec, variant, style, context) {
   contentText.characters = (componentSpec.defaultContent) || 'Modal content. Описание или форма.';
   var contentStyleName = style.contentStyle || 'Text/Body/SM';
   var contentStyle = textStyleByName[contentStyleName];
-  if (contentStyle) contentText.textStyleId = contentStyle.id;
+  if (contentStyle) await contentText.setTextStyleIdAsync(contentStyle.id);
   var contentColorToken = style.contentColor || 'color_text_primary';
   var contentHex = resolveColorTokenToHex(spec, contentColorToken, themeMode) || '#111827';
   applyColorVariable(contentText, 'fills', contentColorToken, contentHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
@@ -5791,8 +5811,8 @@ async function buildPaginationLayout(spec, componentSpec, variant, style, contex
 
   var iconPx = pagSize === 'sm' ? 16 : pagSize === 'lg' ? 24 : 20;
   var minH = pagSize === 'sm' ? 28 : pagSize === 'lg' ? 40 : 32;
-  var chevronLeftMaster = getIconMasterForRole ? getIconMasterForRole(allIconComponents, 'chevron-left', spec) : null;
-  var chevronRightMaster = getIconMasterForRole ? getIconMasterForRole(allIconComponents, 'chevron-right', spec) : null;
+  var chevronLeftMaster = getIconMasterForRole ? await getIconMasterForRole(allIconComponents, 'chevron-left', spec) : null;
+  var chevronRightMaster = getIconMasterForRole ? await getIconMasterForRole(allIconComponents, 'chevron-right', spec) : null;
   var iconColorToken = 'color_icon_on_ghost';
 
   function createNavButton(name, iconMaster) {
@@ -5830,10 +5850,10 @@ async function buildPaginationLayout(spec, componentSpec, variant, style, contex
     return w;
   }
 
-  function setButtonLabel(btnInst, label) {
+  async function setButtonLabel(btnInst, label) {
     if (!btnInst || !btnInst.setProperties) return;
     try {
-      var def = btnInst.mainComponent;
+      var def = await getMainComponentSafe(btnInst);
       if (!def) return;
       var sourceForDefs = def.parent && def.parent.type === 'COMPONENT_SET' ? def.parent : def;
       var propDefs = sourceForDefs && sourceForDefs.componentPropertyDefinitions;
@@ -5857,7 +5877,7 @@ async function buildPaginationLayout(spec, componentSpec, variant, style, contex
     compactText.characters = '2 / 5';
     var textStyleName = style.textStyle || 'Text/Body/Base';
     var boundStyle = textStyleByName && textStyleByName[textStyleName];
-    if (boundStyle) compactText.textStyleId = boundStyle.id;
+    if (boundStyle) await compactText.setTextStyleIdAsync(boundStyle.id);
     var textHex = resolveColorTokenToHex(spec, 'color_text_primary', themeMode) || '#111827';
     applyColorVariable(compactText, 'fills', 'color_text_primary', textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
     comp.appendChild(compactText);
@@ -5876,7 +5896,7 @@ async function buildPaginationLayout(spec, componentSpec, variant, style, contex
       if (master) {
         var pageInst = master.createInstance();
         pageInst.name = 'Page ' + pages[pi];
-        setButtonLabel(pageInst, String(pages[pi]));
+        await setButtonLabel(pageInst, String(pages[pi]));
         comp.appendChild(pageInst);
       }
     }
@@ -5952,7 +5972,7 @@ async function buildCardLayout(spec, componentSpec, variant, style, context) {
   titleText.characters = 'Card title';
   var titleStyleName = style.titleStyle || 'Text/Body/Strong';
   var titleStyle = textStyleByName[titleStyleName];
-  if (titleStyle) titleText.textStyleId = titleStyle.id;
+  if (titleStyle) await titleText.setTextStyleIdAsync(titleStyle.id);
   var textColorToken = style.textColor || 'color_text_primary';
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
   applyColorVariable(titleText, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
@@ -5965,7 +5985,7 @@ async function buildCardLayout(spec, componentSpec, variant, style, context) {
   contentText.characters = (componentSpec.defaultContent) || 'Card content. Описание, метрики или другой контент.';
   var contentStyleName = style.contentStyle || 'Text/Body/SM';
   var contentStyle = textStyleByName[contentStyleName];
-  if (contentStyle) contentText.textStyleId = contentStyle.id;
+  if (contentStyle) await contentText.setTextStyleIdAsync(contentStyle.id);
   applyColorVariable(contentText, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
   contentText.textAlignHorizontal = 'LEFT';
   contentText.layoutAlign = 'STRETCH';
@@ -6112,8 +6132,8 @@ async function buildAlertLayout(spec, componentSpec, variant, style, context) {
   }
 
   var iconPx = 20;
-  var leftIconMaster = getIconMasterForRole(allIconComponents, 'exclamation-diamond-fill', spec);
-  var rightIconMaster = getIconMasterForRole(allIconComponents, 'close', spec);
+  var leftIconMaster = await getIconMasterForRole(allIconComponents, 'exclamation-diamond-fill', spec);
+  var rightIconMaster = await getIconMasterForRole(allIconComponents, 'close', spec);
 
   function createIconSlot(name, master) {
     var w = figma.createFrame();
@@ -6161,7 +6181,7 @@ async function buildAlertLayout(spec, componentSpec, variant, style, context) {
   titleText.characters = 'Alert title';
   var titleStyleName = style.titleStyle || 'Text/Body/Strong';
   var titleStyle = textStyleByName[titleStyleName];
-  if (titleStyle) titleText.textStyleId = titleStyle.id;
+  if (titleStyle) await titleText.setTextStyleIdAsync(titleStyle.id);
   else postStatus('Текстовый стиль «' + titleStyleName + '» не найден.');
   var textColorToken = style.textColor || 'color_text_primary';
   var alertTextHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
@@ -6176,7 +6196,7 @@ async function buildAlertLayout(spec, componentSpec, variant, style, context) {
   paragraphText.characters = 'Alert description or additional context.';
   var paraStyleName = style.paragraphStyle || 'Text/Body/SM';
   var paraStyle = textStyleByName[paraStyleName];
-  if (paraStyle) paragraphText.textStyleId = paraStyle.id;
+  if (paraStyle) await paragraphText.setTextStyleIdAsync(paraStyle.id);
   else postStatus('Текстовый стиль «' + paraStyleName + '» не найден.');
   applyColorVariable(paragraphText, 'fills', textColorToken, alertTextHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
   paragraphText.textAlignHorizontal = 'LEFT';
@@ -6337,7 +6357,7 @@ async function buildBreadcrumbLayout(spec, componentSpec, variant, style, contex
   }
 
   var iconPx = 12;
-  var separatorMaster = getIconMasterForRole(allIconComponents, 'chevron-right', spec);
+  var separatorMaster = await getIconMasterForRole(allIconComponents, 'chevron-right', spec);
 
   function createSeparatorSlot(name, master, size) {
     var w = figma.createFrame();
@@ -6422,7 +6442,7 @@ async function buildBreadcrumbLayout(spec, componentSpec, variant, style, contex
       fallbackText.characters = defaultLabels[i] || 'Level ' + (i + 1);
       var tsName = style.textStyle || 'Text/Heading/H4';
       var ts = textStyleByName[tsName];
-      if (ts) fallbackText.textStyleId = ts.id;
+      if (ts) await fallbackText.setTextStyleIdAsync(ts.id);
       var bcTextToken = style.textColor || 'color_text_primary';
       var bcTextHex = resolveColorTokenToHex(spec, bcTextToken, themeMode) || '#111827';
       applyColorVariable(fallbackText, 'fills', bcTextToken, bcTextHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
@@ -6487,7 +6507,7 @@ async function buildFormHintLayout(spec, componentSpec, variant, style, context)
     else { var gp = resolveSpaceTokenToPixels(spec, gap); if (typeof gp === 'number') comp.itemSpacing = gp; }
   }
 
-  var iconMaster = getIconMasterForRole(allIconComponents, 'brand', spec);
+  var iconMaster = await getIconMasterForRole(allIconComponents, 'brand', spec);
   var iconWrapper = figma.createFrame();
   iconWrapper.name = 'Icon';
   iconWrapper.layoutMode = 'HORIZONTAL';
@@ -6509,7 +6529,7 @@ async function buildFormHintLayout(spec, componentSpec, variant, style, context)
   textNode.characters = 'Helper text';
   var ts = style.textStyle || 'Text/Caption/Base';
   var bs = textStyleByName[ts];
-  if (bs) textNode.textStyleId = bs.id;
+  if (bs) await textNode.setTextStyleIdAsync(bs.id);
   else postStatus('Текстовый стиль «' + ts + '» не найден. Запустите «Сгенерировать переменные».');
   var tc = style.textColor || 'color_text_muted';
   var hintTextHex = resolveColorTokenToHex(spec, tc, themeMode) || resolveColorTokenToHex(spec, 'color_text_muted', themeMode) || '#6B7280';
@@ -6576,7 +6596,7 @@ async function buildLinkLayout(spec, componentSpec, variant, style, context) {
     else { var gapPx = resolveSpaceTokenToPixels(spec, gapToken); if (typeof gapPx === 'number') comp.itemSpacing = gapPx; }
   }
 
-  var linkIconMaster = getIconMasterForRole(allIconComponents, 'link', spec);
+  var linkIconMaster = await getIconMasterForRole(allIconComponents, 'link', spec);
 
   function applyLinkIconColor(inst, tok) {
     if (!tok || !inst) return;
@@ -6600,7 +6620,7 @@ async function buildLinkLayout(spec, componentSpec, variant, style, context) {
   textNode.characters = 'Link text';
   var tsName = style.textStyle || 'Text/Body/Base';
   var ts = textStyleByName[tsName];
-  if (ts) textNode.textStyleId = ts.id;
+  if (ts) await textNode.setTextStyleIdAsync(ts.id);
   var tcToken = style.textColor || 'color_link_default';
   var linkTextHex = resolveColorTokenToHex(spec, tcToken, themeMode) || '#5B9CFF';
   applyColorVariable(textNode, 'fills', tcToken, linkTextHex, useStaticColors ? null : colorVarByName, 'color_link_default');
@@ -6857,10 +6877,10 @@ async function buildScrollBarLayout(spec, componentSpec, variant, style, context
   var arrowSize = 14;
   var arrowGap = 4;
 
-  var leftMaster = getIconMasterForRole(allIconComponents, 'caret-left-fill', spec) || getIconMasterForRole(allIconComponents, 'chevron-left', spec);
-  var rightMaster = getIconMasterForRole(allIconComponents, 'caret-right-fill', spec) || getIconMasterForRole(allIconComponents, 'chevron-right', spec);
-  var upMaster = getIconMasterForRole(allIconComponents, 'caret-up-fill', spec) || getIconMasterForRole(allIconComponents, 'accordion-chevron-open', spec);
-  var downMaster = getIconMasterForRole(allIconComponents, 'caret-down-fill', spec) || getIconMasterForRole(allIconComponents, 'accordion-chevron', spec);
+  var leftMaster = await getIconMasterForRole(allIconComponents, 'caret-left-fill', spec) || await getIconMasterForRole(allIconComponents, 'chevron-left', spec);
+  var rightMaster = await getIconMasterForRole(allIconComponents, 'caret-right-fill', spec) || await getIconMasterForRole(allIconComponents, 'chevron-right', spec);
+  var upMaster = await getIconMasterForRole(allIconComponents, 'caret-up-fill', spec) || await getIconMasterForRole(allIconComponents, 'accordion-chevron-open', spec);
+  var downMaster = await getIconMasterForRole(allIconComponents, 'caret-down-fill', spec) || await getIconMasterForRole(allIconComponents, 'accordion-chevron', spec);
 
   var trackToken = style.trackBg || 'color_surface_3';
   var thumbBgToken = style.thumbBg || 'color_bg_base';
@@ -7308,7 +7328,7 @@ async function buildTooltipLayout(spec, componentSpec, variant, style, context) 
   textNode.characters = 'Tooltip text';
   var textStyleName = style.textStyle || 'Text/Body/SM';
   var boundTextStyle = textStyleByName && textStyleByName[textStyleName];
-  if (boundTextStyle) textNode.textStyleId = boundTextStyle.id;
+  if (boundTextStyle) await textNode.setTextStyleIdAsync(boundTextStyle.id);
   else postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   var tc = style.textColor || 'color_text_primary';
   var th = resolveColorTokenToHex(spec, tc, themeMode) || (tc && spec.tokens && spec.tokens.color && spec.tokens.color.primitives && spec.tokens.color.primitives[tc]);
@@ -7480,7 +7500,7 @@ async function buildCaptchaLayout(spec, componentSpec, variant, style, context) 
   textNode.characters = variant.state === 'loading' ? 'Loading...' : variant.state === 'success' ? 'Verified' : variant.state === 'error' ? 'Verification error' : 'Captcha';
   var textStyleName = style.textStyle || 'Text/Body/SM';
   var boundTextStyle = textStyleByName && textStyleByName[textStyleName];
-  if (boundTextStyle) textNode.textStyleId = boundTextStyle.id;
+  if (boundTextStyle) await textNode.setTextStyleIdAsync(boundTextStyle.id);
   else postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   var tc = style.textColor || 'color_text_muted';
   var th = resolveColorTokenToHex(spec, tc, themeMode);
@@ -7562,7 +7582,7 @@ async function buildParagraphLayout(spec, componentSpec, variant, style, context
   var textStyleName = style.textStyle || 'Text/Body/Base';
   var boundStyle = textStyleByName[textStyleName];
   if (boundStyle) {
-    textNode.textStyleId = boundStyle.id;
+    await textNode.setTextStyleIdAsync(boundStyle.id);
   } else {
     postStatus('Текстовый стиль «' + textStyleName + '» не найден. Запустите «Сгенерировать переменные».');
   }
@@ -7780,7 +7800,7 @@ async function buildCheckboxLayout(spec, componentSpec, variant, style, context)
 
   if (iconType === 'check' || iconType === 'check2') {
     var checkRole = iconType === 'check' ? 'check' : 'check2';
-    var checkMaster = getIconMasterForRole(allIconComponents, checkRole, spec);
+    var checkMaster = await getIconMasterForRole(allIconComponents, checkRole, spec);
     if (!checkMaster) {
       postStatus('Checkbox: иконка check не найдена. Проверьте iconRoles.check.nodeId в ai-ds-spec.json.');
       try { if (figma.notify) figma.notify('Checkbox: иконка check не найдена (nodeId 61:27924).', { error: true }); } catch (e) {}
@@ -7803,7 +7823,7 @@ async function buildCheckboxLayout(spec, componentSpec, variant, style, context)
       comp.appendChild(checkInst);
     }
   } else if (iconType === 'close-x') {
-    var closeMaster = getIconMasterForRole(allIconComponents, 'close-x', spec);
+    var closeMaster = await getIconMasterForRole(allIconComponents, 'close-x', spec);
     if (!closeMaster) {
       postStatus('Checkbox: иконка close-x не найдена.');
       try { if (figma.notify) figma.notify('Checkbox: иконка close-x не найдена.', { error: true }); } catch (e) {}
@@ -7960,7 +7980,7 @@ async function buildAvatarLayout(spec, componentSpec, variant, style, context) {
   avatarCircle.y = 0;
 
   if (avatarType === 'guest') {
-    var userMaster = getIconMasterForRole(allIconComponents, 'person-circle', spec) || getIconMasterForRole(allIconComponents, 'user', spec);
+    var userMaster = await getIconMasterForRole(allIconComponents, 'person-circle', spec) || await getIconMasterForRole(allIconComponents, 'user', spec);
     if (userMaster) {
       var userInst = userMaster.createInstance();
       userInst.name = 'User icon';
@@ -7995,7 +8015,7 @@ async function buildAvatarLayout(spec, componentSpec, variant, style, context) {
     var initialsStyleName = avatarSize === 'xs' ? 'Text/Caption/XS' : avatarSize === 'sm' ? 'Text/Body/SM' : avatarSize === 'md' ? 'Text/Body/Base' : avatarSize === 'lg' ? 'Text/Body/LG' : 'Text/Heading/H4';
     var initialsBoundStyle = textStyleByName[initialsStyleName];
     if (initialsBoundStyle) {
-      textNode.textStyleId = initialsBoundStyle.id;
+      await textNode.setTextStyleIdAsync(initialsBoundStyle.id);
     } else {
       postStatus('Текстовый стиль «' + initialsStyleName + '» для Avatar не найден. Запустите «Сгенерировать переменные».');
     }
@@ -8019,13 +8039,16 @@ async function buildAvatarLayout(spec, componentSpec, variant, style, context) {
     var photoKey = avatarPhoto.componentKey || avatarPhoto.component_key;
     var photoNode = null;
     if (photoNodeId) {
-      var node = figma.getNodeById(photoNodeId);
+      var node = await figma.getNodeByIdAsync(photoNodeId);
       if (node && 'clone' in node) photoNode = node;
     }
     var photoComp = null;
     if (photoNode) {
       if (photoNode.type === 'COMPONENT') photoComp = photoNode;
-      else if (photoNode.type === 'INSTANCE' && photoNode.mainComponent) photoComp = photoNode.mainComponent;
+      else if (photoNode.type === 'INSTANCE') {
+        var photoMain = await getMainComponentSafe(photoNode);
+        if (photoMain) photoComp = photoMain;
+      }
     }
     if (!photoComp && photoKey && typeof figma.importComponentByKeyAsync === 'function') {
       try {
@@ -8213,7 +8236,7 @@ async function buildAutocompleteItemLayout(spec, componentSpec, variant, style, 
     } catch (e) {}
   }
 
-  function makeIconWrapper(slotName, iconRole) {
+  async function makeIconWrapper(slotName, iconRole) {
     var wrapper = figma.createFrame();
     wrapper.name = slotName;
     wrapper.layoutMode = 'HORIZONTAL';
@@ -8225,7 +8248,7 @@ async function buildAutocompleteItemLayout(spec, componentSpec, variant, style, 
     wrapper.visible = false;
     wrapper.fills   = [];
     wrapper.strokes = [];
-    var master = (typeof getIconMasterForRole === 'function') ? getIconMasterForRole(allIconComponents, iconRole, spec) : null;
+    var master = (typeof getIconMasterForRole === 'function') ? await getIconMasterForRole(allIconComponents, iconRole, spec) : null;
     var inst = master && typeof master.createInstance === 'function' ? master.createInstance() : null;
     if (inst) {
       inst.name = slotName;
@@ -8303,7 +8326,7 @@ async function buildAutocompleteItemLayout(spec, componentSpec, variant, style, 
   comp.appendChild(cbWrapper);
 
   // ── Icon Left ────────────────────────────────────────────────
-  var iconLeft = makeIconWrapper('Icon Left', 'user');
+  var iconLeft = await makeIconWrapper('Icon Left', 'user');
   comp.appendChild(iconLeft.wrapper);
 
   // ── Label ────────────────────────────────────────────────────
@@ -8311,7 +8334,7 @@ async function buildAutocompleteItemLayout(spec, componentSpec, variant, style, 
   labelText.name = 'Label';
   labelText.characters = 'Option';
   var boundTStyle = textStyleByName && textStyleByName[textStyleName];
-  if (boundTStyle) labelText.textStyleId = boundTStyle.id;
+  if (boundTStyle) await labelText.setTextStyleIdAsync(boundTStyle.id);
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
   applyColorVariable(labelText, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, textColorToken);
   labelText.textAlignHorizontal = 'LEFT';
@@ -8328,7 +8351,7 @@ async function buildAutocompleteItemLayout(spec, componentSpec, variant, style, 
   comp.appendChild(badge3.wrapper);
 
   // ── Icon Right ───────────────────────────────────────────────
-  var iconRight = makeIconWrapper('Icon Right', 'chevron-right');
+  var iconRight = await makeIconWrapper('Icon Right', 'chevron-right');
   comp.appendChild(iconRight.wrapper);
 
   // ── Component Properties ─────────────────────────────────────
@@ -8362,7 +8385,7 @@ async function buildAutocompleteItemLayout(spec, componentSpec, variant, style, 
   }
 
   // Badge 1 / 2 / 3
-  function bindBadge(badgeObj, numLabel) {
+  async function bindBadge(badgeObj, numLabel) {
     var boolKey = comp.addComponentProperty(numLabel, 'BOOLEAN', false);
     badgeObj.wrapper.componentPropertyReferences = { visible: boolKey };
     if (badgeObj.instance && badgeMaster) {
@@ -8375,7 +8398,8 @@ async function buildAutocompleteItemLayout(spec, componentSpec, variant, style, 
       var bLabelKey = comp.addComponentProperty(numLabel + ' Label', 'TEXT', '3');
       var brefs = badgeObj.instance.componentPropertyReferences ? Object.assign({}, badgeObj.instance.componentPropertyReferences) : {};
       brefs.mainComponent = bSwapKey;
-      var bSet = badgeObj.instance.mainComponent && badgeObj.instance.mainComponent.parent;
+      var badgeObjMain = await getMainComponentSafe(badgeObj.instance);
+      var bSet = badgeObjMain && badgeObjMain.parent;
       if (bSet && bSet.type === 'COMPONENT_SET' && bSet.componentPropertyDefinitions) {
         for (var bpk in bSet.componentPropertyDefinitions) {
           if (bSet.componentPropertyDefinitions[bpk].name === 'Label') { brefs[bpk] = bLabelKey; break; }
@@ -8384,9 +8408,9 @@ async function buildAutocompleteItemLayout(spec, componentSpec, variant, style, 
       badgeObj.instance.componentPropertyReferences = brefs;
     }
   }
-  bindBadge(badge1, 'Badge 1');
-  bindBadge(badge2, 'Badge 2');
-  bindBadge(badge3, 'Badge 3');
+  await bindBadge(badge1, 'Badge 1');
+  await bindBadge(badge2, 'Badge 2');
+  await bindBadge(badge3, 'Badge 3');
 
   // Icon Right
   var irBoolKey = comp.addComponentProperty('Icon Right', 'BOOLEAN', false);
@@ -8483,7 +8507,7 @@ async function buildAutocompleteLayout(spec, componentSpec, variant, style, cont
     } catch (e) {}
   }
 
-  function makeIconSlot(slotName, iconRole, visible) {
+  async function makeIconSlot(slotName, iconRole, visible) {
     var wrapper = figma.createFrame();
     wrapper.name = slotName;
     wrapper.layoutMode = 'HORIZONTAL';
@@ -8495,7 +8519,7 @@ async function buildAutocompleteLayout(spec, componentSpec, variant, style, cont
     wrapper.visible = visible !== false ? true : false;
     wrapper.fills   = [];
     wrapper.strokes = [];
-    var master = (typeof getIconMasterForRole === 'function') ? getIconMasterForRole(allIconComponents, iconRole, spec) : null;
+    var master = (typeof getIconMasterForRole === 'function') ? await getIconMasterForRole(allIconComponents, iconRole, spec) : null;
     var inst = master && typeof master.createInstance === 'function' ? master.createInstance() : null;
     if (inst) {
       inst.name = slotName;
@@ -8569,7 +8593,7 @@ async function buildAutocompleteLayout(spec, componentSpec, variant, style, cont
   }
 
   // Слот: иконка поиска (всегда видима)
-  var searchIcon = makeIconSlot('Search Icon', 'filter', true);
+  var searchIcon = await makeIconSlot('Search Icon', 'filter', true);
   trigger.appendChild(searchIcon.wrapper);
 
   // Слот: TagRow (выбранные значения)
@@ -8608,7 +8632,7 @@ async function buildAutocompleteLayout(spec, componentSpec, variant, style, cont
   inputText.name = 'Placeholder';
   inputText.characters = 'Search...';
   var bStyle = textStyleByName && textStyleByName[textStyleName];
-  if (bStyle) inputText.textStyleId = bStyle.id;
+  if (bStyle) await inputText.setTextStyleIdAsync(bStyle.id);
   var placeholderColorToken = style.placeholderColor || 'color_text_muted';
   var phHex = resolveColorTokenToHex(spec, placeholderColorToken, themeMode) || '#9CA3AF';
   applyColorVariable(inputText, 'fills', placeholderColorToken, phHex, useStaticColors ? null : colorVarByName, placeholderColorToken);
@@ -8619,7 +8643,7 @@ async function buildAutocompleteLayout(spec, componentSpec, variant, style, cont
   trigger.appendChild(inputArea);
 
   // Слот: иконка очистки (справа, скрыта по умолчанию)
-  var clearIcon = makeIconSlot('Clear Icon', 'close-x', false);
+  var clearIcon = await makeIconSlot('Clear Icon', 'close-x', false);
   trigger.appendChild(clearIcon.wrapper);
 
   // ── Popover ──────────────────────────────────────────────────
@@ -8768,7 +8792,9 @@ async function buildAutocompleteLayout(spec, componentSpec, variant, style, cont
     if (popover.children) {
       for (var pi = 0; pi < popover.children.length; pi++) {
         var slNode = popover.children[pi];
-        if (!slNode || slNode.type !== 'INSTANCE' || !slNode.mainComponent) continue;
+        if (!slNode || slNode.type !== 'INSTANCE') continue;
+        var slNodeMain = await getMainComponentSafe(slNode);
+        if (!slNodeMain) continue;
         try {
           var swKey = comp.addComponentProperty(slNode.name || ('Item ' + (pi + 1)), 'INSTANCE_SWAP', defaultItemComp.id, acSwapOpts);
           var refs = slNode.componentPropertyReferences ? Object.assign({}, slNode.componentPropertyReferences) : {};
@@ -8856,7 +8882,7 @@ async function buildTableHeaderCellLayout(spec, componentSpec, variant, style, c
   }
 
   // Хелпер: создать FIXED-обёртку иконки
-  function makeIconWrapper(slotName, role, colorToken) {
+  async function makeIconWrapper(slotName, role, colorToken) {
     var wrapper = figma.createFrame();
     wrapper.name = slotName;
     wrapper.layoutMode = 'HORIZONTAL';
@@ -8868,7 +8894,7 @@ async function buildTableHeaderCellLayout(spec, componentSpec, variant, style, c
     wrapper.visible = false;
     wrapper.fills   = [];
     wrapper.strokes = [];
-    var master = (typeof getIconMasterForRoleFn === 'function') ? getIconMasterForRoleFn(allIconComponents, role, spec) : null;
+    var master = (typeof getIconMasterForRoleFn === 'function') ? await getIconMasterForRoleFn(allIconComponents, role, spec) : null;
     var inst = master && typeof master.createInstance === 'function' ? master.createInstance() : null;
     if (inst) {
       inst.name = slotName + ' Icon';
@@ -8890,7 +8916,7 @@ async function buildTableHeaderCellLayout(spec, componentSpec, variant, style, c
   }
 
   // [0] Icon Left (скрыт, FIXED)
-  var iconLeft = makeIconWrapper('Icon Left', 'user', iconColorToken);
+  var iconLeft = await makeIconWrapper('Icon Left', 'user', iconColorToken);
   comp.appendChild(iconLeft.wrapper);
 
   // [1] Label — AUTO по тексту, НЕ grow (не наслаивается при AUTO-компоненте)
@@ -8898,7 +8924,7 @@ async function buildTableHeaderCellLayout(spec, componentSpec, variant, style, c
   labelText.name = 'Label';
   labelText.characters = 'Column';
   var tStyle = textStyleByName && textStyleByName[textStyleName];
-  if (tStyle) labelText.textStyleId = tStyle.id;
+  if (tStyle) await labelText.setTextStyleIdAsync(tStyle.id);
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#6B7280';
   applyColorVariable(labelText, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_muted');
   labelText.textAlignHorizontal = 'LEFT';
@@ -8908,7 +8934,7 @@ async function buildTableHeaderCellLayout(spec, componentSpec, variant, style, c
 
   // [2] Sort icon — по sort-оси
   var sortRole = sortState === 'asc' ? 'caret-up-fill' : sortState === 'desc' ? 'caret-down-fill' : 'caret-down-fill';
-  var sortIcon = makeIconWrapper('Sort Icon', sortRole, sortIconColorToken);
+  var sortIcon = await makeIconWrapper('Sort Icon', sortRole, sortIconColorToken);
   sortIcon.wrapper.visible = (sortState !== 'none');
   comp.appendChild(sortIcon.wrapper);
 
@@ -8999,7 +9025,7 @@ async function buildTableCellLayout(spec, componentSpec, variant, style, context
   }
 
   // Хелпер: FIXED-обёртка иконки
-  function makeIconWrapper(slotName, role, colorToken) {
+  async function makeIconWrapper(slotName, role, colorToken) {
     var wrapper = figma.createFrame();
     wrapper.name = slotName;
     wrapper.layoutMode = 'HORIZONTAL';
@@ -9011,7 +9037,7 @@ async function buildTableCellLayout(spec, componentSpec, variant, style, context
     wrapper.visible = false;
     wrapper.fills   = [];
     wrapper.strokes = [];
-    var master = (typeof getIconMasterForRoleFn === 'function') ? getIconMasterForRoleFn(allIconComponents, role, spec) : null;
+    var master = (typeof getIconMasterForRoleFn === 'function') ? await getIconMasterForRoleFn(allIconComponents, role, spec) : null;
     var inst = master && typeof master.createInstance === 'function' ? master.createInstance() : null;
     if (inst) {
       inst.name = slotName + ' Icon';
@@ -9072,7 +9098,7 @@ async function buildTableCellLayout(spec, componentSpec, variant, style, context
   comp.appendChild(checkboxWrapper);
 
   // [1] Icon Left (FIXED, скрыт)
-  var iconLeft = makeIconWrapper('Icon Left', 'user', iconColorToken);
+  var iconLeft = await makeIconWrapper('Icon Left', 'user', iconColorToken);
   comp.appendChild(iconLeft.wrapper);
 
   // [2] Label — AUTO по тексту, layoutGrow=0 (компонент AUTO → grow не нужен)
@@ -9080,7 +9106,7 @@ async function buildTableCellLayout(spec, componentSpec, variant, style, context
   labelText.name = 'Label';
   labelText.characters = cellType === 'numeric' ? '1 234' : 'Cell content';
   var tStyle = textStyleByName && textStyleByName[textStyleName];
-  if (tStyle) labelText.textStyleId = tStyle.id;
+  if (tStyle) await labelText.setTextStyleIdAsync(tStyle.id);
   var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
   applyColorVariable(labelText, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
   labelText.textAlignHorizontal = isNumeric ? 'RIGHT' : 'LEFT';
@@ -9115,7 +9141,7 @@ async function buildTableCellLayout(spec, componentSpec, variant, style, context
   comp.appendChild(badgeWrapper);
 
   // [4] Icon Action (FIXED, скрыт)
-  var iconAction = makeIconWrapper('Icon Action', 'resizer', iconColorToken);
+  var iconAction = await makeIconWrapper('Icon Action', 'resizer', iconColorToken);
   comp.appendChild(iconAction.wrapper);
 
   // Component properties
@@ -9632,7 +9658,7 @@ async function buildListItemLayout(spec, componentSpec, variant, style, context)
   }
 
   // Создаёт frame-обёртку иконки. visible задаётся явно.
-  function makeIconSlot(slotName, iconRole, isVisible) {
+  async function makeIconSlot(slotName, iconRole, isVisible) {
     var wrapper = figma.createFrame();
     wrapper.name = slotName;
     wrapper.layoutMode = 'HORIZONTAL';
@@ -9646,7 +9672,7 @@ async function buildListItemLayout(spec, componentSpec, variant, style, context)
     wrapper.strokes = [];
     if (wrapper.layoutGrow !== undefined) wrapper.layoutGrow = 0;
 
-    var master = (typeof getIconMasterForRole === 'function') ? getIconMasterForRole(allIconComponents, iconRole, spec) : null;
+    var master = (typeof getIconMasterForRole === 'function') ? await getIconMasterForRole(allIconComponents, iconRole, spec) : null;
     var inst = master && typeof master.createInstance === 'function' ? master.createInstance() : null;
     if (inst) {
       inst.name = slotName + ' Icon';
@@ -9735,7 +9761,7 @@ async function buildListItemLayout(spec, componentSpec, variant, style, context)
   if (leftGroup.layoutGrow !== undefined) leftGroup.layoutGrow = 1;
 
   // ── Leading Icon (всегда в DOM, по умолчанию виден когда leadingType=icon) ──
-  var leadingIconSlot = makeIconSlot('Leading Icon', 'user', leadingType === 'icon');
+  var leadingIconSlot = await makeIconSlot('Leading Icon', 'user', leadingType === 'icon');
   leftGroup.appendChild(leadingIconSlot.wrapper);
 
   // ── Leading Avatar wrapper ────────────────────────────────────
@@ -9839,7 +9865,7 @@ async function buildListItemLayout(spec, componentSpec, variant, style, context)
   labelText.name = 'Label';
   labelText.characters = 'List item label';
   var tStyle = textStyleByName && textStyleByName[textStyleName];
-  if (tStyle) labelText.textStyleId = tStyle.id;
+  if (tStyle) await labelText.setTextStyleIdAsync(tStyle.id);
   var textHex = resolveColorTokenToHex(spec, textToken, themeMode) || '#111827';
   applyColorVariable(labelText, 'fills', textToken, textHex, useStaticColors ? null : colorVarByName, textToken);
   labelText.textAlignHorizontal = 'LEFT';
@@ -9853,7 +9879,7 @@ async function buildListItemLayout(spec, componentSpec, variant, style, context)
   subtitleText.name = 'Subtitle';
   subtitleText.characters = 'Secondary description text';
   var stStyle = textStyleByName && textStyleByName[subtitleStyleName];
-  if (stStyle) subtitleText.textStyleId = stStyle.id;
+  if (stStyle) await subtitleText.setTextStyleIdAsync(stStyle.id);
   var subtitleHex = resolveColorTokenToHex(spec, subtitleToken, themeMode) || '#6B7280';
   applyColorVariable(subtitleText, 'fills', subtitleToken, subtitleHex, useStaticColors ? null : colorVarByName, subtitleToken);
   subtitleText.textAlignHorizontal = 'LEFT';
@@ -9916,7 +9942,7 @@ async function buildListItemLayout(spec, componentSpec, variant, style, context)
   metaText.characters = '12:00';
   var mtStyleName = itemSize === 'lg' ? 'Text/Body/SM' : 'Text/Caption/Base';
   var mtStyle = textStyleByName && textStyleByName[mtStyleName];
-  if (mtStyle) metaText.textStyleId = mtStyle.id;
+  if (mtStyle) await metaText.setTextStyleIdAsync(mtStyle.id);
   var metaHex = resolveColorTokenToHex(spec, metaColorToken, themeMode) || '#6B7280';
   applyColorVariable(metaText, 'fills', metaColorToken, metaHex, useStaticColors ? null : colorVarByName, metaColorToken);
   metaText.textAlignHorizontal = 'RIGHT';
@@ -9926,7 +9952,7 @@ async function buildListItemLayout(spec, componentSpec, variant, style, context)
   comp.appendChild(metaText);
 
   // Trailing Chevron
-  var chevronSlot = makeIconSlot('Trailing Chevron', 'chevron-right', trailingType === 'chevron');
+  var chevronSlot = await makeIconSlot('Trailing Chevron', 'chevron-right', trailingType === 'chevron');
   paintIconNode(chevronSlot.instance, iconColorToken);
   comp.appendChild(chevronSlot.wrapper);
 
@@ -10256,7 +10282,7 @@ async function buildImageLayout(spec, componentSpec, variant, style, context) {
       lbl.characters = text;
       if (tsName) {
         var lblTS = textStyleByName && textStyleByName[tsName];
-        if (lblTS) try { lbl.textStyleId = lblTS.id; } catch (e) {}
+        if (lblTS) try { await lbl.setTextStyleIdAsync(lblTS.id); } catch (e) {}
       }
       var lblPaint = { type: 'SOLID', color: hexToRgb01(lblHex), visible: true, opacity: 1 };
       if (colorVarByName && colorVarByName[colorToken] && isSemanticColorToken(colorToken) && figma.variables && figma.variables.setBoundVariableForPaint) {
@@ -10289,7 +10315,7 @@ async function buildImageLayout(spec, componentSpec, variant, style, context) {
 
     if (!cachedHash) {
       var imgNodeId = componentSpec.figmaNodeId ? String(componentSpec.figmaNodeId).replace(/-/g, ':') : null;
-      var photoNode = imgNodeId ? figma.getNodeById(imgNodeId) : null;
+      var photoNode = imgNodeId ? await figma.getNodeByIdAsync(imgNodeId) : null;
       if (photoNode && typeof photoNode.exportAsync === 'function') {
         try {
           var pngBytes = await photoNode.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 } });
@@ -10476,7 +10502,7 @@ async function buildEmptyStateLayout(spec, componentSpec, variant, style, contex
   var appearance = variant.appearance || 'base';
   var iconRole = iconRoleByAppearance[appearance] || 'exclamation-diamond-fill';
   var iconMaster = (typeof getIconMasterForRole === 'function')
-    ? (getIconMasterForRole(allIconComponents, iconRole, spec) || getIconMasterForRole(allIconComponents, 'exclamation-diamond-fill', spec))
+    ? (await getIconMasterForRole(allIconComponents, iconRole, spec) || await getIconMasterForRole(allIconComponents, 'exclamation-diamond-fill', spec))
     : null;
 
   var iconWrapper = figma.createFrame();
@@ -10549,7 +10575,7 @@ async function buildEmptyStateLayout(spec, componentSpec, variant, style, contex
     danger:  'Something went wrong'
   };
   titleNode.characters = titleByAppearance[appearance] || 'No items yet';
-  if (titleStyleObj) titleNode.textStyleId = titleStyleObj.id;
+  if (titleStyleObj) await titleNode.setTextStyleIdAsync(titleStyleObj.id);
   applyColorVariable(titleNode, 'fills', titleColorToken, titleHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
   titleNode.textAlignHorizontal = textAlign === 'CENTER' ? 'CENTER' : 'LEFT';
   titleNode.textAlignVertical = 'TOP';
@@ -10571,7 +10597,7 @@ async function buildEmptyStateLayout(spec, componentSpec, variant, style, contex
     danger:  'We couldn\'t load this data. Please try again.'
   };
   descNode.characters = descByAppearance[appearance] || componentSpec.defaultContent || 'No data found.';
-  if (descStyleObj) descNode.textStyleId = descStyleObj.id;
+  if (descStyleObj) await descNode.setTextStyleIdAsync(descStyleObj.id);
   applyColorVariable(descNode, 'fills', descColorToken, descHex, useStaticColors ? null : colorVarByName, 'color_text_muted');
   descNode.textAlignHorizontal = textAlign === 'CENTER' ? 'CENTER' : 'LEFT';
   descNode.textAlignVertical = 'TOP';
@@ -11588,75 +11614,185 @@ async function buildRatingLayout(spec, componentSpec, variant, style, context) {
 async function buildDrawerLayout(spec, componentSpec, variant, style, context) {
   var page = context.page;
   var colorVarByName = context.colorVarByName;
+  var textStyleByName = context.textStyleByName || {};
+  var useStaticColors = context.useStaticColors;
   var themeMode = context.themeMode;
   var axisOrder = context.axisOrder || [];
+  var allIconComponents = context.allIconComponents || [];
+  var getIconMasterForRoleFn = context.getIconMasterForRole;
 
   var drawerW = resolveDimension(spec, style.width, 480);
-  var drawerH = 400;
-  var padding = resolveSpaceTokenToPixels(spec, 'space_page_x') || 24;
+  var drawerH = 480;
+  var drawerSize = variant.size || 'md';
+  var paddingMap = { sm: 16, md: 20, lg: 24 };
+  var headerPadMap = { sm: 12, md: 16, lg: 20 };
+  var padding = paddingMap[drawerSize] || 20;
+  var headerPadY = headerPadMap[drawerSize] || 16;
 
   var bgToken = style.background || 'color_bg_base';
   var borderToken = style.borderColor || 'color_border_base';
   var textToken = style.headerTextColor || 'color_text_primary';
+  var secondaryTextToken = 'color_text_secondary';
   var bgHex = resolveColorTokenToHex(spec, bgToken, themeMode) || '#FFFFFF';
   var borderHex = resolveColorTokenToHex(spec, borderToken, themeMode) || '#E5E7EB';
   var textHex = resolveColorTokenToHex(spec, textToken, themeMode) || '#1a1a1a';
+  var scrimHex = resolveColorTokenToHex(spec, 'color_overlay_scrim', themeMode) || '#000000';
 
+  var isLeft = variant.side === 'left';
+
+  // --- Root: horizontal container with overlay + panel ---
   var comp = figma.createComponent();
   comp.name = getVariantName(variant, axisOrder) || 'size=md, side=right';
-  comp.layoutMode = 'VERTICAL';
-  comp.resize(drawerW, drawerH);
+  comp.layoutMode = 'HORIZONTAL';
+  comp.primaryAxisSizingMode = 'FIXED';
+  comp.counterAxisSizingMode = 'FIXED';
+  comp.resize(drawerW + 80, drawerH);
   comp.paddingTop = 0; comp.paddingBottom = 0; comp.paddingLeft = 0; comp.paddingRight = 0;
   comp.cornerRadius = 0;
-  applyColorVariable(comp, 'fills', bgToken, bgHex, colorVarByName);
-  var isLeft = variant.side === 'left';
+  comp.fills = [];
+  comp.clipsContent = true;
+
+  // --- Overlay scrim ---
+  var overlay = figma.createFrame();
+  overlay.name = 'Overlay';
+  overlay.layoutMode = 'VERTICAL';
+  overlay.primaryAxisSizingMode = 'FIXED';
+  overlay.counterAxisSizingMode = 'FIXED';
+  overlay.resize(80, drawerH);
+  overlay.layoutGrow = 1;
+  overlay.layoutAlign = 'STRETCH';
+  overlay.fills = [{ type: 'SOLID', color: hexToRgb01(scrimHex), visible: true, opacity: 0.4 }];
+  overlay.strokes = [];
+
+  // --- Panel ---
+  var panel = figma.createFrame();
+  panel.name = 'Panel';
+  panel.layoutMode = 'VERTICAL';
+  panel.primaryAxisSizingMode = 'FIXED';
+  panel.counterAxisSizingMode = 'FIXED';
+  panel.resize(drawerW, drawerH);
+  panel.paddingTop = 0; panel.paddingBottom = 0; panel.paddingLeft = 0; panel.paddingRight = 0;
+  panel.cornerRadius = 0;
+  applyColorVariable(panel, 'fills', bgToken, bgHex, useStaticColors ? null : colorVarByName);
+  var borderPaint = { type: 'SOLID', color: hexToRgb01(borderHex), visible: true, opacity: 1 };
+  if (!useStaticColors && colorVarByName && colorVarByName[borderToken] && isSemanticColorToken(borderToken) && figma.variables && figma.variables.setBoundVariableForPaint) {
+    try { borderPaint = figma.variables.setBoundVariableForPaint(borderPaint, 'color', colorVarByName[borderToken]); } catch (e) {}
+  }
+  panel.strokes = [borderPaint];
+  panel.strokeWeight = 1;
+  panel.strokeAlign = 'INSIDE';
+  panel.effects = [{ type: 'DROP_SHADOW', color: { r: 0, g: 0, b: 0, a: 0.15 }, offset: { x: isLeft ? 4 : -4, y: 0 }, radius: 16, spread: 0, visible: true }];
+
+  // Order: overlay first for right-side, panel first for left-side
   if (isLeft) {
-    comp.strokes = [{ type: 'SOLID', color: hexToRgb01(borderHex), visible: true, opacity: 1 }];
-    comp.strokeWeight = 1; comp.strokeAlign = 'INSIDE';
+    comp.appendChild(panel);
+    comp.appendChild(overlay);
   } else {
-    comp.strokes = [{ type: 'SOLID', color: hexToRgb01(borderHex), visible: true, opacity: 1 }];
-    comp.strokeWeight = 1; comp.strokeAlign = 'INSIDE';
+    comp.appendChild(overlay);
+    comp.appendChild(panel);
   }
 
+  // --- Header ---
   var header = figma.createFrame();
   header.name = 'Header';
   header.layoutMode = 'HORIZONTAL';
+  header.primaryAxisSizingMode = 'AUTO';
+  header.counterAxisSizingMode = 'AUTO';
   header.primaryAxisAlignItems = 'SPACE_BETWEEN';
   header.counterAxisAlignItems = 'CENTER';
-  header.resize(drawerW, 56);
+  header.layoutAlign = 'STRETCH';
+  header.itemSpacing = 12;
   header.paddingLeft = padding; header.paddingRight = padding;
-  header.paddingTop = 16; header.paddingBottom = 16;
+  header.paddingTop = headerPadY; header.paddingBottom = headerPadY;
   header.fills = [];
-  header.strokes = [{ type: 'SOLID', color: hexToRgb01(borderHex), visible: true, opacity: 1 }];
-  header.strokeWeight = 1; header.strokeAlign = 'INSIDE';
+  var headerBorderPaint = { type: 'SOLID', color: hexToRgb01(borderHex), visible: true, opacity: 1 };
+  if (!useStaticColors && colorVarByName && colorVarByName[borderToken] && isSemanticColorToken(borderToken) && figma.variables && figma.variables.setBoundVariableForPaint) {
+    try { headerBorderPaint = figma.variables.setBoundVariableForPaint(headerBorderPaint, 'color', colorVarByName[borderToken]); } catch (e) {}
+  }
+  header.strokes = [headerBorderPaint];
+  header.strokeWeight = 1;
+  header.strokeAlign = 'INSIDE';
   header.strokesIncludedInLayout = false;
+  if (header.strokeBottomWeight !== undefined) {
+    header.strokeTopWeight = 0; header.strokeLeftWeight = 0; header.strokeRightWeight = 0;
+    header.strokeBottomWeight = 1;
+  }
 
   var title = figma.createText();
   title.name = 'Title';
   title.characters = 'Drawer Title';
-  title.fontSize = 18;
-  title.fontName = { family: 'Inter', style: 'Semi Bold' };
-  applyColorVariable(title, 'fills', textToken, textHex, colorVarByName);
+  var headerStyleName = style.headerTextStyle || 'Text/Body/LG';
+  var headerTextStyle = textStyleByName[headerStyleName];
+  if (headerTextStyle) await title.setTextStyleIdAsync(headerTextStyle.id);
+  else { title.fontSize = 18; title.fontName = { family: 'Inter', style: 'Semi Bold' }; }
+  applyColorVariable(title, 'fills', textToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
+  title.layoutGrow = 1;
+  title.layoutAlign = 'STRETCH';
+  if (title.textTruncation !== undefined) title.textTruncation = 'ENDING';
   header.appendChild(title);
 
-  var closeBtn = figma.createRectangle();
-  closeBtn.name = 'CloseButton';
-  closeBtn.resize(24, 24);
-  closeBtn.fills = []; closeBtn.strokes = [];
-  closeBtn.cornerRadius = 4;
-  header.appendChild(closeBtn);
+  // --- Close button icon ---
+  var closeColorToken = secondaryTextToken;
+  var closeHex = resolveColorTokenToHex(spec, closeColorToken, themeMode) || '#6B7280';
+  var closeMaster = (typeof getIconMasterForRoleFn === 'function') ? await getIconMasterForRoleFn(allIconComponents, 'close-x', spec) : null;
+  if (!closeMaster) closeMaster = (typeof getIconMasterForRoleFn === 'function') ? await getIconMasterForRoleFn(allIconComponents, 'close', spec) : null;
 
-  comp.appendChild(header);
+  var closeWrapper = figma.createFrame();
+  closeWrapper.name = 'Close';
+  closeWrapper.layoutMode = 'HORIZONTAL';
+  closeWrapper.primaryAxisSizingMode = 'FIXED';
+  closeWrapper.counterAxisSizingMode = 'FIXED';
+  closeWrapper.resize(24, 24);
+  closeWrapper.primaryAxisAlignItems = 'CENTER';
+  closeWrapper.counterAxisAlignItems = 'CENTER';
+  closeWrapper.fills = [];
+  closeWrapper.strokes = [];
+  closeWrapper.cornerRadius = 4;
+  if (closeMaster) {
+    var closeInst = closeMaster.createInstance();
+    closeInst.name = 'Close Icon';
+    try { var csc = Math.min(20 / (closeInst.width || 24), 20 / (closeInst.height || 24)); closeInst.rescale(csc); } catch (e) {}
+    try {
+      var cGlyphs = closeInst.findAll ? closeInst.findAll(function (n) { return n.type === 'VECTOR' || n.type === 'BOOLEAN_OPERATION' || n.type === 'ELLIPSE' || n.type === 'RECTANGLE'; }) : [];
+      var closePaint = { type: 'SOLID', color: hexToRgb01(closeHex), visible: true, opacity: 1 };
+      if (!useStaticColors && colorVarByName && colorVarByName[closeColorToken] && isSemanticColorToken(closeColorToken) && figma.variables && figma.variables.setBoundVariableForPaint) {
+        try { closePaint = figma.variables.setBoundVariableForPaint(closePaint, 'color', colorVarByName[closeColorToken]); } catch (e) {}
+      }
+      for (var ci = 0; ci < cGlyphs.length; ci++) { try { if ('fills' in cGlyphs[ci] && cGlyphs[ci].fills && cGlyphs[ci].fills.length) { var cf = cGlyphs[ci].fills.slice(); cf[0] = closePaint; cGlyphs[ci].fills = cf; } } catch (e) {} }
+    } catch (e) {}
+    closeWrapper.appendChild(closeInst);
+  }
+  header.appendChild(closeWrapper);
+  panel.appendChild(header);
 
+  // --- Body / Content ---
   var body = figma.createFrame();
-  body.name = 'Body';
+  body.name = 'Content';
   body.layoutMode = 'VERTICAL';
-  body.resize(drawerW, drawerH - 56);
-  body.paddingLeft = padding; body.paddingRight = padding;
-  body.paddingTop = 16; body.paddingBottom = 16;
-  body.fills = [];
+  body.primaryAxisSizingMode = 'FIXED';
+  body.counterAxisSizingMode = 'AUTO';
+  body.layoutAlign = 'STRETCH';
   body.layoutGrow = 1;
-  comp.appendChild(body);
+  body.paddingLeft = padding; body.paddingRight = padding;
+  body.paddingTop = padding; body.paddingBottom = padding;
+  body.fills = [];
+  body.strokes = [];
+  body.itemSpacing = 8;
+
+  var placeholder = figma.createText();
+  placeholder.name = 'Placeholder';
+  placeholder.characters = 'Drawer content goes here.';
+  placeholder.fontSize = 14;
+  placeholder.fontName = { family: 'Inter', style: 'Regular' };
+  var placeholderHex = resolveColorTokenToHex(spec, 'color_text_muted', themeMode) || '#9CA3AF';
+  applyColorVariable(placeholder, 'fills', 'color_text_muted', placeholderHex, useStaticColors ? null : colorVarByName, 'color_text_muted');
+  placeholder.layoutAlign = 'STRETCH';
+  body.appendChild(placeholder);
+  panel.appendChild(body);
+
+  // --- Component properties ---
+  var titleKey = comp.addComponentProperty('Title', 'TEXT', 'Drawer Title');
+  title.componentPropertyReferences = { characters: titleKey };
 
   page.appendChild(comp);
   return comp;
@@ -11717,6 +11853,295 @@ async function buildFileUploadLayout(spec, componentSpec, variant, style, contex
   return comp;
 }
 
+/* ─── Toast ─── */
+async function buildToastLayout(spec, componentSpec, variant, style, context) {
+  var page = context.page;
+  var colorVarByName = context.colorVarByName;
+  var spaceVarByName = context.spaceVarByName;
+  var radiusVarByName = context.radiusVarByName;
+  var textStyleByName = context.textStyleByName;
+  var useStaticColors = context.useStaticColors;
+  var themeMode = context.themeMode;
+  var axisOrder = context.axisOrder || [];
+  var allIconComponents = context.allIconComponents || [];
+  var getIconMasterForRoleFn = context.getIconMasterForRole;
+
+  var toastW = resolveDimension(spec, style.width, 360);
+
+  var comp = figma.createComponent();
+  comp.name = getVariantName(variant, axisOrder) || 'appearance=info';
+  comp.layoutMode = 'HORIZONTAL';
+  comp.primaryAxisSizingMode = 'FIXED';
+  comp.counterAxisSizingMode = 'AUTO';
+  comp.primaryAxisAlignItems = 'MIN';
+  comp.counterAxisAlignItems = 'MIN';
+  comp.resize(toastW, 10);
+  var gap = resolveSpaceTokenToPixels(spec, style.gap || 'space_8') || 8;
+  comp.itemSpacing = gap;
+
+  var padX = resolveSpaceTokenToPixels(spec, style.paddingX || 'space_12') || 12;
+  var padY = resolveSpaceTokenToPixels(spec, style.paddingY || 'space_12') || 12;
+  comp.paddingLeft = padX; comp.paddingRight = padX;
+  comp.paddingTop = padY; comp.paddingBottom = padY;
+
+  var radToken = style.borderRadius || 'radius_default';
+  var radVar = radiusVarByName[radToken];
+  if (radVar && comp.setBoundVariable) {
+    comp.setBoundVariable('cornerRadius', radVar);
+  } else {
+    comp.cornerRadius = resolveRadiusToPixels(spec, radToken) || 8;
+  }
+
+  var bgToken = style.background || 'color_surface_1';
+  var bgHex = resolveColorTokenToHex(spec, bgToken, themeMode) || '#FFFFFF';
+  applyColorVariable(comp, 'fills', bgToken, bgHex, useStaticColors ? null : colorVarByName, 'color_surface_1');
+
+  var borderToken = style.borderColor;
+  if (borderToken) {
+    var borderHex = resolveColorTokenToHex(spec, borderToken, themeMode) || '#E5E7EB';
+    applyColorVariable(comp, 'strokes', borderToken, borderHex, useStaticColors ? null : colorVarByName, 'color_border_base');
+    comp.strokeWeight = 1;
+    comp.strokeAlign = 'INSIDE';
+  }
+
+  var elevToken = style.elevationToken;
+  if (elevToken && spec.tokens && spec.tokens.effect && spec.tokens.effect[elevToken]) {
+    var elevLayers = spec.tokens.effect[elevToken];
+    if (Array.isArray(elevLayers) && elevLayers.length > 0) {
+      comp.effects = elevLayers.map(function (l) {
+        var op = (l.opacity != null ? l.opacity : 12) / 100;
+        return { type: 'DROP_SHADOW', offset: { x: l.x != null ? l.x : 0, y: l.y != null ? l.y : 0 }, radius: l.blur != null ? l.blur : 8, spread: l.spread != null ? l.spread : 0, color: { r: 0, g: 0, b: 0, a: op }, visible: true, blendMode: 'NORMAL' };
+      });
+    }
+  } else if (elevToken) {
+    comp.effects = [{ type: 'DROP_SHADOW', offset: { x: 0, y: 4 }, radius: 12, spread: -2, color: { r: 0, g: 0, b: 0, a: 0.12 }, visible: true, blendMode: 'NORMAL' }];
+  }
+
+  // --- Icon slot ---
+  var iconColorToken = style.iconColor || 'color_text_primary';
+  var iconHex = resolveColorTokenToHex(spec, iconColorToken, themeMode) || '#3B82F6';
+  var iconRoleMap = { info: 'exclamation-diamond-fill', success: 'check', warning: 'exclamation-diamond-fill', danger: 'exclamation-diamond-fill' };
+  var iconRole = iconRoleMap[variant.appearance] || 'exclamation-diamond-fill';
+  var iconMaster = (typeof getIconMasterForRoleFn === 'function') ? await getIconMasterForRoleFn(allIconComponents, iconRole, spec) : null;
+
+  var iconWrapper = figma.createFrame();
+  iconWrapper.name = 'Icon';
+  iconWrapper.layoutMode = 'HORIZONTAL';
+  iconWrapper.primaryAxisSizingMode = 'FIXED';
+  iconWrapper.counterAxisSizingMode = 'FIXED';
+  iconWrapper.resize(20, 20);
+  iconWrapper.primaryAxisAlignItems = 'CENTER';
+  iconWrapper.counterAxisAlignItems = 'CENTER';
+  iconWrapper.fills = [];
+  iconWrapper.strokes = [];
+  if (iconMaster) {
+    var iconInst = iconMaster.createInstance();
+    iconInst.name = 'Icon Glyph';
+    try { var sc = Math.min(20 / (iconInst.width || 24), 20 / (iconInst.height || 24)); iconInst.rescale(sc); } catch (e) {}
+    try {
+      var glyphs = iconInst.findAll ? iconInst.findAll(function (n) { return n.type === 'VECTOR' || n.type === 'BOOLEAN_OPERATION' || n.type === 'ELLIPSE' || n.type === 'RECTANGLE'; }) : [];
+      var iconPaint = { type: 'SOLID', color: hexToRgb01(iconHex), visible: true, opacity: 1 };
+      if (!useStaticColors && colorVarByName && colorVarByName[iconColorToken] && isSemanticColorToken(iconColorToken) && figma.variables && figma.variables.setBoundVariableForPaint) {
+        try { iconPaint = figma.variables.setBoundVariableForPaint(iconPaint, 'color', colorVarByName[iconColorToken]); } catch (e) {}
+      }
+      for (var gi = 0; gi < glyphs.length; gi++) { try { if ('fills' in glyphs[gi] && glyphs[gi].fills && glyphs[gi].fills.length) { var f = glyphs[gi].fills.slice(); f[0] = iconPaint; glyphs[gi].fills = f; } } catch (e) {} }
+    } catch (e) {}
+    iconWrapper.appendChild(iconInst);
+  }
+  comp.appendChild(iconWrapper);
+
+  // --- Text group (Title + Description) ---
+  var textGroup = figma.createFrame();
+  textGroup.name = 'Text';
+  textGroup.layoutMode = 'VERTICAL';
+  textGroup.primaryAxisSizingMode = 'AUTO';
+  textGroup.counterAxisSizingMode = 'AUTO';
+  textGroup.itemSpacing = 2;
+  textGroup.fills = [];
+  textGroup.strokes = [];
+  textGroup.layoutGrow = 1;
+  textGroup.layoutAlign = 'STRETCH';
+
+  var textColorToken = style.textColor || 'color_text_primary';
+  var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
+
+  var titleNode = figma.createText();
+  titleNode.name = 'Title';
+  var appearanceLabels = { info: 'Information', success: 'Success', warning: 'Warning', danger: 'Error' };
+  titleNode.characters = appearanceLabels[variant.appearance] || 'Notification';
+  var titleStyleName = style.textStyle || 'Text/Caption/Base';
+  var titleStyle = textStyleByName[titleStyleName];
+  if (titleStyle) await titleNode.setTextStyleIdAsync(titleStyle.id);
+  else { titleNode.fontSize = 13; titleNode.fontName = { family: 'Inter', style: 'Semi Bold' }; }
+  applyColorVariable(titleNode, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
+  titleNode.layoutAlign = 'STRETCH';
+  textGroup.appendChild(titleNode);
+
+  var descNode = figma.createText();
+  descNode.name = 'Description';
+  var descTexts = { info: 'Something happened.', success: 'Operation completed.', warning: 'Please review this.', danger: 'Something went wrong.' };
+  descNode.characters = descTexts[variant.appearance] || 'Notification message';
+  var descStyleName = style.descriptionTextStyle || 'Text/Body/SM';
+  var descStyle = textStyleByName[descStyleName];
+  if (descStyle) await descNode.setTextStyleIdAsync(descStyle.id);
+  else { descNode.fontSize = 12; descNode.fontName = { family: 'Inter', style: 'Regular' }; }
+  applyColorVariable(descNode, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
+  descNode.opacity = 0.8;
+  descNode.layoutAlign = 'STRETCH';
+  textGroup.appendChild(descNode);
+
+  comp.appendChild(textGroup);
+
+  // --- Close button ---
+  var closeColorToken = style.closeIconColor || 'color_text_muted';
+  var closeHex = resolveColorTokenToHex(spec, closeColorToken, themeMode) || '#6B7280';
+  var closeMaster = (typeof getIconMasterForRoleFn === 'function') ? await getIconMasterForRoleFn(allIconComponents, 'close-x', spec) : null;
+  if (!closeMaster) closeMaster = (typeof getIconMasterForRoleFn === 'function') ? await getIconMasterForRoleFn(allIconComponents, 'close', spec) : null;
+
+  var closeWrapper = figma.createFrame();
+  closeWrapper.name = 'Close';
+  closeWrapper.layoutMode = 'HORIZONTAL';
+  closeWrapper.primaryAxisSizingMode = 'FIXED';
+  closeWrapper.counterAxisSizingMode = 'FIXED';
+  closeWrapper.resize(20, 20);
+  closeWrapper.primaryAxisAlignItems = 'CENTER';
+  closeWrapper.counterAxisAlignItems = 'CENTER';
+  closeWrapper.fills = [];
+  closeWrapper.strokes = [];
+  if (closeMaster) {
+    var closeInst = closeMaster.createInstance();
+    closeInst.name = 'Close Icon';
+    try { var csc = Math.min(16 / (closeInst.width || 24), 16 / (closeInst.height || 24)); closeInst.rescale(csc); } catch (e) {}
+    try {
+      var cGlyphs = closeInst.findAll ? closeInst.findAll(function (n) { return n.type === 'VECTOR' || n.type === 'BOOLEAN_OPERATION' || n.type === 'ELLIPSE' || n.type === 'RECTANGLE'; }) : [];
+      var closePaint = { type: 'SOLID', color: hexToRgb01(closeHex), visible: true, opacity: 1 };
+      if (!useStaticColors && colorVarByName && colorVarByName[closeColorToken] && isSemanticColorToken(closeColorToken) && figma.variables && figma.variables.setBoundVariableForPaint) {
+        try { closePaint = figma.variables.setBoundVariableForPaint(closePaint, 'color', colorVarByName[closeColorToken]); } catch (e) {}
+      }
+      for (var ci = 0; ci < cGlyphs.length; ci++) { try { if ('fills' in cGlyphs[ci] && cGlyphs[ci].fills && cGlyphs[ci].fills.length) { var cf = cGlyphs[ci].fills.slice(); cf[0] = closePaint; cGlyphs[ci].fills = cf; } } catch (e) {} }
+    } catch (e) {}
+    closeWrapper.appendChild(closeInst);
+  }
+  comp.appendChild(closeWrapper);
+
+  // --- Component properties ---
+  var titleKey = comp.addComponentProperty('Title', 'TEXT', titleNode.characters);
+  titleNode.componentPropertyReferences = { characters: titleKey };
+  var descKey = comp.addComponentProperty('Description', 'TEXT', descNode.characters);
+  descNode.componentPropertyReferences = { characters: descKey };
+  var iconOnKey = comp.addComponentProperty('Show Icon', 'BOOLEAN', true);
+  iconWrapper.componentPropertyReferences = { visible: iconOnKey };
+  var closeOnKey = comp.addComponentProperty('Show Close', 'BOOLEAN', true);
+  closeWrapper.componentPropertyReferences = { visible: closeOnKey };
+
+  page.appendChild(comp);
+  return comp;
+}
+
+/* ─── Popover ─── */
+async function buildPopoverLayout(spec, componentSpec, variant, style, context) {
+  var page = context.page;
+  var colorVarByName = context.colorVarByName;
+  var spaceVarByName = context.spaceVarByName;
+  var radiusVarByName = context.radiusVarByName;
+  var textStyleByName = context.textStyleByName;
+  var useStaticColors = context.useStaticColors;
+  var themeMode = context.themeMode;
+  var axisOrder = context.axisOrder || [];
+
+  var comp = figma.createComponent();
+  comp.name = getVariantName(variant, axisOrder) || 'default';
+  comp.layoutMode = 'VERTICAL';
+  comp.primaryAxisSizingMode = 'AUTO';
+  comp.counterAxisSizingMode = 'AUTO';
+  comp.primaryAxisAlignItems = 'MIN';
+  comp.counterAxisAlignItems = 'MIN';
+  comp.itemSpacing = 0;
+
+  var padX = resolveSpaceTokenToPixels(spec, style.paddingX || 'space_button_x_md') || 16;
+  var padY = resolveSpaceTokenToPixels(spec, style.paddingY || 'space_button_y_md') || 12;
+  comp.paddingLeft = padX; comp.paddingRight = padX;
+  comp.paddingTop = padY; comp.paddingBottom = padY;
+
+  var radToken = style.borderRadius || 'radius_default';
+  var radVar = radiusVarByName[radToken];
+  if (radVar && comp.setBoundVariable) {
+    comp.setBoundVariable('cornerRadius', radVar);
+  } else {
+    comp.cornerRadius = resolveRadiusToPixels(spec, radToken) || 8;
+  }
+
+  var bgToken = style.background || 'color_surface_1';
+  var bgHex = resolveColorTokenToHex(spec, bgToken, themeMode) || '#FFFFFF';
+  applyColorVariable(comp, 'fills', bgToken, bgHex, useStaticColors ? null : colorVarByName, 'color_surface_1');
+
+  var borderToken = style.borderColor || 'color_border_base';
+  var borderHex = resolveColorTokenToHex(spec, borderToken, themeMode) || '#E5E7EB';
+  applyColorVariable(comp, 'strokes', borderToken, borderHex, useStaticColors ? null : colorVarByName, 'color_border_base');
+  comp.strokeWeight = 1;
+  comp.strokeAlign = 'INSIDE';
+
+  var contentFrame = figma.createFrame();
+  contentFrame.name = 'Content';
+  contentFrame.layoutMode = 'VERTICAL';
+  contentFrame.primaryAxisSizingMode = 'AUTO';
+  contentFrame.counterAxisSizingMode = 'AUTO';
+  contentFrame.fills = [];
+
+  var placeholder = figma.createText();
+  placeholder.name = 'Placeholder';
+  placeholder.characters = 'Popover content';
+  var textStyleName = style.textStyle || 'Text/Body/Base';
+  var boundTextStyle = textStyleByName[textStyleName];
+  if (boundTextStyle) await placeholder.setTextStyleIdAsync(boundTextStyle.id);
+  var textColorToken = style.textColor || 'color_text_primary';
+  var textHex = resolveColorTokenToHex(spec, textColorToken, themeMode) || '#111827';
+  applyColorVariable(placeholder, 'fills', textColorToken, textHex, useStaticColors ? null : colorVarByName, 'color_text_primary');
+  contentFrame.appendChild(placeholder);
+
+  comp.appendChild(contentFrame);
+  comp.resize(280, comp.height);
+
+  page.appendChild(comp);
+  return comp;
+}
+
+/* ─── GridContainer ─── */
+async function buildGridContainerLayout(spec, componentSpec, variant, style, context) {
+  var page = context.page;
+  var colorVarByName = context.colorVarByName;
+  var useStaticColors = context.useStaticColors;
+  var themeMode = context.themeMode;
+  var axisOrder = context.axisOrder || [];
+
+  var comp = figma.createComponent();
+  comp.name = getVariantName(variant, axisOrder) || 'default';
+  comp.layoutMode = 'HORIZONTAL';
+  comp.layoutWrap = 'WRAP';
+  comp.primaryAxisSizingMode = 'FIXED';
+  comp.counterAxisSizingMode = 'AUTO';
+  comp.primaryAxisAlignItems = 'MIN';
+  comp.counterAxisAlignItems = 'MIN';
+  comp.itemSpacing = 16;
+  comp.counterAxisSpacing = 16;
+
+  comp.resize(960, 200);
+
+  for (var ci = 0; ci < 12; ci++) {
+    var cell = figma.createFrame();
+    cell.name = 'Col ' + (ci + 1);
+    cell.layoutAlign = 'STRETCH';
+    cell.layoutGrow = 1;
+    cell.resize(64, 48);
+    cell.fills = [{ type: 'SOLID', color: hexToRgb01('#EEF2FF'), visible: true, opacity: 0.5 }];
+    cell.cornerRadius = 4;
+    comp.appendChild(cell);
+  }
+
+  page.appendChild(comp);
+  return comp;
+}
+
 COMPONENT_LAYOUT_BUILDERS['@UI/Button'] = buildButtonLayout;
 COMPONENT_LAYOUT_BUILDERS['@UI/Badge'] = buildBadgeLayout;
 COMPONENT_LAYOUT_BUILDERS['@UI/Tab'] = buildTabLayout;
@@ -11769,6 +12194,9 @@ COMPONENT_LAYOUT_BUILDERS['@UI/RangeSlider']       = buildRangeSliderLayout;
 COMPONENT_LAYOUT_BUILDERS['@UI/Rating']            = buildRatingLayout;
 COMPONENT_LAYOUT_BUILDERS['@UI/Drawer']            = buildDrawerLayout;
 COMPONENT_LAYOUT_BUILDERS['@UI/FileUpload']        = buildFileUploadLayout;
+COMPONENT_LAYOUT_BUILDERS['@UI/Toast']              = buildToastLayout;
+COMPONENT_LAYOUT_BUILDERS['@UI/Popover']            = buildPopoverLayout;
+COMPONENT_LAYOUT_BUILDERS['@UI/GridContainer']      = buildGridContainerLayout;
 
 /**
  * Раскладывает варианты component set в решётку по логике кнопок:
@@ -12095,7 +12523,7 @@ async function wrapComponentSetInSection(page, componentSet, componentSpec, vari
     title.name = 'Title';
     title.characters = componentSpec.name || 'Component';
     var titleStyle = textStyleByName && textStyleByName['Text/Heading/H1'];
-    if (titleStyle) { title.textStyleId = titleStyle.id; }
+    if (titleStyle) { await title.setTextStyleIdAsync(titleStyle.id); }
     else { title.fontSize = 24; title.fontName = { family: 'Inter', style: 'Semi Bold' }; }
     var brandHex = '#5B9CFF';
     var brandPaint = { type: 'SOLID', color: hexToRgb01(brandHex), visible: true, opacity: 1 };
@@ -12115,7 +12543,7 @@ async function wrapComponentSetInSection(page, componentSet, componentSpec, vari
     subtitle.name = 'Subtitle';
     subtitle.characters = variantCount + ' variants' + (axisLabels.length ? '  ·  ' + axisLabels.join(' · ') : '');
     var subtitleStyle = textStyleByName && textStyleByName['Text/Body/SM'];
-    if (subtitleStyle) { subtitle.textStyleId = subtitleStyle.id; }
+    if (subtitleStyle) { await subtitle.setTextStyleIdAsync(subtitleStyle.id); }
     else { subtitle.fontSize = 12; subtitle.fontName = { family: 'Inter', style: 'Regular' }; }
     applyColorVariable(subtitle, 'fills', 'color_text_muted', '#6B7280', colorVarByName);
 
@@ -12152,7 +12580,7 @@ async function wrapComponentSetInSection(page, componentSet, componentSpec, vari
     descNode.name = 'Description';
     descNode.characters = descText;
     var descStyle = textStyleByName && textStyleByName['Text/Caption/Base'];
-    if (descStyle) { descNode.textStyleId = descStyle.id; }
+    if (descStyle) { await descNode.setTextStyleIdAsync(descStyle.id); }
     else { descNode.fontSize = 12; descNode.fontName = { family: 'Inter', style: 'Regular' }; }
     applyColorVariable(descNode, 'fills', 'color_text_primary', '#374151', colorVarByName);
     if (descNode.textAutoResize !== undefined) descNode.textAutoResize = 'HEIGHT';
@@ -12446,7 +12874,7 @@ async function buildIconContext(spec, context, page) {
   var allIconComponents = collectIconComponents();
   var iconSets = collectIconComponentSets();
 
-  var brandMaster = getIconMasterForRole(allIconComponents, 'brand', spec);
+  var brandMaster = await getIconMasterForRole(allIconComponents, 'brand', spec);
   if (brandMaster) {
     iconMasterDefault = brandMaster;
     iconMasterBySize.sm = brandMaster;
@@ -12503,7 +12931,8 @@ async function generateButtonComponent(spec) {
       page = figma.createPage();
       page.name = 'Components';
     }
-    figma.currentPage = page;
+    await figma.loadAllPagesAsync();
+    await figma.setCurrentPageAsync(page);
 
     if (!buttonSpec) {
       // Fallback: если спецификация кнопки не найдена, создаём простой тестовый компонент
@@ -12521,7 +12950,7 @@ async function generateButtonComponent(spec) {
       for (var fi = 0; fi < localStyles.length; fi++) { if (localStyles[fi].name === 'Text/Body/Base') { fallbackStyle = localStyles[fi]; break; } }
       var labelFallback = figma.createText();
       labelFallback.characters = 'Button';
-      if (fallbackStyle) labelFallback.textStyleId = fallbackStyle.id;
+      if (fallbackStyle) await labelFallback.setTextStyleIdAsync(fallbackStyle.id);
       else postStatus('Текстовый стиль Text/Body/Base не найден для fallback-кнопки.');
       labelFallback.fills = [{ type: 'SOLID', color: hexToRgb01('#FFFFFF') }];
       labelFallback.x = 40;
@@ -12936,7 +13365,8 @@ async function generateTagRowComponent(spec) {
       page = figma.createPage();
       page.name = 'Components';
     }
-    figma.currentPage = page;
+    await figma.loadAllPagesAsync();
+    await figma.setCurrentPageAsync(page);
 
     var tagSet = null;
     var tagChildren = page.findAll ? page.findAll(function (n) { return n.type === 'COMPONENT_SET' && n.name === '@UI/Tag'; }) : [];
@@ -13028,7 +13458,8 @@ async function generateBadgeComponent(spec) {
       page = figma.createPage();
       page.name = 'Components';
     }
-    figma.currentPage = page;
+    await figma.loadAllPagesAsync();
+    await figma.setCurrentPageAsync(page);
 
     if (!badgeSpec) {
       postStatus('Спек @UI/Badge не найден');
@@ -13217,7 +13648,8 @@ async function generateComponentSet(spec, componentName) {
       page = figma.createPage();
       page.name = 'Components';
     }
-    figma.currentPage = page;
+    await figma.loadAllPagesAsync();
+    await figma.setCurrentPageAsync(page);
 
     if (componentName) {
       var componentsSpec = Array.isArray(spec.components) ? spec.components : [];
@@ -13246,7 +13678,7 @@ async function generateComponentSet(spec, componentName) {
       await figma.loadFontAsync({ family: 'Inter', style: 'Semi Bold' });
       var variants = buildVariantsFromSpec(componentSpec);
       // Для @UI/Tab, @UI/Tag, @UI/Input, @UI/SectionHeader, @UI/FormHint, @UI/Tooltip, @UI/Captcha — полная матрица.
-      var fullMatrixComponents = ['@UI/Button', '@UI/Badge', '@UI/Tab', '@UI/Tag', '@UI/Chip', '@UI/Input', '@UI/DropdownItem', '@UI/Dropdown', '@UI/Divider', '@UI/Textarea', '@UI/SectionHeader', '@UI/FormHint', '@UI/Link', '@UI/PinInput', '@UI/LinearProgress', '@UI/CircularProgress', '@UI/Slider', '@UI/ScrollBar', '@UI/Tooltip', '@UI/Captcha', '@UI/Card', '@UI/Paragraph', '@UI/Switch', '@UI/Checkbox', '@UI/RadioButton', '@UI/Avatar', '@UI/Accordion', '@UI/Alert', '@UI/Breadcrumb', '@UI/Modal', '@UI/Pagination', '@UI/AutocompleteItem', '@UI/Autocomplete', '@UI/Spinner', '@UI/Table/HeaderCell', '@UI/Table/Cell', '@UI/Table/HeaderRow', '@UI/Table/Row', '@UI/Table', '@UI/Image', '@UI/ListItem', '@UI/EmptyState', '@UI/Select', '@UI/RangeSlider', '@UI/Rating', '@UI/Drawer', '@UI/FileUpload'];
+      var fullMatrixComponents = ['@UI/Button', '@UI/Badge', '@UI/Tab', '@UI/Tag', '@UI/Chip', '@UI/Input', '@UI/DropdownItem', '@UI/Dropdown', '@UI/Divider', '@UI/Textarea', '@UI/SectionHeader', '@UI/FormHint', '@UI/Link', '@UI/PinInput', '@UI/LinearProgress', '@UI/CircularProgress', '@UI/Slider', '@UI/ScrollBar', '@UI/Tooltip', '@UI/Captcha', '@UI/Card', '@UI/Paragraph', '@UI/Switch', '@UI/Checkbox', '@UI/RadioButton', '@UI/Avatar', '@UI/Accordion', '@UI/Alert', '@UI/Breadcrumb', '@UI/Modal', '@UI/Pagination', '@UI/AutocompleteItem', '@UI/Autocomplete', '@UI/Spinner', '@UI/Table/HeaderCell', '@UI/Table/Cell', '@UI/Table/HeaderRow', '@UI/Table/Row', '@UI/Table', '@UI/Image', '@UI/ListItem', '@UI/EmptyState', '@UI/Select', '@UI/RangeSlider', '@UI/Rating', '@UI/Drawer', '@UI/FileUpload', '@UI/Toast'];
       if (fullMatrixComponents.indexOf(componentSpec.name) < 0) {
         variants = pickPreviewVariantsForComponent(componentSpec, variants);
       }
@@ -13304,7 +13736,10 @@ async function generateComponentSet(spec, componentName) {
         '@UI/RangeSlider':      {},
         '@UI/Rating':           {},
         '@UI/Drawer':           { needsIcons: 'basic' },
-        '@UI/FileUpload':       { needsIcons: 'basic' }
+        '@UI/FileUpload':       { needsIcons: 'basic' },
+        '@UI/Toast':            { needsIcons: 'basic' },
+        '@UI/Popover':          {},
+        '@UI/GridContainer':    {}
       };
       var ctxCfg = COMPONENT_CONTEXT_CONFIG[componentSpec.name];
       if (ctxCfg && ctxCfg.needsIcons) {
@@ -13595,6 +14030,761 @@ async function generateComponentSet(spec, componentName) {
   }
 }
 
+// -------- Block layout builders (custom per-block) --------
+var BLOCK_LAYOUT_BUILDERS = {};
+
+async function buildBlockMetricRow(block, ctx) {
+  var spec = ctx.spec;
+  var page = ctx.page;
+  var colorVarByName = ctx.colorVarByName;
+  var textStyleByName = ctx.textStyleByName;
+  var themeMode = ctx.themeMode;
+  var useStaticColors = ctx.useStaticColors;
+
+  var section = figma.createSection();
+  section.name = block.name;
+
+  var sizes = (block.variantAxes && block.variantAxes.size) || ['sm', 'md'];
+  var rules = block.variantRules || [];
+
+  var variantComponents = [];
+
+  for (var si = 0; si < sizes.length; si++) {
+    var size = sizes[si];
+    var style = {};
+    for (var ri = 0; ri < rules.length; ri++) {
+      var rule = rules[ri];
+      if (!rule.when || !rule.when.size || rule.when.size === size) {
+        for (var k in rule.style) style[k] = rule.style[k];
+      }
+    }
+
+    var gapPx = resolveSpaceTokenToPixels(spec, style.gap || 'space_2') || 2;
+
+    var comp = figma.createComponent();
+    comp.name = 'size=' + size;
+    comp.layoutMode = 'VERTICAL';
+    comp.primaryAxisSizingMode = 'AUTO';
+    comp.counterAxisSizingMode = 'AUTO';
+    comp.itemSpacing = gapPx;
+    comp.fills = [];
+    comp.strokes = [];
+    comp.resize(220, 10);
+    comp.primaryAxisSizingMode = 'AUTO';
+    comp.counterAxisSizingMode = 'FIXED';
+
+    var mutedToken = 'color_text_muted';
+    var mutedHex = resolveColorTokenToHex(spec, mutedToken, themeMode) || '#6B7280';
+    var brandToken = 'color_brand_primary';
+    var brandHex = resolveColorTokenToHex(spec, brandToken, themeMode) || '#3B82F6';
+    var successToken = 'color_success_base';
+    var successHex = resolveColorTokenToHex(spec, successToken, themeMode) || '#22C55E';
+
+    // --- Label ---
+    var labelNode = figma.createText();
+    labelNode.name = 'Label';
+    labelNode.characters = 'Revenue';
+    var labelStyleName = style.labelStyle || 'Text/Caption/XS';
+    var labelStyle = textStyleByName[labelStyleName];
+    if (labelStyle) await labelNode.setTextStyleIdAsync(labelStyle.id);
+    else { labelNode.fontSize = size === 'sm' ? 10 : 12; labelNode.fontName = { family: 'Inter', style: 'Medium' }; }
+    applyColorVariable(labelNode, 'fills', mutedToken, mutedHex, useStaticColors ? null : colorVarByName, mutedToken);
+    labelNode.layoutAlign = 'STRETCH';
+    comp.appendChild(labelNode);
+
+    // --- Value row ---
+    var valueRow = figma.createFrame();
+    valueRow.name = 'ValueRow';
+    valueRow.layoutMode = 'HORIZONTAL';
+    valueRow.primaryAxisSizingMode = 'AUTO';
+    valueRow.counterAxisSizingMode = 'AUTO';
+    valueRow.primaryAxisAlignItems = 'MIN';
+    valueRow.counterAxisAlignItems = 'BASELINE';
+    valueRow.itemSpacing = resolveSpaceTokenToPixels(spec, 'space_4') || 4;
+    valueRow.fills = [];
+    valueRow.strokes = [];
+    valueRow.layoutAlign = 'STRETCH';
+
+    var valueNode = figma.createText();
+    valueNode.name = 'Value';
+    valueNode.characters = '$12,480';
+    var valueStyleName = style.valueStyle || 'Text/Body/LG';
+    var valueStyle = textStyleByName[valueStyleName];
+    if (valueStyle) await valueNode.setTextStyleIdAsync(valueStyle.id);
+    else { valueNode.fontSize = size === 'sm' ? 14 : 16; valueNode.fontName = { family: 'Inter', style: 'Semi Bold' }; }
+    applyColorVariable(valueNode, 'fills', brandToken, brandHex, useStaticColors ? null : colorVarByName, brandToken);
+    valueRow.appendChild(valueNode);
+
+    var deltaNode = figma.createText();
+    deltaNode.name = 'Delta';
+    deltaNode.characters = '+8.2%';
+    var deltaStyleName = style.deltaStyle || 'Text/Caption/XS';
+    var deltaStyle = textStyleByName[deltaStyleName];
+    if (deltaStyle) await deltaNode.setTextStyleIdAsync(deltaStyle.id);
+    else { deltaNode.fontSize = size === 'sm' ? 10 : 12; deltaNode.fontName = { family: 'Inter', style: 'Medium' }; }
+    applyColorVariable(deltaNode, 'fills', successToken, successHex, useStaticColors ? null : colorVarByName, successToken);
+    valueRow.appendChild(deltaNode);
+
+    comp.appendChild(valueRow);
+
+    // --- Description ---
+    var descNode = figma.createText();
+    descNode.name = 'Description';
+    descNode.characters = 'vs. last month';
+    var descStyleName = style.descriptionStyle || 'Text/Caption/XS';
+    var descStyle = textStyleByName[descStyleName];
+    if (descStyle) await descNode.setTextStyleIdAsync(descStyle.id);
+    else { descNode.fontSize = size === 'sm' ? 10 : 12; descNode.fontName = { family: 'Inter', style: 'Regular' }; }
+    applyColorVariable(descNode, 'fills', mutedToken, mutedHex, useStaticColors ? null : colorVarByName, mutedToken);
+    descNode.layoutAlign = 'STRETCH';
+    comp.appendChild(descNode);
+
+    // --- Component properties ---
+    var labelKey = comp.addComponentProperty('Label', 'TEXT', 'Revenue');
+    labelNode.componentPropertyReferences = { characters: labelKey };
+    var valueKey = comp.addComponentProperty('Value', 'TEXT', '$12,480');
+    valueNode.componentPropertyReferences = { characters: valueKey };
+    var deltaKey = comp.addComponentProperty('Delta', 'TEXT', '+8.2%');
+    deltaNode.componentPropertyReferences = { characters: deltaKey };
+    var descKey = comp.addComponentProperty('Description', 'TEXT', 'vs. last month');
+    descNode.componentPropertyReferences = { characters: descKey };
+    var showDeltaKey = comp.addComponentProperty('Show Delta', 'BOOLEAN', true);
+    deltaNode.componentPropertyReferences = { characters: deltaKey, visible: showDeltaKey };
+    var showDescKey = comp.addComponentProperty('Show Description', 'BOOLEAN', true);
+    descNode.componentPropertyReferences = { characters: descKey, visible: showDescKey };
+
+    page.appendChild(comp);
+    variantComponents.push(comp);
+  }
+
+  if (variantComponents.length > 0 && figma.combineAsVariants) {
+    var componentSet = figma.combineAsVariants(variantComponents, page);
+    componentSet.name = block.name.replace('@Block/', '');
+    section.appendChild(componentSet);
+  } else {
+    for (var vc = 0; vc < variantComponents.length; vc++) {
+      section.appendChild(variantComponents[vc]);
+    }
+  }
+
+  return section;
+}
+
+BLOCK_LAYOUT_BUILDERS['@Block/MetricRow'] = buildBlockMetricRow;
+
+async function buildBlockNavbar(block, ctx) {
+  var spec = ctx.spec;
+  var page = ctx.page;
+  var colorVarByName = ctx.colorVarByName;
+  var spaceVarByName = ctx.spaceVarByName;
+  var radiusVarByName = ctx.radiusVarByName;
+  var textStyleByName = ctx.textStyleByName;
+  var themeMode = ctx.themeMode;
+  var useStaticColors = ctx.useStaticColors;
+
+  var iconCtx = await buildIconContext(spec, { colorVarByName: colorVarByName, spaceVarByName: spaceVarByName, radiusVarByName: radiusVarByName, textStyleByName: textStyleByName, useStaticColors: useStaticColors, themeMode: themeMode }, page);
+  var allIconComponents = iconCtx.allIconComponents || [];
+
+  var section = figma.createSection();
+  section.name = block.name;
+
+  var sizes = (block.variantAxes && block.variantAxes.size) || ['default', 'compact'];
+  var rules = block.variantRules || [];
+
+  var aicaMaster = await getIconMasterForRole(allIconComponents, 'brand', spec);
+  var bellMaster = await getIconMasterForRole(allIconComponents, 'bell', spec);
+  if (!bellMaster) bellMaster = await getIconMasterForRole(allIconComponents, 'bell-fill', spec);
+  var personMaster = await getIconMasterForRole(allIconComponents, 'person-circle', spec);
+  var chevronMaster = await getIconMasterForRole(allIconComponents, 'chevron-down', spec);
+  var searchMaster = await getIconMasterForRole(allIconComponents, 'search', spec);
+
+  function colorPaint(token, hex) {
+    var p = { type: 'SOLID', color: hexToRgb01(hex), visible: true, opacity: 1 };
+    if (!useStaticColors && colorVarByName && colorVarByName[token] && figma.variables && figma.variables.setBoundVariableForPaint) {
+      try { p = figma.variables.setBoundVariableForPaint(p, 'color', colorVarByName[token]); } catch (e) {}
+    }
+    return p;
+  }
+
+  function tintIcon(inst, token, hex) {
+    try {
+      var glyphs = inst.findAll ? inst.findAll(function (n) { return n.type === 'VECTOR' || n.type === 'BOOLEAN_OPERATION' || n.type === 'ELLIPSE'; }) : [];
+      var paint = colorPaint(token, hex);
+      for (var gi = 0; gi < glyphs.length; gi++) {
+        try { if ('fills' in glyphs[gi] && glyphs[gi].fills && glyphs[gi].fills.length) { var fs = glyphs[gi].fills.slice(); fs[0] = paint; glyphs[gi].fills = fs; } } catch (e) {}
+      }
+    } catch (e) {}
+  }
+
+  var bgToken = 'color_surface_1';
+  var bgHex = resolveColorTokenToHex(spec, bgToken, themeMode) || '#FFFFFF';
+  var borderToken = 'color_border_base';
+  var borderHex = resolveColorTokenToHex(spec, borderToken, themeMode) || '#E5E7EB';
+  var textToken = 'color_text_primary';
+  var textHex = resolveColorTokenToHex(spec, textToken, themeMode) || '#111827';
+  var secondaryToken = 'color_text_secondary';
+  var secondaryHex = resolveColorTokenToHex(spec, secondaryToken, themeMode) || '#6B7280';
+  var tertiaryToken = 'color_text_tertiary';
+  var tertiaryHex = resolveColorTokenToHex(spec, tertiaryToken, themeMode) || '#9CA3AF';
+  var brandToken = 'color_brand_primary';
+  var brandHex = resolveColorTokenToHex(spec, brandToken, themeMode) || '#3B82F6';
+  var surface2Token = 'color_surface_2';
+  var surface2Hex = resolveColorTokenToHex(spec, surface2Token, themeMode) || '#F3F4F6';
+
+  var variantComponents = [];
+
+  for (var si = 0; si < sizes.length; si++) {
+    var size = sizes[si];
+    var style = {};
+    for (var ri = 0; ri < rules.length; ri++) {
+      var rule = rules[ri];
+      if (!rule.when) { for (var k in rule.style) style[k] = rule.style[k]; continue; }
+      var match = true;
+      if (rule.when.size && rule.when.size !== size) match = false;
+      if (match) { for (var k2 in rule.style) style[k2] = rule.style[k2]; }
+    }
+
+    var isCompact = size === 'compact';
+    var barH = style.height || (isCompact ? 48 : 64);
+    var padY = resolveSpaceTokenToPixels(spec, style.paddingY || (isCompact ? 'space_8' : 'space_12')) || (isCompact ? 8 : 12);
+    var padX = resolveSpaceTokenToPixels(spec, 'space_24') || 24;
+    var logoGap = resolveSpaceTokenToPixels(spec, 'space_8') || 8;
+    var navGap = resolveSpaceTokenToPixels(spec, isCompact ? 'space_4' : 'space_8') || (isCompact ? 4 : 8);
+    var actionGap = resolveSpaceTokenToPixels(spec, isCompact ? 'space_8' : 'space_12') || (isCompact ? 8 : 12);
+    var navPadX = resolveSpaceTokenToPixels(spec, isCompact ? 'space_4' : 'space_8') || (isCompact ? 4 : 8);
+    var navPadY = resolveSpaceTokenToPixels(spec, isCompact ? 'space_2' : 'space_4') || (isCompact ? 2 : 4);
+    var radDefault = resolveRadiusToPixels(spec, 'radius_default') || 6;
+    var avatarSize = isCompact ? 28 : 32;
+    var logoIconSize = isCompact ? 24 : 28;
+    var iconSize = isCompact ? 18 : 20;
+
+    var comp = figma.createComponent();
+    comp.name = 'size=' + size;
+    comp.layoutMode = 'HORIZONTAL';
+    comp.primaryAxisSizingMode = 'FIXED';
+    comp.counterAxisSizingMode = 'FIXED';
+    comp.resize(1200, barH);
+    comp.paddingLeft = padX; comp.paddingRight = padX;
+    comp.paddingTop = padY; comp.paddingBottom = padY;
+    comp.primaryAxisAlignItems = 'SPACE_BETWEEN';
+    comp.counterAxisAlignItems = 'CENTER';
+    comp.itemSpacing = 0;
+    applyColorVariable(comp, 'fills', bgToken, bgHex, useStaticColors ? null : colorVarByName, bgToken);
+
+    comp.strokes = [colorPaint(borderToken, borderHex)];
+    comp.strokeWeight = 1;
+    comp.strokeAlign = 'INSIDE';
+    if (comp.strokeBottomWeight !== undefined) {
+      comp.strokeTopWeight = 0; comp.strokeLeftWeight = 0; comp.strokeRightWeight = 0;
+      comp.strokeBottomWeight = 1;
+    }
+
+    // === LEFT GROUP (logo + nav) ===
+    var leftGroup = figma.createFrame();
+    leftGroup.name = 'Left';
+    leftGroup.layoutMode = 'HORIZONTAL';
+    leftGroup.primaryAxisSizingMode = 'AUTO';
+    leftGroup.counterAxisSizingMode = 'AUTO';
+    leftGroup.counterAxisAlignItems = 'CENTER';
+    leftGroup.itemSpacing = resolveSpaceTokenToPixels(spec, 'space_16') || 16;
+    leftGroup.fills = [];
+
+    // --- Logo ---
+    var logoFrame = figma.createFrame();
+    logoFrame.name = 'Logo';
+    logoFrame.layoutMode = 'HORIZONTAL';
+    logoFrame.primaryAxisSizingMode = 'AUTO';
+    logoFrame.counterAxisSizingMode = 'AUTO';
+    logoFrame.counterAxisAlignItems = 'CENTER';
+    logoFrame.itemSpacing = logoGap;
+    logoFrame.fills = [];
+
+    if (aicaMaster) {
+      var aicaInst = aicaMaster.createInstance();
+      aicaInst.name = 'Aica Icon';
+      try { aicaInst.resize(logoIconSize, logoIconSize); } catch (e) {}
+      tintIcon(aicaInst, brandToken, brandHex);
+      logoFrame.appendChild(aicaInst);
+    }
+
+    var logoText = figma.createText();
+    logoText.name = 'Logo Text';
+    logoText.characters = 'Logo';
+    var logoStyleName = isCompact ? 'Text/Body/Strong' : 'Text/Heading/SM';
+    var logoStyle = textStyleByName[logoStyleName];
+    if (logoStyle) await logoText.setTextStyleIdAsync(logoStyle.id);
+    else { logoText.fontSize = isCompact ? 14 : 16; logoText.fontName = { family: 'Inter', style: 'Semi Bold' }; }
+    applyColorVariable(logoText, 'fills', textToken, textHex, useStaticColors ? null : colorVarByName, textToken);
+    logoFrame.appendChild(logoText);
+    leftGroup.appendChild(logoFrame);
+
+    // --- Nav links ---
+    var navFrame = figma.createFrame();
+    navFrame.name = 'Nav';
+    navFrame.layoutMode = 'HORIZONTAL';
+    navFrame.primaryAxisSizingMode = 'AUTO';
+    navFrame.counterAxisSizingMode = 'AUTO';
+    navFrame.counterAxisAlignItems = 'CENTER';
+    navFrame.itemSpacing = navGap;
+    navFrame.fills = [];
+
+    var navStyleName2 = isCompact ? 'Text/Caption/Base' : 'Text/Body/Base';
+    var navTextStyle = textStyleByName[navStyleName2];
+    var navLabels = ['Dashboard', 'Projects', 'Team', 'Reports'];
+
+    for (var ni = 0; ni < navLabels.length; ni++) {
+      var navItem = figma.createFrame();
+      navItem.name = navLabels[ni];
+      navItem.layoutMode = 'HORIZONTAL';
+      navItem.primaryAxisSizingMode = 'AUTO';
+      navItem.counterAxisSizingMode = 'AUTO';
+      navItem.counterAxisAlignItems = 'CENTER';
+      navItem.paddingLeft = navPadX; navItem.paddingRight = navPadX;
+      navItem.paddingTop = navPadY; navItem.paddingBottom = navPadY;
+      navItem.cornerRadius = radDefault;
+      navItem.fills = [];
+
+      var navLabel = figma.createText();
+      navLabel.name = 'Label';
+      navLabel.characters = navLabels[ni];
+      if (navTextStyle) await navLabel.setTextStyleIdAsync(navTextStyle.id);
+      else { navLabel.fontSize = isCompact ? 12 : 14; navLabel.fontName = { family: 'Inter', style: 'Regular' }; }
+
+      if (ni === 0) {
+        applyColorVariable(navLabel, 'fills', brandToken, brandHex, useStaticColors ? null : colorVarByName, brandToken);
+        navLabel.fontName = { family: 'Inter', style: 'Semi Bold' };
+      } else {
+        applyColorVariable(navLabel, 'fills', secondaryToken, secondaryHex, useStaticColors ? null : colorVarByName, secondaryToken);
+      }
+      navItem.appendChild(navLabel);
+      navFrame.appendChild(navItem);
+    }
+    leftGroup.appendChild(navFrame);
+    comp.appendChild(leftGroup);
+
+    // === SEARCH (optional, center area) ===
+    var searchFrame = figma.createFrame();
+    searchFrame.name = 'Search';
+    searchFrame.layoutMode = 'HORIZONTAL';
+    searchFrame.primaryAxisSizingMode = 'FIXED';
+    searchFrame.counterAxisSizingMode = 'AUTO';
+    searchFrame.counterAxisAlignItems = 'CENTER';
+    searchFrame.itemSpacing = resolveSpaceTokenToPixels(spec, 'space_8') || 8;
+    searchFrame.layoutGrow = 1;
+    searchFrame.paddingLeft = resolveSpaceTokenToPixels(spec, 'space_16') || 16;
+    searchFrame.paddingRight = resolveSpaceTokenToPixels(spec, 'space_16') || 16;
+    searchFrame.fills = [];
+
+    var searchBox = figma.createFrame();
+    searchBox.name = 'Search Box';
+    searchBox.layoutMode = 'HORIZONTAL';
+    searchBox.primaryAxisSizingMode = 'FIXED';
+    searchBox.counterAxisSizingMode = 'AUTO';
+    searchBox.counterAxisAlignItems = 'CENTER';
+    searchBox.layoutGrow = 1;
+    var searchPadX = resolveSpaceTokenToPixels(spec, 'space_8') || 8;
+    var searchPadY = resolveSpaceTokenToPixels(spec, isCompact ? 'space_4' : 'space_6') || (isCompact ? 4 : 6);
+    searchBox.paddingLeft = searchPadX; searchBox.paddingRight = searchPadX;
+    searchBox.paddingTop = searchPadY; searchBox.paddingBottom = searchPadY;
+    searchBox.itemSpacing = resolveSpaceTokenToPixels(spec, 'space_8') || 8;
+    searchBox.cornerRadius = radDefault;
+    searchBox.strokes = [colorPaint(borderToken, borderHex)];
+    searchBox.strokeWeight = 1;
+    searchBox.strokeAlign = 'INSIDE';
+    searchBox.fills = [];
+
+    if (searchMaster) {
+      var searchIconInst = searchMaster.createInstance();
+      searchIconInst.name = 'Search Icon';
+      try { searchIconInst.resize(iconSize, iconSize); } catch (e) {}
+      tintIcon(searchIconInst, tertiaryToken, tertiaryHex);
+      searchBox.appendChild(searchIconInst);
+    }
+
+    var searchPlaceholder = figma.createText();
+    searchPlaceholder.name = 'Placeholder';
+    searchPlaceholder.characters = 'Search…';
+    var searchTextStyleObj = textStyleByName[isCompact ? 'Text/Caption/Base' : 'Text/Body/Base'];
+    if (searchTextStyleObj) await searchPlaceholder.setTextStyleIdAsync(searchTextStyleObj.id);
+    else { searchPlaceholder.fontSize = isCompact ? 12 : 14; searchPlaceholder.fontName = { family: 'Inter', style: 'Regular' }; }
+    applyColorVariable(searchPlaceholder, 'fills', tertiaryToken, tertiaryHex, useStaticColors ? null : colorVarByName, tertiaryToken);
+    searchPlaceholder.layoutGrow = 1;
+    searchBox.appendChild(searchPlaceholder);
+    searchFrame.appendChild(searchBox);
+    comp.appendChild(searchFrame);
+
+    // === RIGHT GROUP (bell + avatar + username + chevron) ===
+    var rightGroup = figma.createFrame();
+    rightGroup.name = 'Right';
+    rightGroup.layoutMode = 'HORIZONTAL';
+    rightGroup.primaryAxisSizingMode = 'AUTO';
+    rightGroup.counterAxisSizingMode = 'AUTO';
+    rightGroup.counterAxisAlignItems = 'CENTER';
+    rightGroup.itemSpacing = actionGap;
+    rightGroup.fills = [];
+
+    // Bell icon wrapped in hover frame
+    var bellBtn = figma.createFrame();
+    bellBtn.name = 'Notifications';
+    bellBtn.layoutMode = 'HORIZONTAL';
+    bellBtn.primaryAxisSizingMode = 'AUTO';
+    bellBtn.counterAxisSizingMode = 'AUTO';
+    bellBtn.primaryAxisAlignItems = 'CENTER';
+    bellBtn.counterAxisAlignItems = 'CENTER';
+    var bellPad = resolveSpaceTokenToPixels(spec, 'space_8') || 8;
+    bellBtn.paddingLeft = bellPad; bellBtn.paddingRight = bellPad;
+    bellBtn.paddingTop = bellPad; bellBtn.paddingBottom = bellPad;
+    bellBtn.cornerRadius = radDefault;
+    bellBtn.fills = [];
+
+    if (bellMaster) {
+      var bellInst = bellMaster.createInstance();
+      bellInst.name = 'Bell Icon';
+      try { bellInst.resize(iconSize, iconSize); } catch (e) {}
+      tintIcon(bellInst, secondaryToken, secondaryHex);
+      bellBtn.appendChild(bellInst);
+    }
+    rightGroup.appendChild(bellBtn);
+
+    // Avatar circle
+    var avatarFrame = figma.createFrame();
+    avatarFrame.name = 'Avatar';
+    avatarFrame.layoutMode = 'HORIZONTAL';
+    avatarFrame.primaryAxisSizingMode = 'FIXED';
+    avatarFrame.counterAxisSizingMode = 'FIXED';
+    avatarFrame.resize(avatarSize, avatarSize);
+    avatarFrame.primaryAxisAlignItems = 'CENTER';
+    avatarFrame.counterAxisAlignItems = 'CENTER';
+    avatarFrame.cornerRadius = avatarSize;
+    applyColorVariable(avatarFrame, 'fills', brandToken, brandHex, useStaticColors ? null : colorVarByName, brandToken);
+
+    if (personMaster) {
+      var pInst = personMaster.createInstance();
+      pInst.name = 'Person Icon';
+      var pSize = Math.round(avatarSize * 0.6);
+      try { pInst.resize(pSize, pSize); } catch (e) {}
+      tintIcon(pInst, 'color_text_on_brand', resolveColorTokenToHex(spec, 'color_text_on_brand', themeMode) || '#FFFFFF');
+      avatarFrame.appendChild(pInst);
+    } else {
+      var initials = figma.createText();
+      initials.name = 'Initials';
+      initials.characters = 'JD';
+      var initialsStyle = textStyleByName['Text/Caption/XS'];
+      if (initialsStyle) await initials.setTextStyleIdAsync(initialsStyle.id);
+      else { initials.fontSize = 10; initials.fontName = { family: 'Inter', style: 'Semi Bold' }; }
+      applyColorVariable(initials, 'fills', 'color_text_on_brand', resolveColorTokenToHex(spec, 'color_text_on_brand', themeMode) || '#FFFFFF', useStaticColors ? null : colorVarByName, 'color_text_on_brand');
+      avatarFrame.appendChild(initials);
+    }
+    rightGroup.appendChild(avatarFrame);
+
+    // Username + chevron dropdown trigger (borderless)
+    var userDropdown = figma.createFrame();
+    userDropdown.name = 'User Dropdown';
+    userDropdown.layoutMode = 'HORIZONTAL';
+    userDropdown.primaryAxisSizingMode = 'AUTO';
+    userDropdown.counterAxisSizingMode = 'AUTO';
+    userDropdown.counterAxisAlignItems = 'CENTER';
+    userDropdown.itemSpacing = resolveSpaceTokenToPixels(spec, 'space_4') || 4;
+    userDropdown.fills = [];
+
+    var userText = figma.createText();
+    userText.name = 'Username';
+    userText.characters = 'John Doe';
+    var userTextStyle = textStyleByName[isCompact ? 'Text/Caption/Base' : 'Text/Body/Base'];
+    if (userTextStyle) await userText.setTextStyleIdAsync(userTextStyle.id);
+    else { userText.fontSize = isCompact ? 12 : 14; userText.fontName = { family: 'Inter', style: 'Regular' }; }
+    applyColorVariable(userText, 'fills', textToken, textHex, useStaticColors ? null : colorVarByName, textToken);
+    userDropdown.appendChild(userText);
+
+    if (chevronMaster) {
+      var chevInst = chevronMaster.createInstance();
+      chevInst.name = 'Chevron';
+      var chevSize = isCompact ? 14 : 16;
+      try { chevInst.resize(chevSize, chevSize); } catch (e) {}
+      tintIcon(chevInst, tertiaryToken, tertiaryHex);
+      userDropdown.appendChild(chevInst);
+    }
+    rightGroup.appendChild(userDropdown);
+    comp.appendChild(rightGroup);
+
+    // === Component properties ===
+    var logoTextKey = comp.addComponentProperty('Brand Name', 'TEXT', 'Logo');
+    logoText.componentPropertyReferences = { characters: logoTextKey };
+
+    var userTextKey = comp.addComponentProperty('Username', 'TEXT', 'John Doe');
+    userText.componentPropertyReferences = { characters: userTextKey };
+
+    page.appendChild(comp);
+    variantComponents.push(comp);
+  }
+
+  if (variantComponents.length > 0 && figma.combineAsVariants) {
+    var componentSet = figma.combineAsVariants(variantComponents, page);
+    componentSet.name = block.name.replace('@Block/', '');
+    section.appendChild(componentSet);
+  } else {
+    for (var vc = 0; vc < variantComponents.length; vc++) {
+      section.appendChild(variantComponents[vc]);
+    }
+  }
+
+  return section;
+}
+
+BLOCK_LAYOUT_BUILDERS['@Block/Navbar'] = buildBlockNavbar;
+
+// -------- Blocks generation --------
+
+async function generateBlocksPage(spec, blockName) {
+  try {
+    var allBlocks = spec.blocks || [];
+    if (allBlocks.length === 0) {
+      postStatus('Нет блоков в спецификации (spec.blocks пуст).');
+      return;
+    }
+
+    var blocks = allBlocks;
+    if (blockName) {
+      blocks = allBlocks.filter(function (b) { return b && b.name === blockName; });
+      if (blocks.length === 0) {
+        postStatus('Блок не найден: ' + blockName);
+        return;
+      }
+    }
+
+    var page = null;
+    for (var pi = 0; pi < figma.root.children.length; pi++) {
+      if (figma.root.children[pi].name === 'Blocks') {
+        page = figma.root.children[pi];
+        break;
+      }
+    }
+    if (!page) {
+      page = figma.createPage();
+      page.name = 'Blocks';
+    }
+    await figma.loadAllPagesAsync();
+    await figma.setCurrentPageAsync(page);
+
+    var colorVarByName = {};
+    var spaceVarByName = {};
+    var radiusVarByName = {};
+    try {
+      var allCollections = await figma.variables.getLocalVariableCollectionsAsync();
+      for (var ci = 0; ci < allCollections.length; ci++) {
+        var coll = allCollections[ci];
+        var varIds = coll.variableIds || [];
+        for (var vi = 0; vi < varIds.length; vi++) {
+          var v = await figma.variables.getVariableByIdAsync(varIds[vi]);
+          if (!v) continue;
+          var vName = v.name.replace(/\//g, '_');
+          if (v.resolvedType === 'COLOR') colorVarByName[vName] = v;
+          else if (v.resolvedType === 'FLOAT') {
+            if (vName.indexOf('space') === 0) spaceVarByName[vName] = v;
+            else if (vName.indexOf('radius') === 0) radiusVarByName[vName] = v;
+          }
+        }
+      }
+    } catch (eVars) { /* variables may not be generated yet */ }
+
+    await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
+    await figma.loadFontAsync({ family: 'Inter', style: 'Medium' });
+    await figma.loadFontAsync({ family: 'Inter', style: 'Semi Bold' });
+
+    var themeMode = (spec.componentsConfig && spec.componentsConfig.themeMode) || 'light';
+    var useStaticColors = spec.componentsConfig && spec.componentsConfig.useSingleTheme;
+
+    var textStyleByName = {};
+    try {
+      var allTStyles = await figma.getLocalTextStylesAsync();
+      for (var tsi = 0; tsi < allTStyles.length; tsi++) textStyleByName[allTStyles[tsi].name] = allTStyles[tsi];
+    } catch (e) {}
+
+    var blockContext = {
+      page: page,
+      spec: spec,
+      colorVarByName: colorVarByName,
+      spaceVarByName: spaceVarByName,
+      radiusVarByName: radiusVarByName,
+      textStyleByName: textStyleByName,
+      themeMode: themeMode,
+      useStaticColors: useStaticColors
+    };
+
+    var xOffset = 0;
+    var blockSpacing = 80;
+
+    for (var bi = 0; bi < blocks.length; bi++) {
+      var block = blocks[bi];
+      if (!block || !block.name) continue;
+
+      postStatus('Генерация блока: ' + block.name + ' (' + (bi + 1) + '/' + blocks.length + ')');
+
+      if (BLOCK_LAYOUT_BUILDERS[block.name]) {
+        try {
+          var customSection = await BLOCK_LAYOUT_BUILDERS[block.name](block, blockContext);
+          if (customSection) {
+            customSection.x = xOffset;
+            customSection.y = 0;
+            page.appendChild(customSection);
+            xOffset += (customSection.width || 600) + blockSpacing;
+          }
+        } catch (eBlock) {
+          postStatus('Ошибка блока ' + block.name + ': ' + eBlock.message);
+        }
+        continue;
+      }
+
+      var section = figma.createSection();
+      section.name = block.name;
+
+      var blockFrame = figma.createFrame();
+      blockFrame.name = block.name.replace('@Block/', '');
+
+      if (block.layout === 'vertical') {
+        blockFrame.layoutMode = 'VERTICAL';
+      } else {
+        blockFrame.layoutMode = 'HORIZONTAL';
+      }
+      blockFrame.primaryAxisSizingMode = 'AUTO';
+      blockFrame.counterAxisSizingMode = 'AUTO';
+      blockFrame.primaryAxisAlignItems = 'MIN';
+      blockFrame.counterAxisAlignItems = 'MIN';
+      blockFrame.itemSpacing = 8;
+
+      if (block.sizing) {
+        if (typeof block.sizing.width === 'number') {
+          blockFrame.resize(block.sizing.width, 400);
+          blockFrame.primaryAxisSizingMode = block.layout === 'vertical' ? 'AUTO' : 'FIXED';
+          blockFrame.counterAxisSizingMode = block.layout === 'vertical' ? 'FIXED' : 'AUTO';
+        } else {
+          blockFrame.resize(600, 400);
+        }
+      } else {
+        blockFrame.resize(600, 300);
+      }
+
+      var bgToken = block.tokens && block.tokens.background;
+      if (bgToken) {
+        var bgHex = resolveColorTokenToHex(spec, bgToken, themeMode) || '#FFFFFF';
+        applyColorVariable(blockFrame, 'fills', bgToken, bgHex, useStaticColors ? null : colorVarByName, 'color_bg_base');
+      } else {
+        blockFrame.fills = [{ type: 'SOLID', color: hexToRgb01('#FFFFFF'), visible: true, opacity: 1 }];
+      }
+
+      if (block.padding) {
+        var padXToken = typeof block.padding === 'string' ? block.padding : block.padding.x;
+        var padYToken = typeof block.padding === 'string' ? block.padding : block.padding.y;
+        if (padXToken) {
+          var padXPx = resolveSpaceTokenToPixels(spec, padXToken) || 16;
+          blockFrame.paddingLeft = padXPx;
+          blockFrame.paddingRight = padXPx;
+        }
+        if (padYToken) {
+          var padYPx = resolveSpaceTokenToPixels(spec, padYToken) || 16;
+          blockFrame.paddingTop = padYPx;
+          blockFrame.paddingBottom = padYPx;
+        }
+      }
+
+      if (block.gap) {
+        var gapPx = resolveSpaceTokenToPixels(spec, block.gap) || 8;
+        blockFrame.itemSpacing = gapPx;
+      }
+
+      if (block.slots && block.slots.length > 0) {
+        for (var si = 0; si < block.slots.length; si++) {
+          var slot = block.slots[si];
+          var slotFrame = figma.createFrame();
+          slotFrame.name = slot.name || ('Slot ' + (si + 1));
+
+          if (slot.layout === 'horizontal') {
+            slotFrame.layoutMode = 'HORIZONTAL';
+            slotFrame.counterAxisAlignItems = 'CENTER';
+          } else {
+            slotFrame.layoutMode = 'VERTICAL';
+          }
+          slotFrame.primaryAxisSizingMode = 'AUTO';
+          slotFrame.counterAxisSizingMode = 'AUTO';
+          slotFrame.itemSpacing = 4;
+          slotFrame.fills = [];
+
+          if (slot.grow) {
+            slotFrame.layoutGrow = 1;
+            slotFrame.layoutAlign = 'STRETCH';
+          }
+
+          if (slot.component) {
+            var compLabel = figma.createText();
+            compLabel.name = 'Component ref';
+            compLabel.characters = slot.component;
+            compLabel.fontSize = 11;
+            slotFrame.appendChild(compLabel);
+
+            if (slot.repeat) {
+              for (var ri = 0; ri < 3; ri++) {
+                var itemLabel = figma.createText();
+                itemLabel.name = 'Item ' + (ri + 1);
+                itemLabel.characters = (slot.component) + ' item ' + (ri + 1);
+                itemLabel.fontSize = 11;
+                slotFrame.appendChild(itemLabel);
+              }
+            }
+          } else if (slot.children && slot.children.length > 0) {
+            for (var chi = 0; chi < slot.children.length; chi++) {
+              var child = slot.children[chi];
+              var childFrame = figma.createFrame();
+              childFrame.name = child.name || ('Child ' + (chi + 1));
+              childFrame.layoutMode = child.layout === 'horizontal' ? 'HORIZONTAL' : 'VERTICAL';
+              childFrame.primaryAxisSizingMode = 'AUTO';
+              childFrame.counterAxisSizingMode = 'AUTO';
+              childFrame.fills = [];
+
+              if (child.type === 'text') {
+                var childText = figma.createText();
+                childText.name = child.name || 'Text';
+                childText.characters = child.default || child.name || 'Text';
+                childText.fontSize = 12;
+                childFrame.appendChild(childText);
+              } else if (child.component) {
+                var childCompLabel = figma.createText();
+                childCompLabel.name = 'Component ref';
+                childCompLabel.characters = child.component;
+                childCompLabel.fontSize = 11;
+                childFrame.appendChild(childCompLabel);
+              }
+
+              slotFrame.appendChild(childFrame);
+            }
+          } else if (slot.type === 'text') {
+            var slotText = figma.createText();
+            slotText.name = slot.name || 'Text';
+            slotText.characters = slot.default || slot.name || 'Placeholder';
+            slotText.fontSize = 12;
+            slotFrame.appendChild(slotText);
+          }
+
+          blockFrame.appendChild(slotFrame);
+        }
+      }
+
+      section.appendChild(blockFrame);
+      section.x = xOffset;
+      section.y = 0;
+      page.appendChild(section);
+
+      xOffset += (blockFrame.width || 600) + blockSpacing;
+    }
+
+    var doneMsg = blockName
+      ? ('Блок сгенерирован: ' + blockName + ' на странице "Blocks".')
+      : ('Блоки сгенерированы: ' + blocks.length + ' блоков на странице "Blocks".');
+    postStatus(doneMsg);
+  } catch (eBlocks) {
+    postStatus('Ошибка генерации блоков: ' + (eBlocks.message || String(eBlocks)));
+  }
+}
+
 // -------- Обработка сообщений из UI --------
 
 figma.ui.onmessage = function (msg) {
@@ -13606,6 +14796,8 @@ figma.ui.onmessage = function (msg) {
       generateComponentSet(spec, msg.componentName || null);
     } else if (msg.type === 'export-tokens') {
       exportTokensFromFigma(spec);
+    } else if (msg.type === 'generate-blocks') {
+      generateBlocksPage(spec, msg.blockName || null);
     }
   } catch (e) {
     postStatus('Ошибка: ' + e.message);

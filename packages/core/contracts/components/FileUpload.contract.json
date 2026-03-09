@@ -172,5 +172,75 @@
       "lg": "Text/Body/LG"
     }
   },
+  "element": "div",
+  "rootLayout": "vertical",
+  "rootSizing": {
+    "main": "fill",
+    "cross": "hug"
+  },
+  "rootAlign": {
+    "main": "center",
+    "cross": "center"
+  },
+  "slots": [
+    {
+      "name": "icon",
+      "figmaName": "Icon",
+      "type": "icon",
+      "optional": false,
+      "sizing": "fixed"
+    },
+    {
+      "name": "label",
+      "figmaName": "Label",
+      "type": "text",
+      "optional": false,
+      "default": "Drop files here or click to upload",
+      "sizing": "hug"
+    },
+    {
+      "name": "hint",
+      "figmaName": "Hint",
+      "type": "text",
+      "optional": true,
+      "default": "Max file size: 10MB",
+      "sizing": "hug"
+    }
+  ],
+  "booleanProps": [
+    {
+      "name": "showHint",
+      "figmaName": "Hint",
+      "controls": "hint",
+      "default": true
+    }
+  ],
+  "textProps": [
+    {
+      "name": "label",
+      "figmaName": "Label",
+      "default": "Drop files here or click to upload"
+    },
+    {
+      "name": "hint",
+      "figmaName": "Hint",
+      "default": "Max file size: 10MB"
+    }
+  ],
+  "styleKeys": [
+    "height",
+    "borderRadius",
+    "borderWidth",
+    "borderStyle",
+    "textStyle",
+    "icon",
+    "padding",
+    "background",
+    "borderColor",
+    "textColor",
+    "iconColor",
+    "iconSize"
+  ],
+  "heightConstraint": "hug",
   "generatorStrategy": "template"
 }

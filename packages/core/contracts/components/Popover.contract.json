@@ -1,29 +1,42 @@
 {
-    "name":  "@UI/Popover",
-    "description":  "Popover: positioned floating panel anchored to a reference element. Handles viewport flip detection and animation.",
-    "variantProps":  [
-
-                     ],
-    "variantAxes":  {
-
-                    },
-    "variantRules":  [
-
-                     ],
-    "element":  "div",
-    "rootLayout":  "vertical",
-    "rootSizing":  {
-                       "main":  "hug",
-                       "cross":  "fill"
-                   },
-    "rootAlign":  {
-                      "main":  "start",
-                      "cross":  "start"
-                  },
-    "slots":  [
-
-              ],
-    "heightConstraint":  "hug",
-    "generatorStrategy":  "template",
-    "template":  "Popover"
+  "name": "@UI/Popover",
+  "description": "Popover: positioned floating panel anchored to a reference element. Handles viewport flip detection and animation.",
+  "variantProps": [],
+  "variantAxes": {},
+  "variantRules": [],
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger",
+  "element": "div",
+  "rootLayout": "vertical",
+  "rootSizing": {
+    "main": "hug",
+    "cross": "fill"
+  },
+  "rootAlign": {
+    "main": "start",
+    "cross": "start"
+  },
+  "customStructure": "popover",
+  "slots": [
+    {
+      "name": "content",
+      "figmaName": "Content",
+      "type": "frame",
+      "optional": false,
+      "sizing": "fill",
+      "layout": "vertical"
+    }
+  ],
+  "styleKeys": [
+    "background",
+    "borderColor",
+    "borderRadius",
+    "paddingX",
+    "paddingY",
+    "maxWidth",
+    "elevationToken"
+  ],
+  "heightConstraint": "hug",
+  "generatorStrategy": "template",
+  "template": "Popover"
 }

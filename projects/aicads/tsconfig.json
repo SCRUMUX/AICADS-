@@ -22,7 +22,9 @@
       "@ai-ds/core/shared": ["../../packages/core/components/primitives/_shared/index.ts"],
       "@ai-ds/core/layout": ["../../packages/core/layout/index.ts"],
       "@ai-ds/core/behaviors": ["../../packages/core/behaviors/index.ts"],
-      "@ai-ds/core/utils": ["../../packages/core/utils/token-resolver.ts"]
+      "@ai-ds/core/utils": ["../../packages/core/utils/token-resolver.ts"],
+      "@ai-ds/core/blocks": ["../../packages/core/components/blocks/index.ts"],
+      "@ai-ds/core/blocks/*": ["../../packages/core/components/blocks/*/index.ts"]
     }
   },
   "include": [

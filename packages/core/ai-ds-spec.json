@@ -23,15 +23,17 @@
     "person-circle": [
       "person-circle"
     ],
-    "check": {
-      "nodeId": "61:27924"
-    },
+    "check": [
+      "check",
+      "check-lg"
+    ],
     "check2": [
       "check2"
     ],
-    "accordion-chevron": {
-      "nodeId": "61:28017"
-    },
+    "accordion-chevron": [
+      "chevron-down",
+      "caret-down-fill"
+    ],
     "accordion-chevron-open": [
       "caret-up-fill"
     ],
@@ -80,6 +82,10 @@
       "filter",
       "funnel",
       "sliders"
+    ],
+    "search": [
+      "search",
+      "magnifying-glass"
     ]
   },
   "tokens": {
@@ -681,7 +687,7 @@
       }
     },
     "ratio": {
-      "ratio_square": 1.0,
+      "ratio_square": 1,
       "ratio_4_3": 0.75,
       "ratio_16_9": 0.5625,
       "ratio_3_2": 0.6667,
@@ -2564,10 +2570,21 @@
     {
       "name": "@UI/DropdownItem",
       "description": "DropdownItem: пункт меню для Popover/Submenu. Оси: size (sm/md/lg) × itemType (default/primary/danger). Каждый вариант всегда содержит все 4 слота: Icon (left), Label, Badge, Icon (right). Видимость слотов управляется BOOLEAN props. Icon (right) — chevron или check через INSTANCE_SWAP. Используется в @UI/Dropdown через instance swap.",
-      "variantProps": ["size", "itemType"],
+      "variantProps": [
+        "size",
+        "itemType"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "itemType": ["default", "primary", "danger"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "itemType": [
+          "default",
+          "primary",
+          "danger"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -2583,7 +2600,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "textStyle": "Text/Body/SM",
             "itemPaddingX": "space_button_x_sm",
@@ -2592,7 +2611,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "itemPaddingX": "space_button_x_md",
             "itemPaddingY": "space_button_y_md",
@@ -2600,7 +2621,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "textStyle": "Text/Body/LG",
             "itemPaddingX": "space_button_x_lg",
@@ -2609,21 +2632,27 @@
           }
         },
         {
-          "when": { "itemType": "default" },
+          "when": {
+            "itemType": "default"
+          },
           "style": {
             "itemTextColor": "color_text_primary",
             "itemIconColor": "color_icon_on_base"
           }
         },
         {
-          "when": { "itemType": "primary" },
+          "when": {
+            "itemType": "primary"
+          },
           "style": {
             "itemTextColor": "color_brand_primary",
             "itemIconColor": "color_brand_primary"
           }
         },
         {
-          "when": { "itemType": "danger" },
+          "when": {
+            "itemType": "danger"
+          },
           "style": {
             "itemTextColor": "color_danger_base",
             "itemIconColor": "color_danger_base"
@@ -2634,10 +2663,20 @@
     {
       "name": "@UI/Dropdown",
       "description": "Dropdown: универсальное выпадающее меню. closed/open, size. Trigger (closed): опционально Icon (left), Label, Badge, TagRow (выбранные значения), Chevron — булевы пропы как у Input. Popover — 5 слотов (instance swap DropdownItem). Submenu — отдельная панель справа, выравнивается по родительскому пункту (withSubmenu).",
-      "variantProps": ["state", "size"],
+      "variantProps": [
+        "state",
+        "size"
+      ],
       "variantAxes": {
-        "state": ["closed", "open"],
-        "size": ["sm", "md", "lg"]
+        "state": [
+          "closed",
+          "open"
+        ],
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ]
       },
       "variants": [],
       "popoverSlotCount": 5,
@@ -2656,14 +2695,18 @@
           }
         },
         {
-          "when": { "state": "closed" },
+          "when": {
+            "state": "closed"
+          },
           "style": {
             "borderColor": "color_border_base",
             "borderSide": "all"
           }
         },
         {
-          "when": { "state": "open" },
+          "when": {
+            "state": "open"
+          },
           "style": {
             "borderColor": "color_brand_primary",
             "borderSide": "all",
@@ -2693,7 +2736,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "minWidth": "space_container_compact_min",
             "maxWidth": "space_container_compact_max",
@@ -2707,7 +2752,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "minWidth": "space_container_content_min",
             "maxWidth": "space_container_content_max",
@@ -2720,7 +2767,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "minWidth": "space_container_wide_min",
             "maxWidth": "space_container_wide_max",
@@ -5386,10 +5435,21 @@
     {
       "name": "@UI/AutocompleteItem",
       "description": "AutocompleteItem: пункт выпадающего списка автокомплита. Оси: size (sm/md/lg) × itemType (default/primary/danger). Всегда 7 слотов в DOM: Checkbox, Icon Left, Label, Badge 1, Badge 2, Badge 3, Icon Right. Видимость через BOOLEAN props. Используется в @UI/Autocomplete через instance swap.",
-      "variantProps": ["size", "itemType"],
+      "variantProps": [
+        "size",
+        "itemType"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "itemType": ["default", "primary", "danger"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "itemType": [
+          "default",
+          "primary",
+          "danger"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -5405,7 +5465,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "textStyle": "Text/Body/SM",
             "itemPaddingX": "space_button_x_sm",
@@ -5416,7 +5478,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "textStyle": "Text/Body/Base",
             "itemPaddingX": "space_button_x_md",
@@ -5427,7 +5491,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "textStyle": "Text/Body/LG",
             "itemPaddingX": "space_button_x_lg",
@@ -5438,21 +5504,27 @@
           }
         },
         {
-          "when": { "itemType": "default" },
+          "when": {
+            "itemType": "default"
+          },
           "style": {
             "itemTextColor": "color_text_primary",
             "itemIconColor": "color_icon_on_base"
           }
         },
         {
-          "when": { "itemType": "primary" },
+          "when": {
+            "itemType": "primary"
+          },
           "style": {
             "itemTextColor": "color_brand_primary",
             "itemIconColor": "color_brand_primary"
           }
         },
         {
-          "when": { "itemType": "danger" },
+          "when": {
+            "itemType": "danger"
+          },
           "style": {
             "itemTextColor": "color_danger_base",
             "itemIconColor": "color_danger_base"
@@ -5463,10 +5535,20 @@
     {
       "name": "@UI/Autocomplete",
       "description": "Autocomplete: поле ввода с выпадающим списком значений по вхождению. state: closed/open. size: sm/md/lg. Trigger: Input-like поле с иконкой поиска, TagRow для выбранных значений. Popover: 10 слотов AutocompleteItem, FILL по ширине. В open-состоянии input в фокусе.",
-      "variantProps": ["state", "size"],
+      "variantProps": [
+        "state",
+        "size"
+      ],
       "variantAxes": {
-        "state": ["closed", "open"],
-        "size": ["sm", "md", "lg"]
+        "state": [
+          "closed",
+          "open"
+        ],
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ]
       },
       "variants": [],
       "popoverSlotCount": 10,
@@ -5495,7 +5577,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "textStyle": "Text/Body/SM",
             "paddingX": "space_button_x_sm",
@@ -5509,7 +5593,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "textStyle": "Text/Body/Base",
             "paddingX": "space_button_x_md",
@@ -5523,7 +5609,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "textStyle": "Text/Body/LG",
             "paddingX": "space_button_x_lg",
@@ -5537,14 +5625,18 @@
           }
         },
         {
-          "when": { "state": "closed" },
+          "when": {
+            "state": "closed"
+          },
           "style": {
             "borderColor": "color_border_base",
             "borderSide": "all"
           }
         },
         {
-          "when": { "state": "open" },
+          "when": {
+            "state": "open"
+          },
           "style": {
             "borderColor": "color_brand_primary",
             "borderSide": "all",
@@ -5556,10 +5648,23 @@
     {
       "name": "@UI/Spinner",
       "description": "Spinner: индикатор загрузки. 5 размеров (xs/sm/md/lg/xl) совпадают с CircularProgress. 3 варианта (brand/base/inherit). Дуга ~270° окружности без лейбла.",
-      "variantProps": ["size", "appearance"],
+      "variantProps": [
+        "size",
+        "appearance"
+      ],
       "variantAxes": {
-        "size": ["xs", "sm", "md", "lg", "xl"],
-        "appearance": ["brand", "base", "inherit"]
+        "size": [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl"
+        ],
+        "appearance": [
+          "brand",
+          "base",
+          "inherit"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -5571,21 +5676,27 @@
           }
         },
         {
-          "when": { "appearance": "brand" },
+          "when": {
+            "appearance": "brand"
+          },
           "style": {
             "trackColor": "color_surface_3",
             "fillColor": "color_brand_primary"
           }
         },
         {
-          "when": { "appearance": "base" },
+          "when": {
+            "appearance": "base"
+          },
           "style": {
             "trackColor": "color_surface_3",
             "fillColor": "color_text_muted"
           }
         },
         {
-          "when": { "appearance": "inherit" },
+          "when": {
+            "appearance": "inherit"
+          },
           "style": {
             "trackColor": "color_text_on_brand",
             "fillColor": "color_text_on_brand",
@@ -5593,40 +5704,78 @@
           }
         },
         {
-          "when": { "size": "xs" },
-          "style": { "boxSize": "space_circular_xs" }
+          "when": {
+            "size": "xs"
+          },
+          "style": {
+            "boxSize": "space_circular_xs"
+          }
         },
         {
-          "when": { "size": "sm" },
-          "style": { "boxSize": "space_circular_sm" }
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "boxSize": "space_circular_sm"
+          }
         },
         {
-          "when": { "size": "md" },
-          "style": { "boxSize": "space_circular_md" }
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "boxSize": "space_circular_md"
+          }
         },
         {
-          "when": { "size": "lg" },
-          "style": { "boxSize": "space_circular_lg" }
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "boxSize": "space_circular_lg"
+          }
         },
         {
-          "when": { "size": "xl" },
-          "style": { "boxSize": "space_circular_xl" }
+          "when": {
+            "size": "xl"
+          },
+          "style": {
+            "boxSize": "space_circular_xl"
+          }
         }
       ]
     },
     {
       "name": "@UI/Chip",
       "description": "Chip: фильтр/тег с возможностью удаления. 2 варианта (base/brand), 3 размера (sm/md/lg), 3 состояния (base/selected/disabled). Иконка close видима по умолчанию. Опционально: иконка слева. Использует те же size-токены что Tag.",
-      "variantProps": ["appearance", "size", "state"],
+      "variantProps": [
+        "appearance",
+        "size",
+        "state"
+      ],
       "variantAxes": {
-        "appearance": ["base", "brand"],
-        "size": ["sm", "md", "lg"],
-        "state": ["base", "selected", "disabled"]
+        "appearance": [
+          "base",
+          "brand"
+        ],
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "state": [
+          "base",
+          "selected",
+          "disabled"
+        ]
       },
       "variants": [],
       "variantRules": [
         {
-          "when": { "appearance": "base", "state": "base" },
+          "when": {
+            "appearance": "base",
+            "state": "base"
+          },
           "style": {
             "background": "color_surface_2",
             "textColor": "color_text_primary",
@@ -5635,7 +5784,10 @@
           }
         },
         {
-          "when": { "appearance": "base", "state": "selected" },
+          "when": {
+            "appearance": "base",
+            "state": "selected"
+          },
           "style": {
             "background": "color_brand_primary",
             "textColor": "color_text_on_brand",
@@ -5644,7 +5796,10 @@
           }
         },
         {
-          "when": { "appearance": "base", "state": "disabled" },
+          "when": {
+            "appearance": "base",
+            "state": "disabled"
+          },
           "style": {
             "background": "color_surface_2",
             "textColor": "color_text_primary",
@@ -5654,7 +5809,10 @@
           }
         },
         {
-          "when": { "appearance": "brand", "state": "base" },
+          "when": {
+            "appearance": "brand",
+            "state": "base"
+          },
           "style": {
             "background": "color_brand_primary",
             "textColor": "color_text_on_brand",
@@ -5663,7 +5821,10 @@
           }
         },
         {
-          "when": { "appearance": "brand", "state": "selected" },
+          "when": {
+            "appearance": "brand",
+            "state": "selected"
+          },
           "style": {
             "background": "color_brand_hover_bg",
             "textColor": "color_brand_primary",
@@ -5672,7 +5833,10 @@
           }
         },
         {
-          "when": { "appearance": "brand", "state": "disabled" },
+          "when": {
+            "appearance": "brand",
+            "state": "disabled"
+          },
           "style": {
             "background": "color_brand_primary",
             "textColor": "color_text_on_brand",
@@ -5682,7 +5846,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_tag_x_sm",
             "paddingY": "space_tag_y_sm",
@@ -5692,7 +5858,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_tag_x_md",
             "paddingY": "space_tag_y_md",
@@ -5702,7 +5870,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_tag_x_lg",
             "paddingY": "space_tag_y_lg",
@@ -5716,10 +5886,21 @@
     {
       "name": "@UI/Table/HeaderCell",
       "description": "Ячейка заголовка таблицы. Опционально: иконка слева, лейбл (grow), sort-иконка справа. Состояния сортировки: none, asc, desc. Размеры sm/md/lg.",
-      "variantProps": ["size", "sort"],
+      "variantProps": [
+        "size",
+        "sort"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "sort": ["none", "asc", "desc"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "sort": [
+          "none",
+          "asc",
+          "desc"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -5734,21 +5915,27 @@
           }
         },
         {
-          "when": { "sort": "asc" },
+          "when": {
+            "sort": "asc"
+          },
           "style": {
             "textColor": "color_text_primary",
             "sortIconColor": "color_brand_primary"
           }
         },
         {
-          "when": { "sort": "desc" },
+          "when": {
+            "sort": "desc"
+          },
           "style": {
             "textColor": "color_text_primary",
             "sortIconColor": "color_brand_primary"
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_table_cell_x_sm",
             "paddingY": "space_table_cell_y_sm",
@@ -5759,7 +5946,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_table_cell_x_md",
             "paddingY": "space_table_cell_y_md",
@@ -5770,7 +5959,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_table_cell_x_lg",
             "paddingY": "space_table_cell_y_lg",
@@ -5785,10 +5976,23 @@
     {
       "name": "@UI/Table/Cell",
       "description": "Ячейка данных таблицы. Опционально: иконка слева, текст (grow), badge, tag, иконка-действие справа. Размеры sm/md/lg. Тип: text, badge, tag, actions, numeric.",
-      "variantProps": ["size", "type"],
+      "variantProps": [
+        "size",
+        "type"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "type": ["text", "badge", "tag", "actions", "numeric"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "type": [
+          "text",
+          "badge",
+          "tag",
+          "actions",
+          "numeric"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -5802,21 +6006,27 @@
           }
         },
         {
-          "when": { "type": "numeric" },
+          "when": {
+            "type": "numeric"
+          },
           "style": {
             "textAlign": "right",
             "textColor": "color_text_primary"
           }
         },
         {
-          "when": { "type": "actions" },
+          "when": {
+            "type": "actions"
+          },
           "style": {
             "iconColor": "color_icon_on_base",
             "textColor": "color_text_muted"
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_table_cell_x_sm",
             "paddingY": "space_table_cell_y_sm",
@@ -5827,7 +6037,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_table_cell_x_md",
             "paddingY": "space_table_cell_y_md",
@@ -5838,7 +6050,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_table_cell_x_lg",
             "paddingY": "space_table_cell_y_lg",
@@ -5853,15 +6067,29 @@
     {
       "name": "@UI/Table/Row",
       "description": "Строка данных таблицы. Состояния: base, hover, selected, disabled. Опционально: checkbox слева. 4 Cell-слота. Размеры sm/md/lg.",
-      "variantProps": ["size", "state"],
+      "variantProps": [
+        "size",
+        "state"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "state": ["base", "hover", "selected", "disabled"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "state": [
+          "base",
+          "hover",
+          "selected",
+          "disabled"
+        ]
       },
       "variants": [],
       "variantRules": [
         {
-          "when": { "state": "base" },
+          "when": {
+            "state": "base"
+          },
           "style": {
             "background": "color_bg_base",
             "borderColor": "color_divider",
@@ -5869,7 +6097,9 @@
           }
         },
         {
-          "when": { "state": "hover" },
+          "when": {
+            "state": "hover"
+          },
           "style": {
             "background": "color_surface_2",
             "borderColor": "color_divider",
@@ -5877,7 +6107,9 @@
           }
         },
         {
-          "when": { "state": "selected" },
+          "when": {
+            "state": "selected"
+          },
           "style": {
             "background": "color_brand_muted",
             "borderColor": "color_brand_primary",
@@ -5885,7 +6117,9 @@
           }
         },
         {
-          "when": { "state": "disabled" },
+          "when": {
+            "state": "disabled"
+          },
           "style": {
             "background": "color_bg_disabled",
             "borderColor": "color_border_base",
@@ -5894,25 +6128,43 @@
           }
         },
         {
-          "when": { "size": "sm" },
-          "style": { "minHeight": "space_table_row_h_sm" }
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "minHeight": "space_table_row_h_sm"
+          }
         },
         {
-          "when": { "size": "md" },
-          "style": { "minHeight": "space_table_row_h_md" }
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "minHeight": "space_table_row_h_md"
+          }
         },
         {
-          "when": { "size": "lg" },
-          "style": { "minHeight": "space_table_row_h_lg" }
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "minHeight": "space_table_row_h_lg"
+          }
         }
       ]
     },
     {
       "name": "@UI/Table/HeaderRow",
       "description": "Строка заголовков таблицы. 4 HeaderCell-слота. Нижний border-divider. Размеры sm/md/lg.",
-      "variantProps": ["size"],
+      "variantProps": [
+        "size"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -5924,31 +6176,56 @@
           }
         },
         {
-          "when": { "size": "sm" },
-          "style": { "minHeight": "space_table_row_h_sm" }
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "minHeight": "space_table_row_h_sm"
+          }
         },
         {
-          "when": { "size": "md" },
-          "style": { "minHeight": "space_table_row_h_md" }
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "minHeight": "space_table_row_h_md"
+          }
         },
         {
-          "when": { "size": "lg" },
-          "style": { "minHeight": "space_table_row_h_lg" }
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "minHeight": "space_table_row_h_lg"
+          }
         }
       ]
     },
     {
       "name": "@UI/Table",
       "description": "Таблица: HeaderRow + 4 Row. Варианты: size (sm/md/lg), appearance (base/striped/bordered). Внешний бордер radius_medium. Опирается на @UI/Table/HeaderRow и @UI/Table/Row.",
-      "variantProps": ["size", "appearance"],
+      "variantProps": [
+        "size",
+        "appearance"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "appearance": ["base", "striped", "bordered"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "appearance": [
+          "base",
+          "striped",
+          "bordered"
+        ]
       },
       "variants": [],
       "variantRules": [
         {
-          "when": { "appearance": "base" },
+          "when": {
+            "appearance": "base"
+          },
           "style": {
             "background": "color_bg_base",
             "borderColor": "color_border_base",
@@ -5957,7 +6234,9 @@
           }
         },
         {
-          "when": { "appearance": "striped" },
+          "when": {
+            "appearance": "striped"
+          },
           "style": {
             "background": "color_bg_base",
             "borderColor": "color_border_base",
@@ -5966,7 +6245,9 @@
           }
         },
         {
-          "when": { "appearance": "bordered" },
+          "when": {
+            "appearance": "bordered"
+          },
           "style": {
             "background": "color_bg_base",
             "borderColor": "color_border_strong",
@@ -5975,16 +6256,28 @@
           }
         },
         {
-          "when": { "size": "sm" },
-          "style": { "minWidth": "space_table_min_sm" }
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "minWidth": "space_table_min_sm"
+          }
         },
         {
-          "when": { "size": "md" },
-          "style": { "minWidth": "space_table_min_md" }
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "minWidth": "space_table_min_md"
+          }
         },
         {
-          "when": { "size": "lg" },
-          "style": { "minWidth": "space_table_min_lg" }
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "minWidth": "space_table_min_lg"
+          }
         }
       ]
     },
@@ -5993,12 +6286,36 @@
       "description": "Изображение с aspect ratio, fallback, placeholder и skeleton. Оси: size (sm/md/lg) × ratio (1:1/4:3/16:9/3:2) × state (loading/loaded/error/empty) = 48 вариантов. Плюс layout=hero-full / hero-half для фона секции лендинга (без скругления, на весь экран / пол экрана). Referencing node: 143:34702.",
       "figmaNodeId": "143:34702",
       "defaultContent": "",
-      "variantProps": ["layout", "size", "ratio", "state"],
+      "variantProps": [
+        "layout",
+        "size",
+        "ratio",
+        "state"
+      ],
       "variantAxes": {
-        "layout": ["image", "hero-full", "hero-half"],
-        "size":   ["xs", "sm", "md", "lg"],
-        "ratio":  ["1:1", "4:3", "16:9", "3:2"],
-        "state":  ["loading", "loaded", "error", "empty"]
+        "layout": [
+          "image",
+          "hero-full",
+          "hero-half"
+        ],
+        "size": [
+          "xs",
+          "sm",
+          "md",
+          "lg"
+        ],
+        "ratio": [
+          "1:1",
+          "4:3",
+          "16:9",
+          "3:2"
+        ],
+        "state": [
+          "loading",
+          "loaded",
+          "error",
+          "empty"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -6011,21 +6328,84 @@
             "ratioValue": 0.75
           }
         },
-
-        { "when": { "layout": "image" }, "style": {} },
-
-        { "when": { "size": "xs" }, "style": { "widthPx": 120, "borderRadius": "radius_medium"  } },
-        { "when": { "size": "sm" }, "style": { "widthPx": 200, "borderRadius": "radius_medium"  } },
-        { "when": { "size": "md" }, "style": { "widthPx": 320, "borderRadius": "radius_medium"  } },
-        { "when": { "size": "lg" }, "style": { "widthPx": 480, "borderRadius": "radius_large"   } },
-
-        { "when": { "ratio": "1:1"  }, "style": { "ratioValue": 1.0    } },
-        { "when": { "ratio": "4:3"  }, "style": { "ratioValue": 0.75   } },
-        { "when": { "ratio": "16:9" }, "style": { "ratioValue": 0.5625 } },
-        { "when": { "ratio": "3:2"  }, "style": { "ratioValue": 0.6667 } },
-
         {
-          "when": { "layout": "hero-full" },
+          "when": {
+            "layout": "image"
+          },
+          "style": {}
+        },
+        {
+          "when": {
+            "size": "xs"
+          },
+          "style": {
+            "widthPx": 120,
+            "borderRadius": "radius_medium"
+          }
+        },
+        {
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "widthPx": 200,
+            "borderRadius": "radius_medium"
+          }
+        },
+        {
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "widthPx": 320,
+            "borderRadius": "radius_medium"
+          }
+        },
+        {
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "widthPx": 480,
+            "borderRadius": "radius_large"
+          }
+        },
+        {
+          "when": {
+            "ratio": "1:1"
+          },
+          "style": {
+            "ratioValue": 1
+          }
+        },
+        {
+          "when": {
+            "ratio": "4:3"
+          },
+          "style": {
+            "ratioValue": 0.75
+          }
+        },
+        {
+          "when": {
+            "ratio": "16:9"
+          },
+          "style": {
+            "ratioValue": 0.5625
+          }
+        },
+        {
+          "when": {
+            "ratio": "3:2"
+          },
+          "style": {
+            "ratioValue": 0.6667
+          }
+        },
+        {
+          "when": {
+            "layout": "hero-full"
+          },
           "style": {
             "widthPx": 1920,
             "ratioValue": 0.5625,
@@ -6034,7 +6414,9 @@
           }
         },
         {
-          "when": { "layout": "hero-half" },
+          "when": {
+            "layout": "hero-half"
+          },
           "style": {
             "widthPx": 960,
             "ratioValue": 1.125,
@@ -6044,11 +6426,28 @@
             "heroMode": true
           }
         },
-
-        { "when": { "state": "loading" }, "style": { "background": "color_surface_3", "shimmer": true  } },
-        { "when": { "state": "loaded"  }, "style": { "background": "color_surface_2", "imageFill": true } },
         {
-          "when": { "state": "error" },
+          "when": {
+            "state": "loading"
+          },
+          "style": {
+            "background": "color_surface_3",
+            "shimmer": true
+          }
+        },
+        {
+          "when": {
+            "state": "loaded"
+          },
+          "style": {
+            "background": "color_surface_2",
+            "imageFill": true
+          }
+        },
+        {
+          "when": {
+            "state": "error"
+          },
           "style": {
             "background": "color_surface_2",
             "iconName": "exclamation-diamond-fill",
@@ -6058,28 +6457,85 @@
           }
         },
         {
-          "when": { "state": "empty" },
+          "when": {
+            "state": "empty"
+          },
           "style": {
             "background": "color_surface_2",
             "iconName": "image",
             "iconColor": "color_text_muted"
           }
         },
-
-        { "when": { "layout": "hero-full", "state": "loading" }, "style": { "background": "color_surface_3", "shimmer": true } },
-        { "when": { "layout": "hero-full", "state": "loaded"  }, "style": { "background": "color_surface_2", "imageFill": true, "imageFitMode": "CROP" } },
-        { "when": { "layout": "hero-half", "state": "loading" }, "style": { "background": "color_surface_3", "shimmer": true } },
-        { "when": { "layout": "hero-half", "state": "loaded"  }, "style": { "background": "color_surface_2", "imageFill": true, "imageFitMode": "CROP" } }
+        {
+          "when": {
+            "layout": "hero-full",
+            "state": "loading"
+          },
+          "style": {
+            "background": "color_surface_3",
+            "shimmer": true
+          }
+        },
+        {
+          "when": {
+            "layout": "hero-full",
+            "state": "loaded"
+          },
+          "style": {
+            "background": "color_surface_2",
+            "imageFill": true,
+            "imageFitMode": "CROP"
+          }
+        },
+        {
+          "when": {
+            "layout": "hero-half",
+            "state": "loading"
+          },
+          "style": {
+            "background": "color_surface_3",
+            "shimmer": true
+          }
+        },
+        {
+          "when": {
+            "layout": "hero-half",
+            "state": "loaded"
+          },
+          "style": {
+            "background": "color_surface_2",
+            "imageFill": true,
+            "imageFitMode": "CROP"
+          }
+        }
       ]
     },
     {
       "name": "@UI/ListItem",
       "description": "Строка списка. Оси: size (sm/md/lg) × interaction (base/hover/selected/disabled) × variant (iconNav/iconMeta/avatarContact/checkboxSelect). Итого 3×4×4=48 вариантов. iconNav — иконка слева + chevron справа (настройки, навигация). iconMeta — иконка слева + badge/meta справа (уведомления). avatarContact — аватар слева + meta справа (контакты). checkboxSelect — чекбокс слева + switch справа (мультивыбор). Boolean props: Leading Icon, Leading Avatar, Leading Checkbox, Subtitle, Trailing Chevron, Trailing Badge, Trailing Meta, Trailing Action, Divider.",
-      "variantProps": ["size", "interaction", "variant"],
+      "variantProps": [
+        "size",
+        "interaction",
+        "variant"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "interaction": ["base", "hover", "selected", "disabled"],
-        "variant": ["iconNav", "iconMeta", "avatarContact", "checkboxSelect"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "interaction": [
+          "base",
+          "hover",
+          "selected",
+          "disabled"
+        ],
+        "variant": [
+          "iconNav",
+          "iconMeta",
+          "avatarContact",
+          "checkboxSelect"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -6104,7 +6560,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_list_item_x_sm",
             "paddingY": "space_list_item_y_sm",
@@ -6115,7 +6573,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_list_item_x_md",
             "paddingY": "space_list_item_y_md",
@@ -6126,7 +6586,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_list_item_x_lg",
             "paddingY": "space_list_item_y_lg",
@@ -6137,7 +6599,9 @@
           }
         },
         {
-          "when": { "interaction": "base" },
+          "when": {
+            "interaction": "base"
+          },
           "style": {
             "background": "color_bg_base",
             "textColor": "color_text_primary",
@@ -6146,7 +6610,9 @@
           }
         },
         {
-          "when": { "interaction": "hover" },
+          "when": {
+            "interaction": "hover"
+          },
           "style": {
             "background": "color_surface_2",
             "textColor": "color_text_primary",
@@ -6155,7 +6621,9 @@
           }
         },
         {
-          "when": { "interaction": "selected" },
+          "when": {
+            "interaction": "selected"
+          },
           "style": {
             "background": "color_brand_muted",
             "textColor": "color_brand_primary",
@@ -6165,15 +6633,27 @@
           }
         },
         {
-          "when": { "interaction": "selected", "size": "sm" },
-          "style": { "textStyle": "Text/Body/SM" }
+          "when": {
+            "interaction": "selected",
+            "size": "sm"
+          },
+          "style": {
+            "textStyle": "Text/Body/SM"
+          }
         },
         {
-          "when": { "interaction": "selected", "size": "lg" },
-          "style": { "textStyle": "Text/Body/LG" }
+          "when": {
+            "interaction": "selected",
+            "size": "lg"
+          },
+          "style": {
+            "textStyle": "Text/Body/LG"
+          }
         },
         {
-          "when": { "interaction": "disabled" },
+          "when": {
+            "interaction": "disabled"
+          },
           "style": {
             "background": "color_bg_disabled",
             "textColor": "color_text_disabled",
@@ -6184,40 +6664,58 @@
           }
         },
         {
-          "when": { "variant": "iconNav" },
+          "when": {
+            "variant": "iconNav"
+          },
           "style": {
             "leadingType": "icon",
             "trailingType": "chevron"
           }
         },
         {
-          "when": { "variant": "iconMeta" },
+          "when": {
+            "variant": "iconMeta"
+          },
           "style": {
             "leadingType": "icon",
             "trailingType": "badge"
           }
         },
         {
-          "when": { "variant": "avatarContact" },
+          "when": {
+            "variant": "avatarContact"
+          },
           "style": {
             "leadingType": "avatar",
             "trailingType": "meta"
           }
         },
         {
-          "when": { "variant": "checkboxSelect" },
+          "when": {
+            "variant": "checkboxSelect"
+          },
           "style": {
             "leadingType": "checkbox",
             "trailingType": "action"
           }
         },
         {
-          "when": { "interaction": "selected", "variant": "iconMeta" },
-          "style": { "metaColor": "color_brand_primary" }
+          "when": {
+            "interaction": "selected",
+            "variant": "iconMeta"
+          },
+          "style": {
+            "metaColor": "color_brand_primary"
+          }
         },
         {
-          "when": { "interaction": "selected", "variant": "avatarContact" },
-          "style": { "metaColor": "color_brand_primary" }
+          "when": {
+            "interaction": "selected",
+            "variant": "avatarContact"
+          },
+          "style": {
+            "metaColor": "color_brand_primary"
+          }
         }
       ]
     },
@@ -6225,11 +6723,28 @@
       "name": "@UI/EmptyState",
       "description": "EmptyState: пустое состояние с иконкой, заголовком, описанием и CTA. Оси: size (sm/md/lg) × appearance (base/info/success/warning/danger) × layout (vertical/horizontal). Boolean props: Icon, Title, Description, CTA, SecondaryAction. Применение: пустые списки, ошибки загрузки, онбординг.",
       "defaultContent": "No data found. Try adjusting your filters or adding new items.",
-      "variantProps": ["size", "appearance", "layout"],
+      "variantProps": [
+        "size",
+        "appearance",
+        "layout"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "appearance": ["base", "info", "success", "warning", "danger"],
-        "layout": ["vertical", "horizontal"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "appearance": [
+          "base",
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "layout": [
+          "vertical",
+          "horizontal"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -6260,7 +6775,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_inset_m",
             "paddingY": "space_inset_m",
@@ -6277,7 +6794,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_inset_l",
             "paddingY": "space_inset_l",
@@ -6294,7 +6813,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_inset_xl",
             "paddingY": "space_inset_xl",
@@ -6311,7 +6832,9 @@
           }
         },
         {
-          "when": { "appearance": "base" },
+          "when": {
+            "appearance": "base"
+          },
           "style": {
             "background": "color_surface_2",
             "iconColor": "color_icon_on_base",
@@ -6319,7 +6842,9 @@
           }
         },
         {
-          "when": { "appearance": "info" },
+          "when": {
+            "appearance": "info"
+          },
           "style": {
             "background": "color_info_surface",
             "iconColor": "color_info_base",
@@ -6327,7 +6852,9 @@
           }
         },
         {
-          "when": { "appearance": "success" },
+          "when": {
+            "appearance": "success"
+          },
           "style": {
             "background": "color_success_surface",
             "iconColor": "color_success_base",
@@ -6335,7 +6862,9 @@
           }
         },
         {
-          "when": { "appearance": "warning" },
+          "when": {
+            "appearance": "warning"
+          },
           "style": {
             "background": "color_warning_surface",
             "iconColor": "color_warning_base",
@@ -6343,7 +6872,9 @@
           }
         },
         {
-          "when": { "appearance": "danger" },
+          "when": {
+            "appearance": "danger"
+          },
           "style": {
             "background": "color_danger_surface",
             "iconColor": "color_danger_base",
@@ -6351,7 +6882,9 @@
           }
         },
         {
-          "when": { "layout": "vertical" },
+          "when": {
+            "layout": "vertical"
+          },
           "style": {
             "layoutDirection": "VERTICAL",
             "primaryAxisAlignItems": "CENTER",
@@ -6360,7 +6893,9 @@
           }
         },
         {
-          "when": { "layout": "horizontal" },
+          "when": {
+            "layout": "horizontal"
+          },
           "style": {
             "layoutDirection": "HORIZONTAL",
             "primaryAxisAlignItems": "MIN",
@@ -6369,26 +6904,51 @@
           }
         },
         {
-          "when": { "layout": "horizontal", "size": "sm" },
-          "style": { "gap": "space_empty_state_gap_sm" }
+          "when": {
+            "layout": "horizontal",
+            "size": "sm"
+          },
+          "style": {
+            "gap": "space_empty_state_gap_sm"
+          }
         },
         {
-          "when": { "layout": "horizontal", "size": "md" },
-          "style": { "gap": "space_empty_state_gap_md" }
+          "when": {
+            "layout": "horizontal",
+            "size": "md"
+          },
+          "style": {
+            "gap": "space_empty_state_gap_md"
+          }
         },
         {
-          "when": { "layout": "horizontal", "size": "lg" },
-          "style": { "gap": "space_empty_state_gap_lg" }
+          "when": {
+            "layout": "horizontal",
+            "size": "lg"
+          },
+          "style": {
+            "gap": "space_empty_state_gap_lg"
+          }
         }
       ]
     },
     {
       "name": "@UI/Skeleton/Page",
       "description": "Skeleton / Page: шаблон-заглушка для полной страницы. Содержит nav-бар, hero-блок, строку тегов и сетку из 3 карточек-плейсхолдеров. Оси: size (sm/md/lg) × shimmer (true/false). Shimmer = анимированный градиент surface_3→surface_2→surface_3. Строки переменной ширины имитируют реальный контент.",
-      "variantProps": ["size", "shimmer"],
+      "variantProps": [
+        "size",
+        "shimmer"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "shimmer": ["true", "false"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "shimmer": [
+          "true",
+          "false"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -6413,7 +6973,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_inset_s",
             "paddingY": "space_inset_s",
@@ -6427,7 +6989,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_inset_m",
             "paddingY": "space_inset_m",
@@ -6441,7 +7005,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_inset_l",
             "paddingY": "space_inset_l",
@@ -6455,22 +7021,40 @@
           }
         },
         {
-          "when": { "shimmer": "true" },
-          "style": { "shimmer": true }
+          "when": {
+            "shimmer": "true"
+          },
+          "style": {
+            "shimmer": true
+          }
         },
         {
-          "when": { "shimmer": "false" },
-          "style": { "shimmer": false }
+          "when": {
+            "shimmer": "false"
+          },
+          "style": {
+            "shimmer": false
+          }
         }
       ]
     },
     {
       "name": "@UI/Skeleton/List",
       "description": "Skeleton / List: шаблон-заглушка для списка (4 строки). Каждая строка: circle (аватар/иконка) + line (label, переменная ширина) + line (meta, фикс. ширина). Divider между строками. Оси: size (sm/md/lg) × shimmer (true/false).",
-      "variantProps": ["size", "shimmer"],
+      "variantProps": [
+        "size",
+        "shimmer"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "shimmer": ["true", "false"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "shimmer": [
+          "true",
+          "false"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -6489,14 +7073,21 @@
             "lineH": "space_skeleton_line_h_md",
             "circleD": "space_skeleton_circle_md",
             "rowCount": 4,
-            "labelWidths": [0.75, 0.5, 0.65, 0.45],
+            "labelWidths": [
+              0.75,
+              0.5,
+              0.65,
+              0.45
+            ],
             "metaWidth": 48,
             "minWidth": "space_container_content_min",
             "maxWidth": "space_container_content_max"
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_list_item_x_sm",
             "paddingY": "space_list_item_y_sm",
@@ -6510,7 +7101,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_list_item_x_md",
             "paddingY": "space_list_item_y_md",
@@ -6524,7 +7117,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_list_item_x_lg",
             "paddingY": "space_list_item_y_lg",
@@ -6538,22 +7133,40 @@
           }
         },
         {
-          "when": { "shimmer": "true" },
-          "style": { "shimmer": true }
+          "when": {
+            "shimmer": "true"
+          },
+          "style": {
+            "shimmer": true
+          }
         },
         {
-          "when": { "shimmer": "false" },
-          "style": { "shimmer": false }
+          "when": {
+            "shimmer": "false"
+          },
+          "style": {
+            "shimmer": false
+          }
         }
       ]
     },
     {
       "name": "@UI/Skeleton/Card",
       "description": "Skeleton / Card: шаблон-заглушка для карточки. Структура (сверху вниз): медиа-блок (rect), строка заголовка, 2 строки описания, строка действий. Оси: size (sm/md/lg) × shimmer (true/false).",
-      "variantProps": ["size", "shimmer"],
+      "variantProps": [
+        "size",
+        "shimmer"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "shimmer": ["true", "false"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "shimmer": [
+          "true",
+          "false"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -6579,7 +7192,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_inset_s",
             "paddingY": "space_inset_s",
@@ -6592,7 +7207,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_inset_m",
             "paddingY": "space_inset_m",
@@ -6605,7 +7222,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_inset_l",
             "paddingY": "space_inset_l",
@@ -6618,22 +7237,40 @@
           }
         },
         {
-          "when": { "shimmer": "true" },
-          "style": { "shimmer": true }
+          "when": {
+            "shimmer": "true"
+          },
+          "style": {
+            "shimmer": true
+          }
         },
         {
-          "when": { "shimmer": "false" },
-          "style": { "shimmer": false }
+          "when": {
+            "shimmer": "false"
+          },
+          "style": {
+            "shimmer": false
+          }
         }
       ]
     },
     {
       "name": "@UI/Skeleton/Table",
       "description": "Skeleton / Table: шаблон-заглушка для таблицы. Структура: 1 header-строка (bg=color_surface_3) + 4 data-строки. 4 колонки с переменной шириной ячеек. Зеркалит размерный ряд @UI/Table. Оси: size (sm/md/lg) × shimmer (true/false).",
-      "variantProps": ["size", "shimmer"],
+      "variantProps": [
+        "size",
+        "shimmer"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "shimmer": ["true", "false"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "shimmer": [
+          "true",
+          "false"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -6653,13 +7290,25 @@
             "lineH": "space_skeleton_line_h_md",
             "colCount": 4,
             "rowCount": 4,
-            "colWidths": [0.15, 0.35, 0.25, 0.25],
-            "cellLineWidths": [0.7, 0.6, 0.8, 0.5],
+            "colWidths": [
+              0.15,
+              0.35,
+              0.25,
+              0.25
+            ],
+            "cellLineWidths": [
+              0.7,
+              0.6,
+              0.8,
+              0.5
+            ],
             "minWidth": "space_table_min_md"
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_table_cell_x_sm",
             "paddingY": "space_table_cell_y_sm",
@@ -6669,7 +7318,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_table_cell_x_md",
             "paddingY": "space_table_cell_y_md",
@@ -6679,7 +7330,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_table_cell_x_lg",
             "paddingY": "space_table_cell_y_lg",
@@ -6689,23 +7342,46 @@
           }
         },
         {
-          "when": { "shimmer": "true" },
-          "style": { "shimmer": true }
+          "when": {
+            "shimmer": "true"
+          },
+          "style": {
+            "shimmer": true
+          }
         },
         {
-          "when": { "shimmer": "false" },
-          "style": { "shimmer": false }
+          "when": {
+            "shimmer": "false"
+          },
+          "style": {
+            "shimmer": false
+          }
         }
       ]
     },
     {
       "name": "@UI/Skeleton/Chart",
       "description": "Skeleton / Chart: шаблон-заглушка для области графика. Структура: строка заголовка, строка метрики (крупная), строка легенды, область графика. chartType: bar (5 прямоугольников разной высоты) | line (горизонтальная волна + area) | donut (кольцо). Оси: size (sm/md/lg) × shimmer (true/false) × chartType (bar/line/donut).",
-      "variantProps": ["size", "shimmer", "chartType"],
+      "variantProps": [
+        "size",
+        "shimmer",
+        "chartType"
+      ],
       "variantAxes": {
-        "size": ["sm", "md", "lg"],
-        "shimmer": ["true", "false"],
-        "chartType": ["bar", "line", "donut"]
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "shimmer": [
+          "true",
+          "false"
+        ],
+        "chartType": [
+          "bar",
+          "line",
+          "donut"
+        ]
       },
       "variants": [],
       "variantRules": [
@@ -6725,7 +7401,13 @@
             "lineH": "space_skeleton_line_h_md",
             "barCount": 5,
             "barWidthPct": 0.12,
-            "barHeights": [0.6, 0.85, 0.45, 0.95, 0.7],
+            "barHeights": [
+              0.6,
+              0.85,
+              0.45,
+              0.95,
+              0.7
+            ],
             "legendDotD": 8,
             "legendCount": 3,
             "minWidth": "space_container_content_min",
@@ -6733,7 +7415,9 @@
           }
         },
         {
-          "when": { "size": "sm" },
+          "when": {
+            "size": "sm"
+          },
           "style": {
             "paddingX": "space_inset_s",
             "paddingY": "space_inset_s",
@@ -6746,7 +7430,9 @@
           }
         },
         {
-          "when": { "size": "md" },
+          "when": {
+            "size": "md"
+          },
           "style": {
             "paddingX": "space_inset_m",
             "paddingY": "space_inset_m",
@@ -6759,7 +7445,9 @@
           }
         },
         {
-          "when": { "size": "lg" },
+          "when": {
+            "size": "lg"
+          },
           "style": {
             "paddingX": "space_inset_l",
             "paddingY": "space_inset_l",
@@ -6772,24 +7460,1323 @@
           }
         },
         {
-          "when": { "shimmer": "true" },
-          "style": { "shimmer": true }
+          "when": {
+            "shimmer": "true"
+          },
+          "style": {
+            "shimmer": true
+          }
         },
         {
-          "when": { "shimmer": "false" },
-          "style": { "shimmer": false }
+          "when": {
+            "shimmer": "false"
+          },
+          "style": {
+            "shimmer": false
+          }
         },
         {
-          "when": { "chartType": "bar" },
-          "style": { "chartMode": "bar" }
+          "when": {
+            "chartType": "bar"
+          },
+          "style": {
+            "chartMode": "bar"
+          }
         },
         {
-          "when": { "chartType": "line" },
-          "style": { "chartMode": "line", "areaOpacity": 0.15 }
+          "when": {
+            "chartType": "line"
+          },
+          "style": {
+            "chartMode": "line",
+            "areaOpacity": 0.15
+          }
         },
         {
-          "when": { "chartType": "donut" },
-          "style": { "chartMode": "donut", "donutInnerRadius": 0.55 }
+          "when": {
+            "chartType": "donut"
+          },
+          "style": {
+            "chartMode": "donut",
+            "donutInnerRadius": 0.55
+          }
+        }
+      ]
+    },
+    {
+      "name": "@UI/Select",
+      "description": "Popover-based select with Dropdown visual style. 3 sizes (sm/md/lg), appearances (base/ghost/outline), states base/hover/open/disabled. Optional icon left, badge, chevron.",
+      "variantProps": [
+        "appearance",
+        "size",
+        "state"
+      ],
+      "variantAxes": {
+        "appearance": [
+          "base",
+          "ghost",
+          "outline"
+        ],
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "state": [
+          "base",
+          "hover",
+          "open",
+          "disabled"
+        ]
+      },
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "textStyle": "Text/Body/MD",
+            "borderRadius": "radius_default",
+            "iconRight": "chevron-down",
+            "popoverBg": "color_surface_1",
+            "popoverBorder": "color_border_base",
+            "popoverPadding": "space_dropdown_popover_inset",
+            "popoverRadius": "radius_default",
+            "popoverMaxHeight": "space_320"
+          }
+        },
+        {
+          "when": {
+            "state": "base"
+          },
+          "style": {
+            "background": "color_surface_2",
+            "textColor": "color_text_primary",
+            "borderColor": "color_border_base",
+            "iconColor": "color_icon_on_base"
+          }
+        },
+        {
+          "when": {
+            "state": "hover"
+          },
+          "style": {
+            "background": "color_surface_3",
+            "textColor": "color_text_primary",
+            "borderColor": "color_border_strong",
+            "iconColor": "color_icon_on_base"
+          }
+        },
+        {
+          "when": {
+            "state": "open"
+          },
+          "style": {
+            "background": "color_surface_2",
+            "textColor": "color_text_primary",
+            "borderColor": "color_brand_primary",
+            "iconColor": "color_brand_primary",
+            "popoverBorder": "color_brand_primary"
+          }
+        },
+        {
+          "when": {
+            "state": "disabled"
+          },
+          "style": {
+            "background": "color_surface_2",
+            "textColor": "color_text_muted",
+            "borderColor": "color_border_base",
+            "iconColor": "color_text_muted",
+            "opacityToken": "opacity_disabled"
+          }
+        },
+        {
+          "when": {
+            "appearance": "ghost",
+            "state": "base"
+          },
+          "style": {
+            "background": "transparent",
+            "textColor": "color_text_muted",
+            "iconColor": "color_icon_on_ghost"
+          }
+        },
+        {
+          "when": {
+            "appearance": "ghost",
+            "state": "hover"
+          },
+          "style": {
+            "background": "color_bg_muted",
+            "textColor": "color_text_primary",
+            "borderColor": "color_border_base",
+            "iconColor": "color_icon_on_ghost"
+          }
+        },
+        {
+          "when": {
+            "appearance": "ghost",
+            "state": "open"
+          },
+          "style": {
+            "background": "color_bg_muted",
+            "textColor": "color_text_primary",
+            "borderColor": "color_border_strong",
+            "iconColor": "color_icon_on_ghost"
+          }
+        },
+        {
+          "when": {
+            "appearance": "ghost",
+            "state": "disabled"
+          },
+          "style": {
+            "background": "color_bg_base",
+            "textColor": "color_text_primary",
+            "borderColor": "color_border_base",
+            "iconColor": "color_icon_on_ghost",
+            "opacityToken": "opacity_disabled"
+          }
+        },
+        {
+          "when": {
+            "appearance": "outline",
+            "state": "base"
+          },
+          "style": {
+            "background": "color_bg_base",
+            "textColor": "color_brand_primary",
+            "borderColor": "color_brand_primary",
+            "iconColor": "color_icon_on_outline"
+          }
+        },
+        {
+          "when": {
+            "appearance": "outline",
+            "state": "hover"
+          },
+          "style": {
+            "background": "color_brand_muted",
+            "textColor": "color_brand_hover",
+            "borderColor": "color_brand_primary",
+            "iconColor": "color_icon_on_outline"
+          }
+        },
+        {
+          "when": {
+            "appearance": "outline",
+            "state": "open"
+          },
+          "style": {
+            "background": "color_brand_muted",
+            "textColor": "color_brand_pressed",
+            "borderColor": "color_brand_hover",
+            "iconColor": "color_icon_on_outline"
+          }
+        },
+        {
+          "when": {
+            "appearance": "outline",
+            "state": "disabled"
+          },
+          "style": {
+            "background": "color_bg_base",
+            "textColor": "color_text_disabled",
+            "borderColor": "color_border_base",
+            "iconColor": "color_icon_on_outline",
+            "opacityToken": "opacity_disabled"
+          }
+        },
+        {
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "paddingX": "space_button_x_sm",
+            "paddingY": "space_button_y_sm",
+            "gap": "space_button_gap_sm",
+            "textStyle": "Text/Caption/Base",
+            "borderRadius": "radius_default",
+            "minWidth": "space_container_compact_min"
+          }
+        },
+        {
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "paddingX": "space_button_x_md",
+            "paddingY": "space_button_y_md",
+            "gap": "space_button_gap_md",
+            "textStyle": "Text/Body/Base",
+            "borderRadius": "radius_default",
+            "minWidth": "space_container_content_min"
+          }
+        },
+        {
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "paddingX": "space_button_x_lg",
+            "paddingY": "space_button_y_lg",
+            "gap": "space_button_gap_lg",
+            "textStyle": "Text/Body/LG",
+            "borderRadius": "radius_default",
+            "minWidth": "space_container_content_min"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@UI/RangeSlider",
+      "description": "Dual-thumb range slider for min/max value selection. 3 sizes (sm/md/lg), states base/hover/disabled.",
+      "variantProps": [
+        "size",
+        "state"
+      ],
+      "variantAxes": {
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "state": [
+          "base",
+          "hover",
+          "disabled"
+        ]
+      },
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "trackColor": "color_surface_3",
+            "fillColor": "color_brand_primary",
+            "thumbColor": "color_bg_base",
+            "thumbBorder": "color_brand_primary",
+            "borderRadius": "radius_full"
+          }
+        },
+        {
+          "when": {
+            "state": "base"
+          },
+          "style": {
+            "fillColor": "color_brand_primary",
+            "thumbBorder": "color_brand_primary"
+          }
+        },
+        {
+          "when": {
+            "state": "hover"
+          },
+          "style": {
+            "fillColor": "color_brand_hover",
+            "thumbBorder": "color_brand_hover"
+          }
+        },
+        {
+          "when": {
+            "state": "disabled"
+          },
+          "style": {
+            "fillColor": "color_text_muted",
+            "thumbBorder": "color_text_muted",
+            "opacity": 0.5
+          }
+        },
+        {
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "trackHeight": 4,
+            "thumbSize": 16
+          }
+        },
+        {
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "trackHeight": 6,
+            "thumbSize": 20
+          }
+        },
+        {
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "trackHeight": 8,
+            "thumbSize": 24
+          }
+        }
+      ]
+    },
+    {
+      "name": "@UI/Rating",
+      "description": "Star rating component. 3 sizes (sm/md/lg), readonly or interactive, values 0-5.",
+      "variantProps": [
+        "size",
+        "value"
+      ],
+      "variantAxes": {
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "value": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ]
+      },
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "filledColor": "color_warning_base",
+            "emptyColor": "color_surface_3",
+            "gap": "space_2"
+          }
+        },
+        {
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "starSize": 16
+          }
+        },
+        {
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "starSize": 20
+          }
+        },
+        {
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "starSize": 28
+          }
+        }
+      ]
+    },
+    {
+      "name": "@UI/Drawer",
+      "description": "Side panel overlay. Slides from left/right. Sizes sm (320px), md (480px), lg (640px). Has close button, header, body.",
+      "variantProps": [
+        "size",
+        "side"
+      ],
+      "variantAxes": {
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "side": [
+          "left",
+          "right"
+        ]
+      },
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "background": "color_bg_base",
+            "borderColor": "color_border_base",
+            "headerTextStyle": "Text/Heading/H3",
+            "headerTextColor": "color_text_primary",
+            "overlayColor": "color_overlay_scrim",
+            "closeIcon": "close-x",
+            "padding": "space_page_x"
+          }
+        },
+        {
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "width": 320
+          }
+        },
+        {
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "width": 480
+          }
+        },
+        {
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "width": 640
+          }
+        },
+        {
+          "when": {
+            "side": "left"
+          },
+          "style": {
+            "origin": "left"
+          }
+        },
+        {
+          "when": {
+            "side": "right"
+          },
+          "style": {
+            "origin": "right"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@UI/FileUpload",
+      "description": "File upload zone with drag-and-drop. States: idle, hover/dragover, uploading, done, error. Sizes sm/md/lg.",
+      "variantProps": [
+        "size",
+        "state"
+      ],
+      "variantAxes": {
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "state": [
+          "idle",
+          "dragover",
+          "uploading",
+          "done",
+          "error"
+        ]
+      },
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "borderRadius": "radius_medium",
+            "borderWidth": "border_default",
+            "borderStyle": "dashed",
+            "textStyle": "Text/Body/MD",
+            "icon": "upload",
+            "padding": "space_card_inset"
+          }
+        },
+        {
+          "when": {
+            "state": "idle"
+          },
+          "style": {
+            "background": "color_surface_2",
+            "borderColor": "color_border_base",
+            "textColor": "color_text_secondary",
+            "iconColor": "color_icon_on_base"
+          }
+        },
+        {
+          "when": {
+            "state": "dragover"
+          },
+          "style": {
+            "background": "color_brand_subtle",
+            "borderColor": "color_brand_primary",
+            "textColor": "color_brand_primary",
+            "iconColor": "color_brand_primary"
+          }
+        },
+        {
+          "when": {
+            "state": "uploading"
+          },
+          "style": {
+            "background": "color_surface_2",
+            "borderColor": "color_brand_primary",
+            "textColor": "color_text_secondary",
+            "iconColor": "color_brand_primary"
+          }
+        },
+        {
+          "when": {
+            "state": "done"
+          },
+          "style": {
+            "background": "color_success_subtle",
+            "borderColor": "color_success_base",
+            "textColor": "color_success_text",
+            "iconColor": "color_success_base"
+          }
+        },
+        {
+          "when": {
+            "state": "error"
+          },
+          "style": {
+            "background": "color_danger_subtle",
+            "borderColor": "color_danger_base",
+            "textColor": "color_danger_text",
+            "iconColor": "color_danger_base"
+          }
+        },
+        {
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "height": 80,
+            "textStyle": "Text/Body/SM",
+            "iconSize": 20
+          }
+        },
+        {
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "height": 120,
+            "textStyle": "Text/Body/MD",
+            "iconSize": 28
+          }
+        },
+        {
+          "when": {
+            "size": "lg"
+          },
+          "style": {
+            "height": 180,
+            "textStyle": "Text/Body/LG",
+            "iconSize": 36
+          }
+        }
+      ]
+    },
+    {
+      "name": "@UI/Toast",
+      "description": "Toast: auto-dismiss notification with appearance variants (info, success, warning, danger).",
+      "variantProps": [
+        "appearance"
+      ],
+      "variantAxes": {
+        "appearance": [
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ]
+      },
+      "variantRules": [
+        {
+          "when": {},
+          "style": {
+            "textStyle": "Text/Caption/Base",
+            "descriptionTextStyle": "Text/Body/SM",
+            "textColor": "color_text_primary",
+            "borderRadius": "radius_default",
+            "paddingX": "space_12",
+            "paddingY": "space_12",
+            "gap": "space_8",
+            "closeIconColor": "color_text_muted",
+            "elevationToken": "effect_elevation_2",
+            "width": 360
+          }
+        },
+        {
+          "when": {
+            "appearance": "info"
+          },
+          "style": {
+            "background": "color_info_surface",
+            "borderColor": "color_info_base",
+            "iconColor": "color_info_base"
+          }
+        },
+        {
+          "when": {
+            "appearance": "success"
+          },
+          "style": {
+            "background": "color_success_surface",
+            "borderColor": "color_success_base",
+            "iconColor": "color_success_base"
+          }
+        },
+        {
+          "when": {
+            "appearance": "warning"
+          },
+          "style": {
+            "background": "color_warning_surface",
+            "borderColor": "color_warning_base",
+            "iconColor": "color_warning_base"
+          }
+        },
+        {
+          "when": {
+            "appearance": "danger"
+          },
+          "style": {
+            "background": "color_danger_surface",
+            "borderColor": "color_danger_base",
+            "iconColor": "color_danger_base"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@UI/Popover",
+      "description": "Popover: positioned floating panel anchored to a reference element. Handles viewport flip detection and animation.",
+      "variantProps": [],
+      "variantAxes": {},
+      "variantRules": []
+    },
+    {
+      "name": "@UI/GridContainer",
+      "description": "Responsive grid container (4→8→12 columns). Includes GridItem for column placement. Layout utility, no variant styles.",
+      "variantProps": [],
+      "variantAxes": {},
+      "variantRules": []
+    }
+  ],
+  "blocks": [
+    {
+      "name": "@Block/AppSidebar",
+      "description": "Application sidebar with navigation items, optional header/footer sections. Dark theme by default.",
+      "category": "navigation",
+      "layout": "vertical",
+      "sizing": {
+        "width": 260,
+        "height": "fill"
+      },
+      "padding": {
+        "x": "space_12",
+        "y": "space_16"
+      },
+      "gap": "space_8",
+      "tokens": {
+        "background": "color_bg_base",
+        "elevation": "effect_elevation_1"
+      },
+      "dataTheme": "dark",
+      "slots": [
+        {
+          "name": "navItems",
+          "description": "Primary navigation tabs",
+          "layout": "vertical",
+          "gap": "space_8",
+          "grow": true,
+          "repeat": true,
+          "component": "@UI/Tab",
+          "defaultProps": {
+            "appearance": "ghost",
+            "size": "md"
+          }
+        },
+        {
+          "name": "infoCard",
+          "description": "Optional info/help card",
+          "optional": true,
+          "component": "@UI/Card",
+          "defaultProps": {
+            "variant": "base",
+            "size": "md"
+          }
+        },
+        {
+          "name": "footer",
+          "description": "Footer with settings/branding",
+          "layout": "vertical",
+          "gap": "space_8",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/AppTopBar",
+      "description": "Top application bar with controls, search, and user info section.",
+      "category": "navigation",
+      "layout": "horizontal",
+      "sizing": {
+        "width": "fill",
+        "height": "hug"
+      },
+      "padding": {
+        "x": "space_24",
+        "y": "space_12"
+      },
+      "gap": "space_24",
+      "minHeight": "space_72",
+      "tokens": {
+        "background": "color_surface_1",
+        "borderBottom": "color_border_base"
+      },
+      "slots": [
+        {
+          "name": "controls",
+          "description": "Left control area",
+          "layout": "horizontal",
+          "gap": "space_24",
+          "optional": true
+        },
+        {
+          "name": "search",
+          "description": "Search input",
+          "grow": true,
+          "maxWidth": 424,
+          "component": "@UI/Input",
+          "optional": true
+        },
+        {
+          "name": "actions",
+          "description": "Right action buttons",
+          "layout": "horizontal",
+          "gap": "space_12",
+          "align": "center",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/MetricCard",
+      "description": "Dashboard metric card with title, icon, and multiple MetricRow entries.",
+      "category": "data-display",
+      "layout": "vertical",
+      "sizing": {
+        "width": "fill",
+        "height": "hug"
+      },
+      "padding": "space_inset_l",
+      "gap": "space_content_m",
+      "tokens": {
+        "background": "color_surface_1",
+        "elevation": "effect_elevation_1",
+        "borderRadius": "radius_medium"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "layout": "horizontal",
+          "align": "center",
+          "justify": "between",
+          "gap": "space_content_m",
+          "children": [
+            {
+              "name": "icon",
+              "type": "icon",
+              "optional": true
+            },
+            {
+              "name": "title",
+              "type": "text",
+              "textStyle": "Text/Body/LG",
+              "textColor": "color_text_primary",
+              "fontWeight": "semibold"
+            },
+            {
+              "name": "action",
+              "type": "icon",
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "metrics",
+          "layout": "vertical",
+          "repeat": true,
+          "component": "@Block/MetricRow"
+        },
+        {
+          "name": "footer",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/MetricRow",
+      "description": "Single metric display: label, value, optional delta indicator, optional description. Supports sm (compact/mobile) and md (desktop) sizes.",
+      "category": "data-display",
+      "layout": "vertical",
+      "sizing": {
+        "width": "fill",
+        "height": "hug"
+      },
+      "padding": "none",
+      "gap": "space_2",
+      "tokens": {},
+      "variantProps": [
+        "size"
+      ],
+      "variantAxes": {
+        "size": [
+          "sm",
+          "md"
+        ]
+      },
+      "variantRules": [
+        {
+          "when": {
+            "size": "sm"
+          },
+          "style": {
+            "gap": "space_2",
+            "labelStyle": "Text/Caption/XS",
+            "valueStyle": "Text/Body/Base",
+            "deltaStyle": "Text/Caption/XS",
+            "descriptionStyle": "Text/Caption/XS"
+          }
+        },
+        {
+          "when": {
+            "size": "md"
+          },
+          "style": {
+            "gap": "space_4",
+            "labelStyle": "Text/Caption/Base",
+            "valueStyle": "Text/Body/LG",
+            "deltaStyle": "Text/Body/SM",
+            "descriptionStyle": "Text/Body/SM"
+          }
+        }
+      ],
+      "responsiveRules": [
+        {
+          "breakpoint": "mobile",
+          "defaultSize": "sm"
+        },
+        {
+          "breakpoint": "desktop",
+          "defaultSize": "md"
+        }
+      ],
+      "slots": [
+        {
+          "name": "label",
+          "type": "text",
+          "textStyle": "Text/Caption/Base",
+          "textColor": "color_text_muted"
+        },
+        {
+          "name": "valueRow",
+          "layout": "horizontal",
+          "align": "baseline",
+          "gap": "space_4",
+          "children": [
+            {
+              "name": "value",
+              "type": "text",
+              "textStyle": "Text/Body/LG",
+              "textColor": "color_brand_primary",
+              "fontWeight": "semibold"
+            },
+            {
+              "name": "delta",
+              "type": "text",
+              "textStyle": "Text/Caption/XS",
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "textStyle": "Text/Caption/XS",
+          "textColor": "color_text_muted",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/FiltersSidebar",
+      "description": "Sidebar with vertically stacked filter rows and action buttons.",
+      "category": "forms",
+      "layout": "vertical",
+      "sizing": {
+        "width": 260,
+        "height": "fill"
+      },
+      "padding": {
+        "x": "space_16",
+        "y": "space_16"
+      },
+      "gap": "space_8",
+      "tokens": {
+        "background": "color_surface_1",
+        "borderRight": "color_border_base"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "layout": "horizontal",
+          "justify": "between",
+          "align": "center",
+          "optional": true
+        },
+        {
+          "name": "filters",
+          "layout": "vertical",
+          "gap": "space_8",
+          "grow": true,
+          "repeat": true,
+          "component": "@Block/FilterRow"
+        },
+        {
+          "name": "actions",
+          "layout": "horizontal",
+          "gap": "space_8",
+          "justify": "end",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/FilterRow",
+      "description": "Single filter row: label + input/dropdown control.",
+      "category": "forms",
+      "layout": "vertical",
+      "sizing": {
+        "width": "fill",
+        "height": "hug"
+      },
+      "padding": "none",
+      "gap": "space_4",
+      "tokens": {},
+      "slots": [
+        {
+          "name": "label",
+          "type": "text",
+          "textStyle": "Text/Caption/XS",
+          "textColor": "color_text_muted"
+        },
+        {
+          "name": "control",
+          "component": "@UI/Input"
+        }
+      ]
+    },
+    {
+      "name": "@Block/ProductCard",
+      "description": "Product/listing card with image, title, price, and metadata.",
+      "category": "data-display",
+      "layout": "vertical",
+      "sizing": {
+        "width": "fill",
+        "height": "hug"
+      },
+      "padding": "none",
+      "gap": "none",
+      "tokens": {
+        "background": "color_surface_1",
+        "elevation": "effect_elevation_1",
+        "borderRadius": "radius_medium"
+      },
+      "slots": [
+        {
+          "name": "image",
+          "component": "@UI/Image",
+          "aspectRatio": "16/10"
+        },
+        {
+          "name": "content",
+          "layout": "vertical",
+          "padding": {
+            "x": "space_12",
+            "y": "space_12"
+          },
+          "gap": "space_4",
+          "children": [
+            {
+              "name": "title",
+              "type": "text",
+              "textStyle": "Text/Body/Base",
+              "textColor": "color_text_primary",
+              "fontWeight": "semibold"
+            },
+            {
+              "name": "price",
+              "type": "text",
+              "textStyle": "Text/Body/LG",
+              "textColor": "color_brand_primary",
+              "fontWeight": "semibold",
+              "optional": true
+            },
+            {
+              "name": "meta",
+              "type": "text",
+              "textStyle": "Text/Caption/XS",
+              "textColor": "color_text_muted",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "@Block/ChatInputBar",
+      "description": "Chat message input bar with text input and action buttons.",
+      "category": "forms",
+      "layout": "horizontal",
+      "sizing": {
+        "width": "fill",
+        "height": "hug"
+      },
+      "padding": {
+        "x": "space_24",
+        "y": "space_12"
+      },
+      "gap": "space_8",
+      "tokens": {
+        "borderTop": "color_border_base",
+        "background": "color_surface_1"
+      },
+      "slots": [
+        {
+          "name": "attachButton",
+          "component": "@UI/Button",
+          "optional": true
+        },
+        {
+          "name": "input",
+          "grow": true,
+          "component": "@UI/Input"
+        },
+        {
+          "name": "sendButton",
+          "component": "@UI/Button"
+        }
+      ]
+    },
+    {
+      "name": "@Block/ProgressCard",
+      "description": "Card with title and list of labelled progress bars with values.",
+      "category": "data-display",
+      "layout": "vertical",
+      "sizing": {
+        "width": "fill",
+        "height": "hug"
+      },
+      "padding": "space_inset_l",
+      "gap": "space_content_m",
+      "tokens": {
+        "background": "color_surface_1",
+        "elevation": "effect_elevation_1",
+        "borderRadius": "radius_medium"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "layout": "horizontal",
+          "align": "center",
+          "justify": "between",
+          "children": [
+            {
+              "name": "title",
+              "type": "text",
+              "textStyle": "Text/Body/LG",
+              "textColor": "color_text_primary",
+              "fontWeight": "semibold"
+            },
+            {
+              "name": "action",
+              "type": "icon",
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "items",
+          "layout": "vertical",
+          "gap": "space_content_m",
+          "repeat": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/HeroBanner",
+      "description": "Hero banner/carousel section with navigation arrows and centered content.",
+      "category": "content",
+      "layout": "horizontal",
+      "sizing": {
+        "width": "fill",
+        "height": "hug"
+      },
+      "minHeight": "space_320",
+      "padding": {
+        "x": "space_24",
+        "y": "space_48"
+      },
+      "gap": "space_24",
+      "tokens": {
+        "background": "color_surface_1",
+        "borderRadius": "radius_large"
+      },
+      "slots": [
+        {
+          "name": "prevButton",
+          "component": "@UI/Button",
+          "optional": true
+        },
+        {
+          "name": "content",
+          "layout": "vertical",
+          "align": "center",
+          "grow": true,
+          "gap": "space_8",
+          "children": [
+            {
+              "name": "icon",
+              "type": "icon",
+              "optional": true
+            },
+            {
+              "name": "title",
+              "type": "text",
+              "textStyle": "Text/Heading/H2",
+              "textColor": "color_text_primary",
+              "textAlign": "center"
+            },
+            {
+              "name": "subtitle",
+              "type": "text",
+              "textStyle": "Text/Body/Base",
+              "textColor": "color_text_muted",
+              "textAlign": "center",
+              "optional": true
+            },
+            {
+              "name": "cta",
+              "component": "@UI/Button",
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "nextButton",
+          "component": "@UI/Button",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "@Block/Navbar",
+      "description": "Global top-level navigation bar: [Logo] [Nav?] [Search?] → [Bell] [Avatar] [Username ▾]. Supports default/compact density.",
+      "category": "navigation",
+      "layout": "horizontal",
+      "sizing": {
+        "width": "fill",
+        "height": "hug"
+      },
+      "padding": {
+        "x": "space_24",
+        "y": "space_0"
+      },
+      "gap": "space_0",
+      "tokens": {
+        "background": "color_surface_1",
+        "borderBottom": "color_border_base"
+      },
+      "variantProps": [
+        "size"
+      ],
+      "variantAxes": {
+        "size": [
+          "default",
+          "compact"
+        ]
+      },
+      "variantRules": [
+        {
+          "when": {
+            "size": "default"
+          },
+          "style": {
+            "height": 64,
+            "paddingY": "space_12",
+            "logoHeight": 28,
+            "navTextStyle": "Text/Body/Base",
+            "navGap": "space_8",
+            "actionGap": "space_12"
+          }
+        },
+        {
+          "when": {
+            "size": "compact"
+          },
+          "style": {
+            "height": 48,
+            "paddingY": "space_8",
+            "logoHeight": 24,
+            "navTextStyle": "Text/Caption/Base",
+            "navGap": "space_4",
+            "actionGap": "space_8"
+          }
+        }
+      ],
+      "responsiveRules": [
+        {
+          "breakpoint": "desktop",
+          "showNav": true,
+          "showSearch": true,
+          "showUsername": true
+        },
+        {
+          "breakpoint": "tablet",
+          "showNav": true,
+          "showSearch": true,
+          "showUsername": false
+        },
+        {
+          "breakpoint": "mobile",
+          "showNav": false,
+          "showSearch": false,
+          "showUsername": false
+        }
+      ],
+      "slots": [
+        {
+          "name": "logo",
+          "type": "composite",
+          "description": "Aica icon + brand name text"
+        },
+        {
+          "name": "nav",
+          "layout": "horizontal",
+          "gap": "space_8",
+          "optional": true,
+          "repeat": true,
+          "component": "@UI/Link"
+        },
+        {
+          "name": "search",
+          "component": "@UI/Autocomplete",
+          "optional": true
+        },
+        {
+          "name": "notifications",
+          "type": "icon-button",
+          "icon": "bell"
+        },
+        {
+          "name": "avatar",
+          "component": "@UI/Avatar"
+        },
+        {
+          "name": "userDropdown",
+          "layout": "horizontal",
+          "gap": "space_4",
+          "description": "Username text + chevron-down icon, borderless dropdown trigger"
         }
       ]
     }
