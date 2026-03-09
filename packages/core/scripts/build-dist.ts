@@ -132,7 +132,7 @@ function copyDirRecursive(src: string, dest: string) {
   }
 }
 
-const ASSET_DIRS = ['contracts', 'config', 'icons', 'schemas', 'figma-plugin', 'cursor-rules'];
+const ASSET_DIRS = ['contracts', 'config', 'icons', 'schemas', 'figma-plugin'];
 for (const dir of ASSET_DIRS) {
   console.log(`Copying ${dir}/...`);
   copyDirRecursive(join(CORE_ROOT, dir), join(DIST, dir));
