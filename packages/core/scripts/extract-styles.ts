@@ -1,13 +1,25 @@
 /**
- * extract-styles.ts
+ * extract-styles.ts — Brand-only style extractor
  *
- * Extracts color palette, typography and dimensions from a live website,
- * then updates ai-ds-styles.json with the extracted primitives.
+ * Scans a live website, detects the dominant brand color, generates a brand
+ * scale (6 primitives), and replaces ONLY the brand-related tokens in
+ * ai-ds-styles.json.  All other tokens (gray scale, danger/red, warning/yellow,
+ * success/green, info/cyan, borders, surfaces, etc.) are NEVER touched.
  *
- * Always:
- *   - Creates backup: ai-ds-styles.backup.json
- *   - Writes report:  ai-ds-styles.extracted.json
- *   - Updates in-place: ai-ds-styles.json (primitives + font)
+ * What changes:
+ *   - Brand primitives: core_brand_50/60/70/5/10/95
+ *   - Brand semantics:  color_brand_*, color_link_*, color_focus_*, color_active,
+ *                        color_icon_on_outline, color_viz_categorical_1
+ *   - Effect colors:    effect_focus_brand, effect_elevation_glow
+ *   - Typography:       fontFamily in all text styles
+ *   - Contrast guard:   color_text_on_brand flips dark/light if brand is too light
+ *
+ * What NEVER changes:
+ *   - Neutral/gray primitives and their semantics (bg, surface, text, border, divider)
+ *   - Semantic states: danger(red), warning(yellow), success(green), info(cyan)
+ *   - Icon tokens (except color_icon_on_outline)
+ *   - Space, radius, ratio, borderWidth, effect (non-brand), layout, zIndex
+ *   - Components, blocks, iconRoles, avatarPhoto, componentsConfig
  *
  * Usage:
  *   npx tsx scripts/extract-styles.ts --url "https://example.com"
@@ -22,7 +34,7 @@ const STYLES_PATH = path.join(ROOT, 'ai-ds-styles.json');
 const BACKUP_PATH = path.join(ROOT, 'ai-ds-styles.backup.json');
 const REPORT_PATH = path.join(ROOT, 'ai-ds-styles.extracted.json');
 
-/* ---------- CLI ---------- */
+/* ────────────────── CLI ────────────────── */
 
 function getArg(name: string): string | undefined {
   const idx = process.argv.indexOf(name);
@@ -49,15 +61,13 @@ if (!baseUrl) {
 const pagePaths = getArgList('--pages');
 if (!pagePaths.length) pagePaths.push('/');
 
-/* ---------- Color utilities ---------- */
+/* ────────────────── Color math ────────────────── */
 
 interface RgbColor { r: number; g: number; b: number; a: number }
 
 function parseColor(raw: string): RgbColor | null {
-  if (!raw) return null;
-  const m = raw.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/);
-  if (m) return { r: +m[1], g: +m[2], b: +m[3], a: m[4] != null ? +m[4] : 1 };
-  return null;
+  const m = raw?.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/);
+  return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] != null ? +m[4] : 1 } : null;
 }
 
 function rgbToHex(c: RgbColor): string {
@@ -65,10 +75,12 @@ function rgbToHex(c: RgbColor): string {
   return `#${h(c.r)}${h(c.g)}${h(c.b)}`;
 }
 
+function hexToRgb(hex: string): [number, number, number] {
+  return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+}
+
 function hexToHsl(hex: string): { h: number; s: number; l: number } {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const [r, g, b] = hexToRgb(hex).map(v => v / 255);
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
   const l = (max + min) / 2;
   if (max === min) return { h: 0, s: 0, l };
@@ -81,23 +93,55 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
   return { h: h * 360, s, l };
 }
 
-function colorDistance(a: string, b: string): number {
-  const ha = hexToHsl(a), hb = hexToHsl(b);
-  const dh = Math.min(Math.abs(ha.h - hb.h), 360 - Math.abs(ha.h - hb.h)) / 180;
-  const ds = Math.abs(ha.s - hb.s);
-  const dl = Math.abs(ha.l - hb.l);
-  return Math.sqrt(dh * dh + ds * ds + dl * dl);
+function relativeLuminance(hex: string): number {
+  const [r, g, b] = hexToRgb(hex).map(v => {
+    const s = v / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-/* ---------- Page scraping ---------- */
-
-interface RawExtraction {
-  colors: Map<string, { count: number; contexts: string[] }>;
-  fonts: Map<string, number>;
-  fontSizes: Map<number, number>;
-  lineHeights: Map<number, number>;
-  borderRadii: Map<number, number>;
+function mixHex(hex1: string, hex2: string, weight: number): string {
+  const [r1, g1, b1] = hexToRgb(hex1);
+  const [r2, g2, b2] = hexToRgb(hex2);
+  const mix = (a: number, b: number) => Math.round(a * (1 - weight) + b * weight);
+  const h = (n: number) => Math.min(255, Math.max(0, n)).toString(16).padStart(2, '0').toUpperCase();
+  return `#${h(mix(r1, r2))}${h(mix(g1, g2))}${h(mix(b1, b2))}`;
 }
+
+function tint(hex: string, percent: number): string {
+  return mixHex(hex, '#FFFFFF', percent / 100);
+}
+
+function shade(hex: string, percent: number): string {
+  return mixHex(hex, '#000000', percent / 100);
+}
+
+/* ────────────────── Brand scale generator ────────────────── */
+
+interface BrandScale {
+  core_brand_50: string;
+  core_brand_60: string;
+  core_brand_70: string;
+  core_brand_5: string;
+  core_brand_10: string;
+  core_brand_95: string;
+}
+
+function generateBrandScale(brandHex: string): BrandScale {
+  return {
+    core_brand_50: brandHex,
+    core_brand_60: shade(brandHex, 15),
+    core_brand_70: shade(brandHex, 28),
+    core_brand_5:  tint(brandHex, 92),
+    core_brand_10: tint(brandHex, 85),
+    core_brand_95: shade(brandHex, 85),
+  };
+}
+
+/* ────────────────── Page scraping ────────────────── */
+
+interface ExtractedColor { hex: string; count: number; contexts: string[]; hsl: { h: number; s: number; l: number } }
 
 const EXTRACT_SCRIPT = `
 (function() {
@@ -126,7 +170,7 @@ const EXTRACT_SCRIPT = `
       if (!raw || raw === 'rgba(0, 0, 0, 0)' || raw === 'transparent') continue;
       if (!colors[raw]) colors[raw] = { count: 0, contexts: [] };
       colors[raw].count++;
-      if (colors[raw].contexts.length < 3 && colors[raw].contexts.indexOf(ctx) === -1) {
+      if (colors[raw].contexts.length < 5 && colors[raw].contexts.indexOf(ctx) === -1) {
         colors[raw].contexts.push(ctx);
       }
     }
@@ -148,6 +192,14 @@ const EXTRACT_SCRIPT = `
            lineHeights: lineHeights, borderRadii: borderRadii };
 })()
 `;
+
+interface RawExtraction {
+  colors: Map<string, { count: number; contexts: string[] }>;
+  fonts: Map<string, number>;
+  fontSizes: Map<number, number>;
+  lineHeights: Map<number, number>;
+  borderRadii: Map<number, number>;
+}
 
 async function extractFromPage(page: Page): Promise<RawExtraction> {
   const raw: any = await page.evaluate(EXTRACT_SCRIPT);
@@ -171,76 +223,201 @@ function mergeExtractions(a: RawExtraction, b: RawExtraction): RawExtraction {
   return a;
 }
 
-/* ---------- Classification ---------- */
+/* ────────────────── Brand color detection ────────────────── */
 
-interface ColorGroup { name: string; hex: string; hsl: { h: number; s: number; l: number }; count: number; contexts: string[] }
+const BRAND_CONTEXTS = ['bg(button)', 'bg(a)', 'border(button)', 'text(a)', 'bg(input)', 'border(a)'];
 
-function classifyColors(raw: Map<string, { count: number; contexts: string[] }>): ColorGroup[] {
-  const parsed: ColorGroup[] = [];
+function detectBrandColor(raw: Map<string, { count: number; contexts: string[] }>): ExtractedColor | null {
+  const candidates: ExtractedColor[] = [];
+
+  for (const [rawStr, info] of raw) {
+    const c = parseColor(rawStr);
+    if (!c || c.a < 0.5) continue;
+    const hex = rgbToHex(c);
+    const hsl = hexToHsl(hex);
+    if (hsl.s < 0.25) continue;
+    if (hsl.l < 0.1 || hsl.l > 0.9) continue;
+
+    const existing = candidates.find(e => e.hex === hex);
+    if (existing) {
+      existing.count += info.count;
+      for (const ctx of info.contexts) {
+        if (existing.contexts.length < 10 && !existing.contexts.includes(ctx)) existing.contexts.push(ctx);
+      }
+    } else {
+      candidates.push({ hex, count: info.count, contexts: [...info.contexts], hsl });
+    }
+  }
+
+  // Score candidates: prefer colors that appear in brand-relevant contexts
+  let best: ExtractedColor | null = null;
+  let bestScore = -1;
+  for (const c of candidates) {
+    const contextBonus = c.contexts.some(ctx => BRAND_CONTEXTS.some(bc => ctx.includes(bc.split('(')[1].replace(')', '')))) ? 3 : 0;
+    const score = c.count + contextBonus * c.count;
+    if (score > bestScore) { bestScore = score; best = c; }
+  }
+
+  return best;
+}
+
+/* ────────────────── Apply brand to spec ────────────────── */
+
+const OLD_BRAND_PRIMITIVES = [
+  'core_blue_50', 'core_blue_60', 'core_blue_70', 'core_blue_5', 'core_ui_hover_bg',
+];
+
+const BRAND_SEMANTIC_MAP: Record<string, { light: string; dark: string }> = {
+  'color_brand_primary':   { light: 'core_brand_50', dark: 'core_brand_50' },
+  'color_brand_hover':     { light: 'core_brand_60', dark: 'core_brand_60' },
+  'color_brand_pressed':   { light: 'core_brand_70', dark: 'core_brand_70' },
+  'color_brand_muted':     { light: 'core_brand_5',  dark: 'core_brand_95' },
+  'color_brand_hover_bg':  { light: 'core_brand_10', dark: 'core_brand_95' },
+  'color_link_default':    { light: 'core_brand_50', dark: 'core_brand_50' },
+  'color_link_hover':      { light: 'core_brand_60', dark: 'core_brand_60' },
+  'color_focus_outline':   { light: 'core_brand_50', dark: 'core_brand_50' },
+  'color_active':          { light: 'core_brand_50', dark: 'core_brand_50' },
+};
+
+const BRAND_ICON_MAP: Record<string, { light: string; dark: string }> = {
+  'color_icon_on_outline': { light: 'core_brand_50', dark: 'core_brand_50' },
+};
+
+const BRAND_VIZ_MAP: Record<string, { light: string; dark: string }> = {
+  'color_viz_categorical_1': { light: 'core_brand_50', dark: 'core_brand_50' },
+};
+
+function applyBrandToSpec(spec: any, scale: BrandScale, brandHex: string): string[] {
+  const changes: string[] = [];
+  const color = spec.tokens?.color;
+  if (!color) return changes;
+
+  // 1. Remove old brand primitives, add new ones
+  const prims = color.primitives as Record<string, string>;
+  for (const old of OLD_BRAND_PRIMITIVES) {
+    if (prims[old]) {
+      delete prims[old];
+      changes.push(`  removed primitive: ${old}`);
+    }
+  }
+  for (const [name, hex] of Object.entries(scale)) {
+    prims[name] = hex;
+    changes.push(`  added primitive: ${name} = ${hex}`);
+  }
+
+  // 2. Update brand semantics across all groups
+  const allSemanticMaps = { ...BRAND_SEMANTIC_MAP, ...BRAND_ICON_MAP, ...BRAND_VIZ_MAP };
+  for (const groupName of Object.keys(color)) {
+    if (groupName === 'primitives') continue;
+    const group = color[groupName];
+    if (!group || typeof group !== 'object') continue;
+    for (const [tokenName, mapping] of Object.entries(allSemanticMaps)) {
+      if (group[tokenName]) {
+        const old = JSON.stringify(group[tokenName]);
+        group[tokenName] = { ...mapping };
+        changes.push(`  ${tokenName}: ${old} → ${JSON.stringify(mapping)}`);
+      }
+    }
+  }
+
+  // 3. Contrast guard: flip color_text_on_brand if brand is too light
+  const brandLum = relativeLuminance(brandHex);
+  const needDarkText = brandLum > 0.4;
+  for (const groupName of Object.keys(color)) {
+    if (groupName === 'primitives') continue;
+    const group = color[groupName];
+    if (!group?.color_text_on_brand) continue;
+    const textPrim = needDarkText ? 'core_gray_95' : 'core_white';
+    const fallbackDark = needDarkText ? 'core_gray_95' : 'core_white';
+    // Ensure these primitives exist
+    if (!prims[textPrim] && textPrim === 'core_gray_95') prims['core_gray_95'] = '#353535';
+    group.color_text_on_brand = { light: textPrim, dark: fallbackDark };
+    changes.push(`  color_text_on_brand → ${textPrim} (luminance=${brandLum.toFixed(2)}, needDarkText=${needDarkText})`);
+  }
+
+  // 4. Update effects that reference brand
+  const effects = spec.tokens?.effect;
+  if (effects) {
+    for (const [effName, effVal] of Object.entries(effects)) {
+      if (!Array.isArray(effVal)) continue;
+      for (const layer of effVal as any[]) {
+        if (layer.colorToken === 'color_brand_primary') {
+          layer.color = brandHex;
+          changes.push(`  effect ${effName}: color → ${brandHex}`);
+        }
+      }
+    }
+  }
+
+  return changes;
+}
+
+/* ────────────────── Typography ────────────────── */
+
+function updateTypography(spec: any, primaryFont: string): string[] {
+  const changes: string[] = [];
+  const typo = spec.tokens?.typography;
+  if (!typo) return changes;
+
+  const oldFont = typo.fontFamily || '';
+  if (oldFont === primaryFont) return changes;
+
+  typo.fontFamily = primaryFont;
+  changes.push(`  fontFamily: "${oldFont}" → "${primaryFont}"`);
+
+  const textStyles = typo.textStyles || {};
+  for (const [name, style] of Object.entries(textStyles)) {
+    if (style && typeof style === 'object') {
+      (style as any).fontFamily = primaryFont;
+    }
+  }
+  changes.push(`  updated ${Object.keys(textStyles).length} text styles`);
+
+  return changes;
+}
+
+/* ────────────────── Classify (for report only) ────────────────── */
+
+function classifyForReport(raw: Map<string, { count: number; contexts: string[] }>): ExtractedColor[] {
+  const parsed: ExtractedColor[] = [];
   for (const [rawStr, info] of raw) {
     const c = parseColor(rawStr);
     if (!c || c.a < 0.05) continue;
     const hex = rgbToHex(c);
     const hsl = hexToHsl(hex);
     const existing = parsed.find(p => p.hex === hex);
-    if (existing) { existing.count += info.count; for (const ctx of info.contexts) { if (existing.contexts.length < 5 && !existing.contexts.includes(ctx)) existing.contexts.push(ctx); } }
-    else parsed.push({ name: '', hex, hsl, count: info.count, contexts: info.contexts });
-  }
-  parsed.sort((a, b) => b.count - a.count);
-
-  const deduped: ColorGroup[] = [];
-  for (const color of parsed) {
-    const close = deduped.find(d => colorDistance(d.hex, color.hex) < 0.015);
-    if (close) close.count += color.count;
-    else deduped.push(color);
-  }
-
-  for (const c of deduped) {
-    const { h, s, l } = c.hsl;
-    if (s < 0.08) {
-      if (l > 0.97) c.name = 'core_white';
-      else if (l < 0.08) c.name = 'core_black';
-      else c.name = `core_gray_${Math.round(l * 100)}`;
+    if (existing) {
+      existing.count += info.count;
+      for (const ctx of info.contexts) { if (existing.contexts.length < 5 && !existing.contexts.includes(ctx)) existing.contexts.push(ctx); }
     } else {
-      let hue = '';
-      if (h < 15 || h >= 345) hue = 'red';
-      else if (h < 45) hue = 'orange';
-      else if (h < 70) hue = 'yellow';
-      else if (h < 160) hue = 'green';
-      else if (h < 190) hue = 'teal';
-      else if (h < 210) hue = 'cyan';
-      else if (h < 270) hue = 'blue';
-      else if (h < 310) hue = 'violet';
-      else hue = 'rose';
-      c.name = `core_${hue}_${Math.round(l * 100)}`;
+      parsed.push({ hex, count: info.count, contexts: [...info.contexts], hsl });
     }
   }
-
-  const seen = new Map<string, number>();
-  for (const c of deduped) {
-    const base = c.name;
-    const count = seen.get(base) || 0;
-    if (count > 0) c.name = `${base}_alt${count}`;
-    seen.set(base, count + 1);
-  }
-
-  return deduped;
+  parsed.sort((a, b) => b.count - a.count);
+  return parsed;
 }
 
-/* ---------- Main ---------- */
+/* ────────────────── Main ────────────────── */
 
 async function main() {
-  console.log(`\n=== AICADS Style Extractor ===`);
+  console.log(`\n=== AICADS Brand Style Extractor ===`);
   console.log(`URL:   ${baseUrl}`);
-  console.log(`Pages: ${pagePaths.join(', ')}\n`);
+  console.log(`Pages: ${pagePaths.join(', ')}`);
+  console.log(`\nPrinciple: ONLY brand colors change. Danger/warning/success/info are constants.\n`);
 
-  // Step 1: Backup existing styles
-  if (fs.existsSync(STYLES_PATH)) {
-    fs.copyFileSync(STYLES_PATH, BACKUP_PATH);
-    console.log(`Backup: ai-ds-styles.backup.json`);
+  // 1. Check existing styles file
+  if (!fs.existsSync(STYLES_PATH)) {
+    console.error(`ERROR: ${STYLES_PATH} not found.`);
+    console.error(`This script requires an existing ai-ds-styles.json as a template.`);
+    console.error(`Run "npm run spec:split" first to create it from ai-ds-spec.json.`);
+    process.exit(1);
   }
 
-  // Step 2: Scan website
+  // 2. Backup
+  fs.copyFileSync(STYLES_PATH, BACKUP_PATH);
+  console.log(`Backup: ai-ds-styles.backup.json`);
+
+  // 3. Scan website
   const browser = await chromium.launch({ headless: true });
   const ctx = await browser.newContext({
     viewport: { width: 1440, height: 900 },
@@ -270,170 +447,91 @@ async function main() {
   }
   await browser.close();
 
-  // Step 3: Classify
-  const colors = classifyColors(combined.colors);
+  // 4. Detect brand color
+  const brandColor = detectBrandColor(combined.colors);
+  if (!brandColor) {
+    console.error(`\nERROR: Could not detect a brand color from the website.`);
+    console.error(`The site may not have enough saturated colors in buttons/links.`);
+    process.exit(1);
+  }
+
+  console.log(`\n--- Detected brand color ---`);
+  console.log(`  HEX: ${brandColor.hex}`);
+  console.log(`  HSL: h=${Math.round(brandColor.hsl.h)} s=${Math.round(brandColor.hsl.s * 100)}% l=${Math.round(brandColor.hsl.l * 100)}%`);
+  console.log(`  Occurrences: ${brandColor.count}`);
+  console.log(`  Contexts: ${brandColor.contexts.join(', ')}`);
+
+  // 5. Generate brand scale
+  const scale = generateBrandScale(brandColor.hex);
+  console.log(`\n--- Generated brand scale ---`);
+  for (const [name, hex] of Object.entries(scale)) {
+    console.log(`  ${name.padEnd(18)} ${hex}`);
+  }
+
+  // 6. Font
   const topFonts = [...combined.fonts.entries()].sort((a, b) => b[1] - a[1]);
+  const primaryFont = topFonts[0]?.[0] || 'Inter';
+  console.log(`\n--- Font ---`);
+  console.log(`  Primary: ${primaryFont}`);
+
+  // 7. Apply to spec
+  const spec = JSON.parse(fs.readFileSync(STYLES_PATH, 'utf-8'));
+
+  console.log(`\n--- Applying changes ---`);
+  const brandChanges = applyBrandToSpec(spec, scale, brandColor.hex);
+  for (const c of brandChanges) console.log(c);
+
+  const typoChanges = updateTypography(spec, primaryFont);
+  for (const c of typoChanges) console.log(c);
+
+  // 8. Write updated spec
+  fs.writeFileSync(STYLES_PATH, JSON.stringify(spec, null, 2) + '\n', 'utf-8');
+  console.log(`\nWrote: ai-ds-styles.json`);
+  console.log(`Total changes: ${brandChanges.length + typoChanges.length}`);
+
+  // 9. Save extraction report
+  const allColors = classifyForReport(combined.colors);
   const topSizes = [...combined.fontSizes.entries()].sort((a, b) => b[1] - a[1]);
   const topRadii = [...combined.borderRadii.entries()].sort((a, b) => b[1] - a[1]);
-  const primaryFont = topFonts[0]?.[0] || 'Inter';
 
-  // Step 4: Save report
   const report = {
     url: baseUrl,
     pages: pagePaths,
     extractedAt: new Date().toISOString(),
+    detectedBrand: {
+      hex: brandColor.hex,
+      hsl: { h: Math.round(brandColor.hsl.h), s: Math.round(brandColor.hsl.s * 100), l: Math.round(brandColor.hsl.l * 100) },
+      count: brandColor.count,
+      contexts: brandColor.contexts,
+    },
+    generatedScale: scale,
+    contrastGuard: {
+      brandLuminance: relativeLuminance(brandColor.hex).toFixed(3),
+      textOnBrand: relativeLuminance(brandColor.hex) > 0.4 ? 'dark (core_gray_95)' : 'white (core_white)',
+    },
     summary: {
-      totalColors: colors.length,
+      totalColorsFound: allColors.length,
       primaryFont,
       fontSizes: topSizes.slice(0, 10).map(([s]) => s),
       borderRadii: topRadii.slice(0, 8).map(([r]) => r),
     },
-    colors: colors.map(c => ({
-      name: c.name, hex: c.hex, count: c.count, contexts: c.contexts,
+    allExtractedColors: allColors.slice(0, 30).map(c => ({
+      hex: c.hex, count: c.count, contexts: c.contexts,
       hsl: { h: Math.round(c.hsl.h), s: Math.round(c.hsl.s * 100), l: Math.round(c.hsl.l * 100) },
     })),
     fonts: topFonts.slice(0, 10).map(([name, count]) => ({ name, count })),
+    changes: [...brandChanges, ...typoChanges],
   };
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2) + '\n', 'utf-8');
+  console.log(`Report: ai-ds-styles.extracted.json`);
 
-  // Step 5: Build primitives
-  const newPrimitives: Record<string, string> = {};
-  for (const c of colors) newPrimitives[c.name] = c.hex;
-
-  // Step 6: Update or create ai-ds-styles.json
-  if (fs.existsSync(STYLES_PATH)) {
-    const existing = JSON.parse(fs.readFileSync(STYLES_PATH, 'utf-8'));
-
-    // Build mapping: old primitive HEX → new primitive name (for semantic fixup)
-    const oldPrimitives: Record<string, string> = existing.tokens?.color?.primitives || {};
-    const oldNameToHex = new Map(Object.entries(oldPrimitives));
-    const hexToNewName = new Map(colors.map(c => [c.hex, c.name]));
-
-    // Replace primitives
-    if (!existing.tokens) existing.tokens = {};
-    if (!existing.tokens.color) existing.tokens.color = {};
-    existing.tokens.color.primitives = newPrimitives;
-
-    // Auto-fix semantic references: find closest new primitive for each broken ref
-    let fixedCount = 0;
-    for (const groupName of Object.keys(existing.tokens.color)) {
-      if (groupName === 'primitives') continue;
-      const group = existing.tokens.color[groupName];
-      if (!group || typeof group !== 'object') continue;
-      for (const [tokenName, entry] of Object.entries(group)) {
-        if (!entry || typeof entry !== 'object') continue;
-        const e = entry as Record<string, string>;
-        for (const mode of ['light', 'dark']) {
-          const ref = e[mode];
-          if (!ref || ref.startsWith('#')) continue;
-          if (newPrimitives[ref]) continue; // still valid
-          // Broken reference — try to find closest match
-          const oldHex = oldNameToHex.get(ref);
-          if (oldHex) {
-            // Find closest new primitive by color distance
-            let bestName = '';
-            let bestDist = Infinity;
-            for (const nc of colors) {
-              const dist = colorDistance(oldHex, nc.hex);
-              if (dist < bestDist) { bestDist = dist; bestName = nc.name; }
-            }
-            if (bestName) {
-              e[mode] = bestName;
-              fixedCount++;
-            }
-          }
-        }
-      }
-    }
-
-    // Update font
-    if (existing.tokens.typography) {
-      existing.tokens.typography.fontFamily = primaryFont;
-      const textStyles = existing.tokens.typography.textStyles || {};
-      for (const style of Object.values(textStyles)) {
-        if (style && typeof style === 'object') (style as any).fontFamily = primaryFont;
-      }
-    }
-
-    fs.writeFileSync(STYLES_PATH, JSON.stringify(existing, null, 2) + '\n', 'utf-8');
-    console.log(`\nUpdated ai-ds-styles.json:`);
-    console.log(`  ${Object.keys(newPrimitives).length} color primitives`);
-    console.log(`  ${fixedCount} semantic references auto-fixed`);
-    console.log(`  Font: ${primaryFont}`);
-  } else {
-    // No existing file — create from scratch with default iconRoles and structure
-    const fresh: Record<string, any> = {
-      componentsConfig: { useSingleTheme: false, themeMode: 'light' },
-      avatarPhoto: { fileKey: '', nodeId: '', componentKey: '' },
-      iconRoles: {
-        brand: ['aica'],
-        'close-x': ['close-x', 'close', 'x-mark'],
-        check: ['check', 'check-lg', 'checkmark'],
-        check2: ['check2'],
-        'accordion-chevron': ['chevron-down', 'caret-down-fill', 'arrow-down'],
-        'accordion-chevron-open': ['caret-up-fill'],
-        'chevron-right': ['chevron-right', 'angle-right'],
-        'chevron-left': ['chevron-left', 'angle-left'],
-        'chevron-down': ['chevron-down', 'caret-down-fill'],
-        'caret-left-fill': ['caret-left-fill'],
-        'caret-right-fill': ['caret-right-fill'],
-        'caret-up-fill': ['caret-up-fill'],
-        'caret-down-fill': ['caret-down-fill'],
-        search: ['search', 'magnifying-glass'],
-        filter: ['filter', 'funnel', 'sliders'],
-        link: ['link-45deg', 'link'],
-        resizer: ['resizer', 'arrows-expand', 'arrows-fullscreen'],
-        user: ['user', 'person', 'account'],
-        'person-circle': ['person-circle'],
-        'exclamation-diamond-fill': ['exclamation-diamond-fill', 'exclamation-diamond', 'alert'],
-      },
-      tokens: {
-        color: { primitives: newPrimitives },
-        typography: { textStyles: buildTextStyles(primaryFont, topSizes) },
-      },
-    };
-    fs.writeFileSync(STYLES_PATH, JSON.stringify(fresh, null, 2) + '\n', 'utf-8');
-    console.log(`\nCreated ai-ds-styles.json from scratch (${Object.keys(newPrimitives).length} primitives).`);
-  }
-
-  // Step 7: Summary
-  console.log(`\nReport: ai-ds-styles.extracted.json`);
-  console.log(`\n--- Extracted palette (top 10) ---`);
-  for (const c of colors.slice(0, 10)) {
-    console.log(`  ${c.hex}  ${c.name.padEnd(24)} (${c.count}x) ${c.contexts.join(', ')}`);
-  }
-  console.log(`  ... ${Math.max(0, colors.length - 10)} more`);
-  console.log(`\nFont: ${primaryFont}`);
-  console.log(`Sizes: ${topSizes.slice(0, 8).map(([s]) => s + 'px').join(', ')}`);
-  console.log(`Radii: ${topRadii.slice(0, 5).map(([r]) => r + 'px').join(', ')}`);
-}
-
-function buildTextStyles(fontFamily: string, sizes: [number, number][]): Record<string, any> {
-  const sizeList = sizes.map(([s]) => s).sort((a, b) => b - a);
-  const styles: Record<string, any> = {};
-  const headingSizes = sizeList.filter(s => s >= 18);
-  const bodySizes = sizeList.filter(s => s >= 12 && s < 18);
-  const captionSizes = sizeList.filter(s => s >= 8 && s < 12);
-
-  const headingNames = ['H1', 'H2', 'H3', 'H4'];
-  for (let i = 0; i < Math.min(headingSizes.length, 4); i++) {
-    const fs = headingSizes[i];
-    styles[`Text/Heading/${headingNames[i]}`] = { fontFamily, fontSize: fs, lineHeight: Math.round(fs * 1.35), fontWeight: 600 };
-  }
-  if (bodySizes.length >= 1) {
-    const base = bodySizes.find(s => s >= 13 && s <= 15) || bodySizes[0];
-    styles['Text/Body/Base'] = { fontFamily, fontSize: base, lineHeight: Math.round(base * 1.45), fontWeight: 400 };
-    styles['Text/Body/Strong'] = { fontFamily, fontSize: base, lineHeight: Math.round(base * 1.45), fontWeight: 600 };
-  }
-  const sm = bodySizes.find(s => s >= 11 && s <= 13);
-  if (sm) styles['Text/Body/SM'] = { fontFamily, fontSize: sm, lineHeight: Math.round(sm * 1.35), fontWeight: 400 };
-  const lg = bodySizes.find(s => s >= 15 && s <= 17);
-  if (lg) styles['Text/Body/LG'] = { fontFamily, fontSize: lg, lineHeight: Math.round(lg * 1.5), fontWeight: 400 };
-  if (captionSizes.length) {
-    styles['Text/Caption/Base'] = { fontFamily, fontSize: captionSizes[0], lineHeight: Math.round(captionSizes[0] * 1.35), fontWeight: 500 };
-    if (captionSizes.length > 1) styles['Text/Caption/XS'] = { fontFamily, fontSize: captionSizes[1], lineHeight: Math.round(captionSizes[1] * 1.3), fontWeight: 500 };
-  }
-  return styles;
+  // 10. Summary
+  console.log(`\n=== DONE ===`);
+  console.log(`Brand: ${brandColor.hex} → 6 primitives (core_brand_50..95)`);
+  console.log(`Font:  ${primaryFont}`);
+  console.log(`\nSemantic states (danger/warning/success/info) were NOT modified.`);
+  console.log(`Neutral grays, borders, surfaces were NOT modified.`);
+  console.log(`\nNext step: run "npm run spec:merge" to rebuild ai-ds-spec.json`);
 }
 
 main().catch((e) => {
