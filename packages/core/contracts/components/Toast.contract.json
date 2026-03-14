@@ -1,9 +1,108 @@
 {
   "name": "@UI/Toast",
-  "description": "Toast: auto-dismiss notification with appearance variants (info, success, warning, danger). Includes Toaster container and global toast() function.",
-  "variantProps": [],
-  "variantAxes": {},
-  "variantRules": [],
+  "description": "Toast: auto-dismiss notification with appearance variants (info, success, warning, danger).",
+  "variantProps": [
+    "appearance"
+  ],
+  "variantAxes": {
+    "appearance": [
+      "info",
+      "success",
+      "warning",
+      "danger"
+    ]
+  },
+  "variantRules": [
+    {
+      "when": {},
+      "style": {
+        "textStyle": "Text/Caption/Base",
+        "descriptionTextStyle": "Text/Body/SM",
+        "textColor": "color_text_primary",
+        "borderRadius": "radius_default",
+        "paddingX": "space_12",
+        "paddingY": "space_12",
+        "gap": "space_8",
+        "closeIconColor": "color_text_muted",
+        "elevationToken": "effect_elevation_2",
+        "width": 360
+      },
+      "tailwindClasses": [
+        "text-[var(--color-text-primary)]",
+        "[--close-icon:var(--color-text-muted)]",
+        "px-[var(--space-12)]",
+        "py-[var(--space-12)]",
+        "gap-[var(--space-8)]",
+        "rounded-default",
+        "text-style-caption",
+        "shadow-elevation-2"
+      ]
+    },
+    {
+      "when": {
+        "appearance": "info"
+      },
+      "style": {
+        "background": "color_info_surface",
+        "borderColor": "color_info_base",
+        "iconColor": "color_info_base"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-info-surface)]",
+        "[--icon-color:var(--color-info-base)]",
+        "border",
+        "border-[var(--color-info-base)]"
+      ]
+    },
+    {
+      "when": {
+        "appearance": "success"
+      },
+      "style": {
+        "background": "color_success_surface",
+        "borderColor": "color_success_base",
+        "iconColor": "color_success_base"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-success-surface)]",
+        "[--icon-color:var(--color-success-base)]",
+        "border",
+        "border-[var(--color-success-base)]"
+      ]
+    },
+    {
+      "when": {
+        "appearance": "warning"
+      },
+      "style": {
+        "background": "color_warning_surface",
+        "borderColor": "color_warning_base",
+        "iconColor": "color_warning_base"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-warning-surface)]",
+        "[--icon-color:var(--color-warning-base)]",
+        "border",
+        "border-[var(--color-warning-base)]"
+      ]
+    },
+    {
+      "when": {
+        "appearance": "danger"
+      },
+      "style": {
+        "background": "color_danger_surface",
+        "borderColor": "color_danger_base",
+        "iconColor": "color_danger_base"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-danger-surface)]",
+        "[--icon-color:var(--color-danger-base)]",
+        "border",
+        "border-[var(--color-danger-base)]"
+      ]
+    }
+  ],
   "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand",
   "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger",
   "element": "div",

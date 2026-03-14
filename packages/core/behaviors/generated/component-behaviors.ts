@@ -74,7 +74,7 @@ export const COMPONENT_STATE_MACHINES: Record<string, { initial: string; states:
   ['@UI/ListItem']: { initial: 'base', states: ["base","hover","selected","disabled"], transitions: [{"from":"base","to":"hover","trigger":"mouseenter"},{"from":"hover","to":"base","trigger":"mouseleave"},{"from":"base","to":"focus","trigger":"focus"},{"from":"focus","to":"base","trigger":"blur"}] },
   ['@UI/RadioButton']: { initial: 'base', states: ["base","filled","focus","always-filled","disabled"], transitions: [{"from":"base","to":"hover","trigger":"mouseenter"},{"from":"hover","to":"base","trigger":"mouseleave"},{"from":"base","to":"focus","trigger":"focus"},{"from":"focus","to":"base","trigger":"blur"}] },
   ['@UI/RangeSlider']: { initial: 'base', states: ["base","hover","disabled"], transitions: [{"from":"base","to":"hover","trigger":"mouseenter"},{"from":"hover","to":"base","trigger":"mouseleave"},{"from":"base","to":"focus","trigger":"focus"},{"from":"focus","to":"base","trigger":"blur"}] },
-  ['@UI/Select']: { initial: 'base', states: ["base","hover","open","disabled"], transitions: [{"from":"base","to":"hover","trigger":"mouseenter"},{"from":"hover","to":"base","trigger":"mouseleave"},{"from":"base","to":"open","trigger":"click"},{"from":"open","to":"base","trigger":"blur"}] },
+  ['@UI/Select']: { initial: 'base', states: ["base","hover","open","disabled"], transitions: [{"from":"base","to":"hover","trigger":"mouseenter"},{"from":"hover","to":"base","trigger":"mouseleave"},{"from":"base","to":"focus","trigger":"focus"},{"from":"focus","to":"base","trigger":"blur"}] },
   ['@UI/Tab']: { initial: 'base', states: ["base","hover","active","focus","disabled"], transitions: [{"from":"base","to":"hover","trigger":"mouseenter"},{"from":"hover","to":"base","trigger":"mouseleave"},{"from":"base","to":"focus","trigger":"focus"},{"from":"focus","to":"base","trigger":"blur"},{"from":"hover","to":"active","trigger":"mousedown"},{"from":"active","to":"hover","trigger":"mouseup"}] },
   ['@UI/Table/Row']: { initial: 'base', states: ["base","hover","selected","disabled"], transitions: [{"from":"base","to":"hover","trigger":"mouseenter"},{"from":"hover","to":"base","trigger":"mouseleave"},{"from":"base","to":"focus","trigger":"focus"},{"from":"focus","to":"base","trigger":"blur"}] },
   ['@UI/Tag']: { initial: 'base', states: ["base","hover"], transitions: [{"from":"base","to":"hover","trigger":"mouseenter"},{"from":"hover","to":"base","trigger":"mouseleave"},{"from":"base","to":"focus","trigger":"focus"},{"from":"focus","to":"base","trigger":"blur"}] },
@@ -102,6 +102,7 @@ export const COMPONENT_FOCUS_RINGS: Record<string, { focusRing: string; focusRin
   ['@UI/EmptyState']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/FileUpload']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/FormHint']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
+  ['@UI/GridContainer']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/Image']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/Input']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/LinearProgress']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
@@ -111,6 +112,7 @@ export const COMPONENT_FOCUS_RINGS: Record<string, { focusRing: string; focusRin
   ['@UI/Pagination']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/Paragraph']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/PinInput']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
+  ['@UI/Popover']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/RadioButton']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/RangeSlider']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/Rating']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
@@ -134,6 +136,7 @@ export const COMPONENT_FOCUS_RINGS: Record<string, { focusRing: string; focusRin
   ['@UI/Tag']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/TagRow']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/Textarea']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
+  ['@UI/Toast']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
   ['@UI/Tooltip']: { focusRing: "focus-visible:outline-none focus-visible:shadow-focus-brand", focusRingDanger: "focus-visible:outline-none focus-visible:shadow-focus-danger" },
 };
 

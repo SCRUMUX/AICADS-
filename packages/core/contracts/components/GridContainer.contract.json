@@ -9,8 +9,10 @@
   "element": "div",
   "rootLayout": "none",
   "customStructure": "grid",
+  "defaultWidth": 960,
   "styleKeys": [],
   "heightConstraint": "hug",
+  "defaultHeight": 200,
   "generatorStrategy": "template",
   "template": "GridContainer"
 }

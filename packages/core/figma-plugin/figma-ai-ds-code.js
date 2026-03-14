@@ -91,6 +91,31 @@ function resolveSpaceTokenToPixels(spec, tokenName) {
   return typeof direct === 'number' ? direct : null;
 }
 
+var FIGMA_SPACE_SEMANTIC_PREFIXES = ['space_layout_', 'space_content_', 'space_control_', 'space_inset_'];
+
+function shouldExportSpaceTokenToFigma(tokenName) {
+  for (var i = 0; i < FIGMA_SPACE_SEMANTIC_PREFIXES.length; i++) {
+    if (tokenName.indexOf(FIGMA_SPACE_SEMANTIC_PREFIXES[i]) === 0) return true;
+  }
+  return false;
+}
+
+function resolveNonExportedSpaceTokens(spaceVarByName, spec) {
+  var spaceSem = (spec && spec.tokens && spec.tokens.space && spec.tokens.space.semantic) || {};
+  for (var semKey in spaceSem) {
+    if (!Object.prototype.hasOwnProperty.call(spaceSem, semKey)) continue;
+    if (spaceVarByName[semKey]) continue;
+    var alias = spaceSem[semKey];
+    var maxDepth = 5;
+    while (typeof alias === 'string' && !spaceVarByName[alias] && spaceSem[alias] && maxDepth-- > 0) {
+      alias = spaceSem[alias];
+    }
+    if (typeof alias === 'string' && spaceVarByName[alias]) {
+      spaceVarByName[semKey] = spaceVarByName[alias];
+    }
+  }
+}
+
 /** Разрешить radius-токен в число (px) по spec: semantic -> primitives. */
 function resolveRadiusToPixels(spec, tokenName) {
   if (!spec || !spec.tokens || !spec.tokens.radius) return null;
@@ -365,6 +390,7 @@ async function generateVariablesFromTokens(spec) {
       }
       for (var semName in spaceSem) {
         if (!Object.prototype.hasOwnProperty.call(spaceSem, semName)) continue;
+        if (!shouldExportSpaceTokenToFigma(semName)) continue;
         var aliasName = spaceSem[semName];
         var primVar = spacePrimVars[aliasName];
         if (!primVar) continue;
@@ -1304,27 +1330,18 @@ async function generateTokensPage(spec) {
     var spacePrimitives = spaceSpec.primitives || {};
     var spaceSemantic = spaceSpec.semantic || {};
 
-    // Мапа space-переменных по имени (семантика) для последующей привязки
     var spaceVarByName = {};
     if (figma.variables) {
       try {
         var spaceCollection = await getOrCreateCollection(COLLECTION_NAMES.SPACE);
         var allSpaceVars = await figma.variables.getLocalVariablesAsync('FLOAT');
-        var hasSemanticSpace =
-          spaceSemantic && Object.keys(spaceSemantic).length > 0;
         for (var sv = 0; sv < allSpaceVars.length; sv++) {
           var svVar = allSpaceVars[sv];
           if (!spaceCollection || svVar.variableCollectionId !== spaceCollection.id)
             continue;
-          // Если есть явная семантика в спеках — в карту кладём только семантические токены
-          if (
-            hasSemanticSpace &&
-            !Object.prototype.hasOwnProperty.call(spaceSemantic, svVar.name)
-          ) {
-            continue;
-          }
           spaceVarByName[svVar.name] = svVar;
         }
+        resolveNonExportedSpaceTokens(spaceVarByName, spec);
       } catch (eSv) {
         postStatus('Не удалось прочитать FLOAT переменные Space: ' + eSv.message);
       }
@@ -1976,6 +1993,7 @@ async function loadVariableMaps(spec) {
           if (sVar.variableCollectionId === spaceCol.id) spaceVarByName[sVar.name] = sVar;
         }
       }
+      resolveNonExportedSpaceTokens(spaceVarByName, spec);
     } catch (eS) {
       postStatus('Не удалось прочитать space variables: ' + eS.message);
     }
@@ -2038,6 +2056,21 @@ async function loadVariableMaps(spec) {
     useStaticColors: useStaticColors,
     themeMode: themeMode
   };
+}
+
+/** Определяет высоту компонента с учётом densityProfile (default | md3).
+ *  Если в спеке densityProfile === 'md3' и у компонента есть md3SizeHeightMap — берём оттуда.
+ *  Иначе используем sizeHeightMap. Если ни то, ни другое — вернёт null (fallback на caller). */
+function resolveComponentHeight(spec, componentSpec, size) {
+  var useMd3 = spec && spec.componentsConfig && spec.componentsConfig.densityProfile === 'md3';
+  var heightMap = useMd3 && componentSpec && componentSpec.md3SizeHeightMap
+    ? componentSpec.md3SizeHeightMap
+    : (componentSpec && componentSpec.sizeHeightMap ? componentSpec.sizeHeightMap : null);
+  if (heightMap && heightMap[size]) {
+    var px = resolveSpaceTokenToPixels(spec, heightMap[size]);
+    if (typeof px === 'number' && px > 0) return px;
+  }
+  return null;
 }
 
 var COMPONENT_LAYOUT_BUILDERS = {};
@@ -2127,8 +2160,7 @@ async function buildButtonLayout(spec, componentSpec, variant, style, context) {
   }
 
   var sizeForMinMax = variant.size || 'md';
-  var btnHToken = sizeForMinMax === 'sm' ? 'space_button_h_sm' : sizeForMinMax === 'lg' ? 'space_button_h_lg' : 'space_button_h_md';
-  var minH = resolveSpaceTokenToPixels(spec, btnHToken) || (sizeForMinMax === 'sm' ? 28 : sizeForMinMax === 'lg' ? 44 : 36);
+  var minH = resolveComponentHeight(spec, componentSpec, sizeForMinMax) || (sizeForMinMax === 'sm' ? 28 : sizeForMinMax === 'lg' ? 44 : 36);
   comp.minHeight = minH;
   comp.maxHeight = minH;
   comp.minWidth = minH;
@@ -2878,20 +2910,23 @@ function findIconMasterByNameSubstring(components, substrings, excludeSubstrings
 }
 
 /** Роли иконок из спека (iconRoles). Единая точка правды: какая иконка — brand, close и т.д.
- * Формат: "role": ["substring"] | "role": { "nodeId": "61:27924" } | "role": { "include": ["a"], "exclude": ["b"] } */
+ * Формат: "role": ["substring"] | "role": { "nodeId": "...", "include": [...], "exclude": [...], "inlineSvg": "<svg ...>" } */
 function getIconRoles(spec) {
   var defaults = { brand: ['aica'], close: ['close'] };
   if (!spec || !spec.iconRoles) return defaults;
   var r = spec.iconRoles;
   var merged = {};
+  function isRoleObject(v) {
+    return v != null && typeof v === 'object' && !Array.isArray(v) && (v.nodeId || v.include || v.exclude || v.inlineSvg);
+  }
   for (var k in defaults) {
     var v = r[k];
-    merged[k] = (v != null && typeof v === 'object' && !Array.isArray(v) && (v.nodeId || v.include || v.exclude)) ? v : (v != null ? (Array.isArray(v) ? v : [v].filter(Boolean)) : defaults[k]);
+    merged[k] = isRoleObject(v) ? v : (v != null ? (Array.isArray(v) ? v : [v].filter(Boolean)) : defaults[k]);
   }
   for (var k in r) {
     if (!(k in merged)) {
       var v2 = r[k];
-      merged[k] = (v2 != null && typeof v2 === 'object' && !Array.isArray(v2) && (v2.nodeId || v2.include || v2.exclude)) ? v2 : (Array.isArray(v2) ? v2 : [v2].filter(Boolean));
+      merged[k] = isRoleObject(v2) ? v2 : (Array.isArray(v2) ? v2 : [v2].filter(Boolean));
     }
   }
   return merged;
@@ -2905,8 +2940,41 @@ async function getMainComponentSafe(instance) {
   return instance.mainComponent || null;
 }
 
-/** Мастер-иконка по роли: по nodeId — точный узел; иначе по имени из spec.iconRoles[roleName].
- * iconRoles.role может быть { "nodeId": "61:27924" } для ссылки на конкретную иконку по Figma node-id. */
+var _fallbackIconCache = {};
+
+/** Создаёт COMPONENT из inline SVG строки (fallback, если мастер-иконка не найдена в файле).
+ *  Результат кешируется по roleName, чтобы не плодить дубликаты. */
+function createFallbackIconFromSvg(roleName, svgString) {
+  if (_fallbackIconCache[roleName]) return _fallbackIconCache[roleName];
+  if (!svgString) return null;
+  try {
+    var svgFrame = figma.createNodeFromSvg(svgString);
+    var comp = figma.createComponent();
+    comp.name = 'Icon/' + roleName;
+    comp.layoutMode = 'NONE';
+    var w = svgFrame.width || 16;
+    var h = svgFrame.height || 16;
+    comp.resize(w, h);
+    comp.fills = [];
+    comp.clipsContent = true;
+    var children = svgFrame.children ? svgFrame.children.slice() : [];
+    for (var ci = 0; ci < children.length; ci++) {
+      comp.appendChild(children[ci]);
+    }
+    svgFrame.remove();
+    figma.currentPage.appendChild(comp);
+    _fallbackIconCache[roleName] = comp;
+    postStatus('Icon/' + roleName + ': создан fallback-компонент из inlineSvg.');
+    return comp;
+  } catch (e) {
+    postStatus('Icon/' + roleName + ': fallback SVG error — ' + e.message);
+    return null;
+  }
+}
+
+/** Мастер-иконка по роли: по nodeId — точный узел; по имени из spec.iconRoles[roleName];
+ *  fallback — создаёт COMPONENT из inlineSvg если ничего не найдено.
+ *  Формат iconRoles: "role": ["substr"] | { "nodeId": "..." } | { "include": [...], "exclude": [...], "inlineSvg": "<svg ...>" } */
 async function getIconMasterForRole(allIconComponents, roleName, spec) {
   var roles = getIconRoles(spec);
   var roleVal = roles[roleName];
@@ -2914,14 +2982,23 @@ async function getIconMasterForRole(allIconComponents, roleName, spec) {
     var nodeId = String(roleVal.nodeId).replace(/-/g, ':');
     var node = await figma.getNodeByIdAsync(nodeId);
     if (node && node.type === 'COMPONENT') return node;
-    postStatus('Checkbox: иконка по nodeId ' + nodeId + ' не найдена или не COMPONENT.');
-    return null;
+    postStatus('Icon «' + roleName + '»: nodeId ' + nodeId + ' не найден или не COMPONENT.');
   }
-  if (!allIconComponents || !allIconComponents.length) return null;
-  var names = Array.isArray(roleVal) ? roleVal : (roleVal && roleVal.include) ? roleVal.include : [];
-  var excludeNames = (roleVal && roleVal.exclude) ? roleVal.exclude : [];
-  if (!names || !names.length) return null;
-  return findIconMasterByNameSubstring(allIconComponents, names, excludeNames);
+  var found = null;
+  if (allIconComponents && allIconComponents.length) {
+    var names = Array.isArray(roleVal) ? roleVal : (roleVal && roleVal.include) ? roleVal.include : [];
+    var excludeNames = (roleVal && roleVal.exclude) ? roleVal.exclude : [];
+    if (names && names.length) {
+      found = findIconMasterByNameSubstring(allIconComponents, names, excludeNames);
+    }
+  }
+  if (found) return found;
+  var rawRole = spec && spec.iconRoles && spec.iconRoles[roleName];
+  var svgString = rawRole && typeof rawRole === 'object' && !Array.isArray(rawRole) ? rawRole.inlineSvg : null;
+  if (svgString) {
+    return createFallbackIconFromSvg(roleName, svgString);
+  }
+  return null;
 }
 
 async function buildTagLayout(spec, componentSpec, variant, style, context) {
@@ -3445,7 +3522,7 @@ async function buildInputLayout(spec, componentSpec, variant, style, context) {
   }
 
   var inputSize = variant.size || 'md';
-  var minH = inputSize === 'sm' ? 28 : inputSize === 'lg' ? 40 : 32;
+  var minH = resolveComponentHeight(spec, componentSpec, inputSize) || (inputSize === 'sm' ? 28 : inputSize === 'lg' ? 40 : 32);
   comp.minHeight = minH;
   comp.maxHeight = minH;
 
@@ -3750,7 +3827,7 @@ async function buildSelectDropdownTrigger(spec, componentSpec, variant, style, c
   }
 
   var triggerSize = variant.size || 'md';
-  var minH = triggerSize === 'sm' ? 28 : triggerSize === 'lg' ? 40 : 32;
+  var minH = resolveComponentHeight(spec, componentSpec, triggerSize) || (triggerSize === 'sm' ? 28 : triggerSize === 'lg' ? 40 : 32);
   comp.minHeight = minH;
   comp.maxHeight = minH;
 
@@ -7798,52 +7875,42 @@ async function buildCheckboxLayout(spec, componentSpec, variant, style, context)
 
   var iconPaintColor = iconHex ? hexToRgb01(iconHex) : hexToRgb01((spec.tokens && spec.tokens.color && spec.tokens.color.primitives && spec.tokens.color.primitives.core_white) || '#FFFFFF');
 
-  if (iconType === 'check' || iconType === 'check2') {
-    var checkRole = iconType === 'check' ? 'check' : 'check2';
-    var checkMaster = await getIconMasterForRole(allIconComponents, checkRole, spec);
-    if (!checkMaster) {
-      postStatus('Checkbox: иконка check не найдена. Проверьте iconRoles.check.nodeId в ai-ds-spec.json.');
-      try { if (figma.notify) figma.notify('Checkbox: иконка check не найдена (nodeId 61:27924).', { error: true }); } catch (e) {}
+  if (iconType && iconType !== 'none') {
+    var iconRole = iconType;
+    var iconMaster = await getIconMasterForRole(allIconComponents, iconRole, spec);
+    if (!iconMaster) {
+      postStatus('Checkbox: иконка «' + iconRole + '» не найдена. Проверьте iconRoles.' + iconRole + ' в ai-ds-spec.json.');
+      try { if (figma.notify) figma.notify('Checkbox: иконка «' + iconRole + '» не найдена. Добавьте Icon или inlineSvg.', { error: true }); } catch (e) {}
     } else {
-      var checkInst = checkMaster.createInstance();
-      checkInst.name = 'Check';
-      var cbSize = variant.size || 'md';
-      if (cbSize === 'md' || cbSize === 'lg') {
-        var scaleCheck = boxSize / Math.max(checkInst.width || 24, checkInst.height || 24, 1);
-        try { checkInst.rescale(scaleCheck); } catch (e) {}
-      }
-      var glyphs = checkInst.findAll ? checkInst.findAll(function (n) { return n.type === 'VECTOR' || n.type === 'ELLIPSE'; }) : [];
+      var iconWrapper = figma.createFrame();
+      iconWrapper.name = iconRole === 'check' || iconRole === 'check2' ? 'Check' : iconRole === 'indeterminate' ? 'Indeterminate' : 'Icon';
+      iconWrapper.layoutMode = 'HORIZONTAL';
+      iconWrapper.primaryAxisSizingMode = 'FIXED';
+      iconWrapper.counterAxisSizingMode = 'FIXED';
+      iconWrapper.resize(boxSize, boxSize);
+      iconWrapper.primaryAxisAlignItems = 'CENTER';
+      iconWrapper.counterAxisAlignItems = 'CENTER';
+      iconWrapper.fills = [];
+      iconWrapper.strokes = [];
+
+      var iconInst = iconMaster.createInstance();
+      iconInst.name = iconRole;
+      var scaleIcon = boxSize / Math.max(iconInst.width || 24, iconInst.height || 24, 1);
+      try { iconInst.rescale(scaleIcon * 0.65); } catch (e) {}
+
       var iconPaint = { type: 'SOLID', color: iconPaintColor, visible: true, opacity: 1 };
       if (colorVarByName && colorVarByName[iconColorToken] && isSemanticColorToken(iconColorToken) && figma.variables && figma.variables.setBoundVariableForPaint) {
         try { iconPaint = figma.variables.setBoundVariableForPaint(iconPaint, 'color', colorVarByName[iconColorToken]); } catch (e) {}
       }
+      var glyphs = iconInst.findAll ? iconInst.findAll(function (n) { return n.type === 'VECTOR' || n.type === 'BOOLEAN_OPERATION' || n.type === 'ELLIPSE' || n.type === 'LINE'; }) : [];
       for (var gi = 0; gi < glyphs.length; gi++) {
-        try { if (glyphs[gi].fills && glyphs[gi].fills.length) { var fl = glyphs[gi].fills.slice(); fl[0] = iconPaint; glyphs[gi].fills = fl; } } catch (e) {}
+        try {
+          if (glyphs[gi].fills && glyphs[gi].fills.length) { var fl = glyphs[gi].fills.slice(); fl[0] = iconPaint; glyphs[gi].fills = fl; }
+          if (glyphs[gi].strokes && glyphs[gi].strokes.length) { var sl = glyphs[gi].strokes.slice(); sl[0] = iconPaint; glyphs[gi].strokes = sl; }
+        } catch (e) {}
       }
-      comp.appendChild(checkInst);
-    }
-  } else if (iconType === 'close-x') {
-    var closeMaster = await getIconMasterForRole(allIconComponents, 'close-x', spec);
-    if (!closeMaster) {
-      postStatus('Checkbox: иконка close-x не найдена.');
-      try { if (figma.notify) figma.notify('Checkbox: иконка close-x не найдена.', { error: true }); } catch (e) {}
-    } else {
-      var closeInst = closeMaster.createInstance();
-      closeInst.name = 'Indeterminate';
-      var cbSize2 = variant.size || 'md';
-      if (cbSize2 === 'md' || cbSize2 === 'lg') {
-        var scaleClose = boxSize / Math.max(closeInst.width || 24, closeInst.height || 24, 1);
-        try { closeInst.rescale(scaleClose); } catch (e) {}
-      }
-      var glyphs2 = closeInst.findAll ? closeInst.findAll(function (n) { return n.type === 'VECTOR' || n.type === 'ELLIPSE'; }) : [];
-      var iconPaint2 = { type: 'SOLID', color: iconPaintColor, visible: true, opacity: 1 };
-      if (colorVarByName && colorVarByName[iconColorToken] && isSemanticColorToken(iconColorToken) && figma.variables && figma.variables.setBoundVariableForPaint) {
-        try { iconPaint2 = figma.variables.setBoundVariableForPaint(iconPaint2, 'color', colorVarByName[iconColorToken]); } catch (e) {}
-      }
-      for (var gi2 = 0; gi2 < glyphs2.length; gi2++) {
-        try { if (glyphs2[gi2].fills && glyphs2[gi2].fills.length) { var fl2 = glyphs2[gi2].fills.slice(); fl2[0] = iconPaint2; glyphs2[gi2].fills = fl2; } } catch (e) {}
-      }
-      comp.appendChild(closeInst);
+      iconWrapper.appendChild(iconInst);
+      comp.appendChild(iconWrapper);
     }
   }
 
@@ -11802,8 +11869,13 @@ async function buildDrawerLayout(spec, componentSpec, variant, style, context) {
 async function buildFileUploadLayout(spec, componentSpec, variant, style, context) {
   var page = context.page;
   var colorVarByName = context.colorVarByName;
+  var spaceVarByName = context.spaceVarByName || {};
+  var radiusVarByName = context.radiusVarByName || {};
+  var textStyleByName = context.textStyleByName || {};
+  var useStaticColors = context.useStaticColors;
   var themeMode = context.themeMode;
   var axisOrder = context.axisOrder || [];
+  var allIconComponents = context.allIconComponents || [];
 
   var h = resolveDimension(spec, style.height, 120);
   var w = 280;
@@ -11833,21 +11905,70 @@ async function buildFileUploadLayout(spec, componentSpec, variant, style, contex
   comp.dashPattern = [6, 4];
   applyColorVariable(comp, 'fills', bgToken, bgHex, colorVarByName);
   applyColorVariable(comp, 'strokes', borderToken, borderHex, colorVarByName);
+  if (radiusVarByName && radiusVarByName[style.borderRadius || 'radius_medium'] && comp.setBoundVariable) {
+    try { comp.setBoundVariable('cornerRadius', radiusVarByName[style.borderRadius || 'radius_medium']); } catch (e) {}
+  }
 
-  var icon = figma.createRectangle();
-  icon.name = 'UploadIcon';
-  icon.resize(iconSize, iconSize);
-  icon.fills = [];
-  applyColorVariable(icon, 'strokes', iconToken, iconHex, colorVarByName);
-  icon.strokeWeight = 1.5;
-  comp.appendChild(icon);
+  var iconWrapper = figma.createFrame();
+  iconWrapper.name = 'Icon';
+  iconWrapper.layoutMode = 'HORIZONTAL';
+  iconWrapper.primaryAxisSizingMode = 'FIXED';
+  iconWrapper.counterAxisSizingMode = 'FIXED';
+  iconWrapper.resize(iconSize, iconSize);
+  iconWrapper.primaryAxisAlignItems = 'CENTER';
+  iconWrapper.counterAxisAlignItems = 'CENTER';
+  iconWrapper.fills = [];
+  iconWrapper.strokes = [];
+
+  var uploadMaster = await getIconMasterForRole(allIconComponents, 'upload', spec);
+  if (uploadMaster) {
+    var iconInst = uploadMaster.createInstance();
+    iconInst.name = 'Upload Icon';
+    try {
+      var iw = iconInst.width || 24;
+      var ih = iconInst.height || 24;
+      var sc = Math.min(iconSize / iw, iconSize / ih);
+      iconInst.rescale(sc);
+    } catch (eR) {}
+    var iconPaint = { type: 'SOLID', color: hexToRgb01(iconHex), visible: true, opacity: 1 };
+    if (!useStaticColors && colorVarByName && colorVarByName[iconToken] && isSemanticColorToken(iconToken) && figma.variables && figma.variables.setBoundVariableForPaint) {
+      try { iconPaint = figma.variables.setBoundVariableForPaint(iconPaint, 'color', colorVarByName[iconToken]); } catch (e) {}
+    }
+    try {
+      var glyphs = iconInst.findAll ? iconInst.findAll(function (n) { return n.type === 'VECTOR' || n.type === 'BOOLEAN_OPERATION' || n.type === 'ELLIPSE' || n.type === 'LINE'; }) : [];
+      for (var gi = 0; gi < glyphs.length; gi++) {
+        try {
+          if (glyphs[gi].strokes && glyphs[gi].strokes.length) { var sl = glyphs[gi].strokes.slice(); sl[0] = iconPaint; glyphs[gi].strokes = sl; }
+          if (glyphs[gi].fills && glyphs[gi].fills.length) { var fl = glyphs[gi].fills.slice(); fl[0] = iconPaint; glyphs[gi].fills = fl; }
+        } catch (e) {}
+      }
+    } catch (e) {}
+    iconWrapper.appendChild(iconInst);
+  } else {
+    postStatus('FileUpload: иконка upload не найдена. Добавьте Icon с именем cloud-upload или upload, либо укажите inlineSvg.');
+  }
+  comp.appendChild(iconWrapper);
 
   var label = figma.createText();
   label.name = 'Label';
   label.characters = variant.state === 'done' ? 'File uploaded' : variant.state === 'error' ? 'Upload failed' : 'Click or drag files here';
-  label.fontSize = variant.size === 'sm' ? 13 : variant.size === 'lg' ? 16 : 14;
-  applyColorVariable(label, 'fills', textToken, textHex, colorVarByName);
+  var textStyleName = style.textStyle || (variant.size === 'sm' ? 'Text/Caption/Base' : variant.size === 'lg' ? 'Text/Body/LG' : 'Text/Body/Base');
+  var boundTextStyle = textStyleByName[textStyleName];
+  if (boundTextStyle) {
+    try { await label.setTextStyleIdAsync(boundTextStyle.id); } catch (e) {}
+  } else {
+    label.fontSize = variant.size === 'sm' ? 13 : variant.size === 'lg' ? 16 : 14;
+  }
+  applyColorVariable(label, 'fills', textToken, textHex, useStaticColors ? null : colorVarByName);
   comp.appendChild(label);
+
+  var hint = figma.createText();
+  hint.name = 'Hint';
+  hint.characters = 'PNG, JPG up to 10MB';
+  hint.fontSize = 12;
+  hint.opacity = 0.7;
+  applyColorVariable(hint, 'fills', textToken, textHex, useStaticColors ? null : colorVarByName);
+  comp.appendChild(hint);
 
   page.appendChild(comp);
   return comp;

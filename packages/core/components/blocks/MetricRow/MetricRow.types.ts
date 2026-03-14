@@ -1,13 +1,12 @@
-export type MetricRowSize = 'sm' | 'md';
-
-export type DeltaVariant = 'positive' | 'negative' | 'muted';
+/**
+ * AUTO-GENERATED – do not edit by hand.
+ * Regenerate: npm run blocks:generate-components
+ */
 
 export interface MetricRowProps {
-  size?: MetricRowSize;
   label?: string;
   value?: string;
   delta?: string;
-  deltaVariant?: DeltaVariant;
   description?: string;
   className?: string;
   children?: React.ReactNode;

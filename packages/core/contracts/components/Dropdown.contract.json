@@ -835,6 +835,11 @@
     "md": "space_36",
     "lg": "space_40"
   },
+  "md3SizeHeightMap": {
+    "sm": "space_md3_input_h_sm",
+    "md": "space_md3_input_h_md",
+    "lg": "space_md3_input_h_lg"
+  },
   "slots": [
     {
       "name": "trigger",

@@ -11,39 +11,10 @@
     "flex",
     "flex-col",
     "flex-1",
-    "min-w-0"
+    "min-w-0",
+    "gap-[var(--space-2)]"
   ],
   "tokens": {},
-  "variantProps": ["size"],
-  "variantAxes": {
-    "size": ["sm", "md"]
-  },
-  "variantRules": [
-    {
-      "when": { "size": "sm" },
-      "style": {
-        "gap": "space_2",
-        "labelStyle": "Text/Caption/XS",
-        "valueStyle": "Text/Body/Base",
-        "deltaStyle": "Text/Caption/XS",
-        "descriptionStyle": "Text/Caption/XS"
-      }
-    },
-    {
-      "when": { "size": "md" },
-      "style": {
-        "gap": "space_4",
-        "labelStyle": "Text/Caption/Base",
-        "valueStyle": "Text/Body/LG",
-        "deltaStyle": "Text/Body/SM",
-        "descriptionStyle": "Text/Body/SM"
-      }
-    }
-  ],
-  "responsiveRules": [
-    { "breakpoint": "mobile", "defaultSize": "sm" },
-    { "breakpoint": "desktop", "defaultSize": "md" }
-  ],
   "slots": [
     {
       "name": "label",
@@ -70,9 +41,15 @@
           "textStyle": "Text/Caption/XS",
           "optional": true,
           "variants": {
-            "positive": { "textColor": "color_success_base" },
-            "negative": { "textColor": "color_danger_base" },
-            "muted": { "textColor": "color_text_muted" }
+            "positive": {
+              "textColor": "color_success_base"
+            },
+            "negative": {
+              "textColor": "color_danger_base"
+            },
+            "muted": {
+              "textColor": "color_text_muted"
+            }
           }
         }
       ]
@@ -87,5 +64,15 @@
   ],
   "dependencies": [],
   "padding": "none",
-  "gap": "space_2"
+  "gap": "space_2",
+  "responsiveRules": [
+    {
+      "breakpoint": "mobile",
+      "defaultSize": "sm"
+    },
+    {
+      "breakpoint": "desktop",
+      "defaultSize": "md"
+    }
+  ]
 }

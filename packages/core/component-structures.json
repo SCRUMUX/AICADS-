@@ -14,6 +14,11 @@
         "md": "space_button_h_md",
         "lg": "space_button_h_lg"
       },
+      "md3SizeHeightMap": {
+        "sm": "space_md3_button_h_sm",
+        "md": "space_md3_button_h_md",
+        "lg": "space_md3_button_h_lg"
+      },
       "rootAlign": {
         "main": "center",
         "cross": "center"
@@ -481,6 +486,11 @@
         "md": "space_36",
         "lg": "space_40"
       },
+      "md3SizeHeightMap": {
+        "sm": "space_md3_input_h_sm",
+        "md": "space_md3_input_h_md",
+        "lg": "space_md3_input_h_lg"
+      },
       "rootSizing": {
         "main": "hug",
         "cross": "hug"
@@ -789,6 +799,11 @@
         "sm": "space_28",
         "md": "space_36",
         "lg": "space_40"
+      },
+      "md3SizeHeightMap": {
+        "sm": "space_md3_input_h_sm",
+        "md": "space_md3_input_h_md",
+        "lg": "space_md3_input_h_lg"
       },
       "rootSizing": {
         "main": "hug",
@@ -3395,6 +3410,11 @@
         "md": "space_36",
         "lg": "space_40"
       },
+      "md3SizeHeightMap": {
+        "sm": "space_md3_input_h_sm",
+        "md": "space_md3_input_h_md",
+        "lg": "space_md3_input_h_lg"
+      },
       "rootSizing": {
         "main": "hug",
         "cross": "hug"
@@ -3498,7 +3518,8 @@
           "default": "Select"
         }
       ],
-      "heightConstraint": "hug"
+      "heightConstraint": "hug",
+      "borderWidthToken": "border_default"
     },
     "@UI/RangeSlider": {
       "element": "div",
@@ -3625,7 +3646,8 @@
           "default": "Drawer Title"
         }
       ],
-      "heightConstraint": "hug"
+      "heightConstraint": "hug",
+      "clipsContent": true
     },
     "@UI/FileUpload": {
       "element": "div",
@@ -3832,7 +3854,9 @@
       "booleanProps": [],
       "instanceSwapProps": [],
       "textProps": [],
-      "heightConstraint": "hug"
+      "heightConstraint": "hug",
+      "defaultWidth": 960,
+      "defaultHeight": 200
     }
   }
 }

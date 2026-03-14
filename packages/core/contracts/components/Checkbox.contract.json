@@ -71,7 +71,7 @@
         "bg": "color_brand_primary",
         "borderColor": "color_brand_primary",
         "borderRadius": "radius_default",
-        "icon": "close-x",
+        "icon": "indeterminate",
         "iconColor": "color_icon_on_brand"
       },
       "tailwindClasses": [
@@ -80,7 +80,7 @@
         "border",
         "border-[var(--color-brand-primary)]",
         "rounded-default",
-        "[data-icon=\"close-x\"]"
+        "[data-icon=\"indeterminate\"]"
       ]
     },
     {
@@ -131,7 +131,7 @@
         "bg": "color_brand_primary",
         "borderColor": "color_brand_primary",
         "borderRadius": "radius_default",
-        "icon": "close-x",
+        "icon": "indeterminate",
         "iconColor": "color_icon_on_brand",
         "opacityToken": "opacity_disabled"
       },
@@ -142,7 +142,7 @@
         "border-[var(--color-brand-primary)]",
         "rounded-default",
         "opacity-[var(--opacity-disabled)]",
-        "[data-icon=\"close-x\"]"
+        "[data-icon=\"indeterminate\"]"
       ]
     },
     {

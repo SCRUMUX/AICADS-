@@ -161,5 +161,6 @@
     "origin"
   ],
   "heightConstraint": "hug",
+  "clipsContent": true,
   "generatorStrategy": "template"
 }

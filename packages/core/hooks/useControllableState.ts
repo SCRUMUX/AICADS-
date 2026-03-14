@@ -23,19 +23,25 @@ export function useControllableState<T>({
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
+  const valueRef = useRef(value);
+  valueRef.current = value;
+
+  const isControlledRef = useRef(isControlled);
+  isControlledRef.current = isControlled;
+
   const setValue = useCallback(
     (next: T | ((prev: T) => T)) => {
       const resolved =
         typeof next === 'function'
-          ? (next as (prev: T) => T)(value)
+          ? (next as (prev: T) => T)(valueRef.current)
           : next;
 
-      if (!isControlled) {
+      if (!isControlledRef.current) {
         setInternalValue(resolved);
       }
       onChangeRef.current?.(resolved);
     },
-    [isControlled, value],
+    [],
   );
 
   return [value, setValue];

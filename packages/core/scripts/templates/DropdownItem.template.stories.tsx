@@ -23,6 +23,7 @@ const ICON_KEYS = Object.keys(ICON_MAP);
 const meta: Meta<typeof DropdownItem> = {
   title: 'Primitives/DropdownItem',
   component: DropdownItem,
+  tags: ['!autodocs'],
   parameters: {
     docs: { description: { component: "DropdownItem: пункт меню для Popover/Submenu. Оси: size (sm/md/lg) × itemType (default/primary/danger). Каждый вариант всегда содержит все 4 слота: Icon (left), Label, Badge, Icon (right). Видимость слотов управляется BOOLEAN props. Icon (right) — chevron или check через INSTANCE_SWAP. Используется в @UI/Dropdown через instance swap." } },
   },

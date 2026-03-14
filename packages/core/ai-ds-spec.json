@@ -1,7 +1,8 @@
 {
   "componentsConfig": {
     "useSingleTheme": false,
-    "themeMode": "light"
+    "themeMode": "light",
+    "densityProfile": "default"
   },
   "avatarPhoto": {
     "fileKey": "CdeU8e5QAnPmEDOfvhOMR5",
@@ -12,9 +13,11 @@
     "brand": [
       "aica"
     ],
-    "close-x": [
-      "close-x"
-    ],
+    "close-x": {
+      "include": ["close-x", "close", "x-mark"],
+      "exclude": ["checkbox"],
+      "inlineSvg": "<svg viewBox='0 0 16 16' fill='none'><path d='M4 4L12 12M12 4L4 12' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"
+    },
     "user": [
       "user",
       "person",
@@ -23,13 +26,25 @@
     "person-circle": [
       "person-circle"
     ],
-    "check": [
-      "check",
-      "check-lg"
-    ],
-    "check2": [
-      "check2"
-    ],
+    "check": {
+      "include": ["check", "check-lg"],
+      "exclude": ["check2", "checkbox"],
+      "inlineSvg": "<svg viewBox='0 0 16 16' fill='none'><path d='M2.5 8L6.5 12L13.5 4.5' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"
+    },
+    "check2": {
+      "include": ["check2"],
+      "inlineSvg": "<svg viewBox='0 0 16 16' fill='none'><path d='M2.5 8L6.5 12L13.5 4.5' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"
+    },
+    "indeterminate": {
+      "include": ["minus", "dash", "indeterminate"],
+      "exclude": ["check", "plus"],
+      "inlineSvg": "<svg viewBox='0 0 16 16' fill='none'><path d='M3.5 8H12.5' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"
+    },
+    "upload": {
+      "include": ["cloud-upload", "upload"],
+      "exclude": ["download"],
+      "inlineSvg": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='17 8 12 3 7 8'/><line x1='12' y1='3' x2='12' y2='15'/></svg>"
+    },
     "accordion-chevron": [
       "chevron-down",
       "caret-down-fill"
@@ -657,6 +672,15 @@
         "space_button_h_sm": "space_28",
         "space_button_h_md": "space_36",
         "space_button_h_lg": "space_44",
+        "space_md3_button_h_sm": "space_32",
+        "space_md3_button_h_md": "space_40",
+        "space_md3_button_h_lg": "space_48",
+        "space_md3_input_h_sm": "space_40",
+        "space_md3_input_h_md": "space_48",
+        "space_md3_input_h_lg": "space_56",
+        "space_md3_control_box_sm": "space_16",
+        "space_md3_control_box_md": "space_20",
+        "space_md3_control_box_lg": "space_24",
         "space_switch_thumb_inset": "space_2"
       }
     },
@@ -2363,7 +2387,7 @@
             "bg": "color_brand_primary",
             "borderColor": "color_brand_primary",
             "borderRadius": "radius_default",
-            "icon": "close-x",
+            "icon": "indeterminate",
             "iconColor": "color_icon_on_brand"
           }
         },
@@ -2399,7 +2423,7 @@
             "bg": "color_brand_primary",
             "borderColor": "color_brand_primary",
             "borderRadius": "radius_default",
-            "icon": "close-x",
+            "icon": "indeterminate",
             "iconColor": "color_icon_on_brand",
             "opacityToken": "opacity_disabled"
           }

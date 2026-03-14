@@ -1,25 +1,15 @@
-export type NavbarSize = 'default' | 'compact';
-
-export interface NavbarUserMenuItem {
-  label: string;
-  onClick?: () => void;
-}
+/**
+ * AUTO-GENERATED – do not edit by hand.
+ * Regenerate: npm run blocks:generate-components
+ */
 
 export interface NavbarProps {
-  size?: NavbarSize;
-  logo: React.ReactNode;
+  logo?: React.ReactNode;
   nav?: React.ReactNode[];
   search?: React.ReactNode;
   notifications?: React.ReactNode;
-  avatar?: React.ReactNode;
-  username?: string;
-  userMenuItems?: NavbarUserMenuItem[];
-  sticky?: boolean;
-  centerNav?: boolean;
-  activeIndex?: number;
-  mobileMenu?: React.ReactNode;
-  onMobileMenuToggle?: () => void;
-  mobileMenuOpen?: boolean;
+  avatar: React.ReactNode;
+  userDropdown?: React.ReactNode;
   className?: string;
   children?: React.ReactNode;
 }

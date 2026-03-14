@@ -43,6 +43,7 @@ const defaultItems = [
 const meta: Meta<typeof Dropdown> = {
   title: 'Primitives/Dropdown',
   component: Dropdown,
+  tags: ['!autodocs'],
   parameters: {
     docs: { description: { component: "Dropdown: выпадающее меню. state: closed/open. Trigger: Icon (left), Label, Badge, TagRow, Chevron. Popover: DropdownItem пункты." } },
   },

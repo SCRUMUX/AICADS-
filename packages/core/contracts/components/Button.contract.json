@@ -988,6 +988,11 @@
     "md": "space_button_h_md",
     "lg": "space_button_h_lg"
   },
+  "md3SizeHeightMap": {
+    "sm": "space_md3_button_h_sm",
+    "md": "space_md3_button_h_md",
+    "lg": "space_md3_button_h_lg"
+  },
   "slots": [
     {
       "name": "iconLeft",

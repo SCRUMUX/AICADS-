@@ -85,17 +85,25 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>((props, 
 
   const listboxId = useId();
 
-  const normalizeValue = useCallback(
-    (v: string | string[] | undefined): string[] => {
-      if (v === undefined) return [];
-      return Array.isArray(v) ? v : [v];
+  const normalizedValue = useMemo(
+    () => {
+      if (valueProp === undefined) return undefined;
+      return Array.isArray(valueProp) ? valueProp : [valueProp];
     },
-    [],
+    [valueProp],
+  );
+
+  const normalizedDefault = useMemo(
+    () => {
+      if (defaultValue === undefined) return [];
+      return Array.isArray(defaultValue) ? defaultValue : [defaultValue];
+    },
+    [defaultValue],
   );
 
   const [selected, setSelected] = useControllableState<string[]>({
-    value: valueProp !== undefined ? normalizeValue(valueProp) : undefined,
-    defaultValue: normalizeValue(defaultValue),
+    value: normalizedValue,
+    defaultValue: normalizedDefault,
     onChange: (v) => onChange?.(multiple ? v : v[0] ?? ''),
   });
 

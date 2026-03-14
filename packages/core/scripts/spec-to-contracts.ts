@@ -85,6 +85,7 @@ interface ComponentStructure {
   styleKeys?: string[];
   defaultWidth?: number;
   sizeHeightMap?: Record<string, string>;
+  md3SizeHeightMap?: Record<string, string>;
   slots: Slot[];
   booleanProps: BooleanProp[];
   instanceSwapProps: InstanceSwapProp[];
@@ -421,6 +422,7 @@ function buildContract(
     if (structure.customStructure) contract.customStructure = structure.customStructure;
     if (structure.defaultWidth) contract.defaultWidth = structure.defaultWidth;
     if (structure.sizeHeightMap) contract.sizeHeightMap = structure.sizeHeightMap;
+    if (structure.md3SizeHeightMap) contract.md3SizeHeightMap = structure.md3SizeHeightMap;
     if (structure.slots.length > 0) contract.slots = structure.slots;
     if (structure.booleanProps.length > 0) contract.booleanProps = structure.booleanProps;
     if (structure.instanceSwapProps.length > 0) contract.instanceSwapProps = structure.instanceSwapProps;
