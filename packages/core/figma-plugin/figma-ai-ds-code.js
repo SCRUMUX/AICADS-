@@ -398,6 +398,27 @@ async function generateVariablesFromTokens(spec) {
         if (!spaceVar) continue;
         spaceVar.setValueForMode(spaceModeId, figma.variables.createVariableAlias(primVar));
       }
+
+      // Cleanup: удаляем семантические space-переменные, не прошедшие фильтр
+      var keepSet = {};
+      for (var pk in spacePrim) { if (Object.prototype.hasOwnProperty.call(spacePrim, pk)) keepSet[pk] = true; }
+      for (var sk in spaceSem) {
+        if (Object.prototype.hasOwnProperty.call(spaceSem, sk) && shouldExportSpaceTokenToFigma(sk)) keepSet[sk] = true;
+      }
+      try {
+        var allSpaceVarsClean = await figma.variables.getLocalVariablesAsync('FLOAT');
+        var removedCount = 0;
+        for (var cv = 0; cv < allSpaceVarsClean.length; cv++) {
+          var cVar = allSpaceVarsClean[cv];
+          if (cVar.variableCollectionId !== spaceCollection.id) continue;
+          if (!keepSet[cVar.name]) {
+            try { cVar.remove(); removedCount++; } catch (eRm) {}
+          }
+        }
+        if (removedCount > 0) postStatus('Space cleanup: удалено ' + removedCount + ' устаревших переменных.');
+      } catch (eClean) {
+        postStatus('Space cleanup ошибка: ' + eClean.message);
+      }
     }
 
     // ----- Radius (primitives + semantic aliases or legacy flat) -----
@@ -2160,7 +2181,8 @@ async function buildButtonLayout(spec, componentSpec, variant, style, context) {
   }
 
   var sizeForMinMax = variant.size || 'md';
-  var minH = resolveComponentHeight(spec, componentSpec, sizeForMinMax) || (sizeForMinMax === 'sm' ? 28 : sizeForMinMax === 'lg' ? 44 : 36);
+  var btnHToken = 'space_button_h_' + sizeForMinMax;
+  var minH = resolveComponentHeight(spec, componentSpec, sizeForMinMax) || resolveSpaceTokenToPixels(spec, btnHToken) || (sizeForMinMax === 'sm' ? 28 : sizeForMinMax === 'lg' ? 44 : 36);
   comp.minHeight = minH;
   comp.maxHeight = minH;
   comp.minWidth = minH;
@@ -2973,8 +2995,8 @@ function createFallbackIconFromSvg(roleName, svgString) {
 }
 
 /** Мастер-иконка по роли: по nodeId — точный узел; по имени из spec.iconRoles[roleName];
- *  fallback — создаёт COMPONENT из inlineSvg если ничего не найдено.
- *  Формат iconRoles: "role": ["substr"] | { "nodeId": "..." } | { "include": [...], "exclude": [...], "inlineSvg": "<svg ...>" } */
+ *  fallback-цепочка: nodeId → поиск по имени → inlineSvg → brand (aica).
+ *  Если ничего не найдено — всегда подставляется brand-иконка (aica), чтобы компонент не ломался. */
 async function getIconMasterForRole(allIconComponents, roleName, spec) {
   var roles = getIconRoles(spec);
   var roleVal = roles[roleName];
@@ -2996,7 +3018,12 @@ async function getIconMasterForRole(allIconComponents, roleName, spec) {
   var rawRole = spec && spec.iconRoles && spec.iconRoles[roleName];
   var svgString = rawRole && typeof rawRole === 'object' && !Array.isArray(rawRole) ? rawRole.inlineSvg : null;
   if (svgString) {
-    return createFallbackIconFromSvg(roleName, svgString);
+    var svgComp = createFallbackIconFromSvg(roleName, svgString);
+    if (svgComp) return svgComp;
+  }
+  if (roleName !== 'brand') {
+    postStatus('Icon «' + roleName + '»: не найден. Подставляем brand (aica) как fallback.');
+    return getIconMasterForRole(allIconComponents, 'brand', spec);
   }
   return null;
 }

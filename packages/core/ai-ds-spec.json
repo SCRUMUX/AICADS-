@@ -1504,6 +1504,16 @@
     {
       "name": "@UI/Button",
       "description": "Semantic button. Варианты: тип (brand, base, ghost, outline + success, warning, danger), размер (sm, md, lg), состояние (base, active, hover, focus, disabled). Отступы и скругления — из токенов (space_button_*, radius_button). Light/dark через переменные. Иконки и текст — опциональные свойства (instance swap + booleans).",
+      "sizeHeightMap": {
+        "sm": "space_button_h_sm",
+        "md": "space_button_h_md",
+        "lg": "space_button_h_lg"
+      },
+      "md3SizeHeightMap": {
+        "sm": "space_md3_button_h_sm",
+        "md": "space_md3_button_h_md",
+        "lg": "space_md3_button_h_lg"
+      },
       "variantProps": [
         "appearance",
         "size",
@@ -2687,6 +2697,16 @@
     {
       "name": "@UI/Dropdown",
       "description": "Dropdown: универсальное выпадающее меню. closed/open, size. Trigger (closed): опционально Icon (left), Label, Badge, TagRow (выбранные значения), Chevron — булевы пропы как у Input. Popover — 5 слотов (instance swap DropdownItem). Submenu — отдельная панель справа, выравнивается по родительскому пункту (withSubmenu).",
+      "sizeHeightMap": {
+        "sm": "space_button_h_sm",
+        "md": "space_button_h_md",
+        "lg": "space_button_h_lg"
+      },
+      "md3SizeHeightMap": {
+        "sm": "space_md3_input_h_sm",
+        "md": "space_md3_input_h_md",
+        "lg": "space_md3_input_h_lg"
+      },
       "variantProps": [
         "state",
         "size"
@@ -3347,6 +3367,16 @@
     {
       "name": "@UI/Input",
       "description": "Input: appearance (brand, base, ghost, outline) как Button. Опционально: 2 иконки слева, лейбл (fill), Badge, TagRow, 2 иконки справа. Ghost — только нижний бордер. Размеры sm/md/lg, состояния base/hover/focus/filled/disabled. Filled — как base, обводка color_border_strong.",
+      "sizeHeightMap": {
+        "sm": "space_button_h_sm",
+        "md": "space_button_h_md",
+        "lg": "space_button_h_lg"
+      },
+      "md3SizeHeightMap": {
+        "sm": "space_md3_input_h_sm",
+        "md": "space_md3_input_h_md",
+        "lg": "space_md3_input_h_lg"
+      },
       "variantProps": [
         "appearance",
         "size",
@@ -5559,6 +5589,16 @@
     {
       "name": "@UI/Autocomplete",
       "description": "Autocomplete: поле ввода с выпадающим списком значений по вхождению. state: closed/open. size: sm/md/lg. Trigger: Input-like поле с иконкой поиска, TagRow для выбранных значений. Popover: 10 слотов AutocompleteItem, FILL по ширине. В open-состоянии input в фокусе.",
+      "sizeHeightMap": {
+        "sm": "space_button_h_sm",
+        "md": "space_button_h_md",
+        "lg": "space_button_h_lg"
+      },
+      "md3SizeHeightMap": {
+        "sm": "space_md3_input_h_sm",
+        "md": "space_md3_input_h_md",
+        "lg": "space_md3_input_h_lg"
+      },
       "variantProps": [
         "state",
         "size"
@@ -7530,6 +7570,16 @@
     {
       "name": "@UI/Select",
       "description": "Popover-based select with Dropdown visual style. 3 sizes (sm/md/lg), appearances (base/ghost/outline), states base/hover/open/disabled. Optional icon left, badge, chevron.",
+      "sizeHeightMap": {
+        "sm": "space_button_h_sm",
+        "md": "space_button_h_md",
+        "lg": "space_button_h_lg"
+      },
+      "md3SizeHeightMap": {
+        "sm": "space_md3_input_h_sm",
+        "md": "space_md3_input_h_md",
+        "lg": "space_md3_input_h_lg"
+      },
       "variantProps": [
         "appearance",
         "size",
