@@ -1,4 +1,0 @@
-import React from 'react';
-import type { LinkProps } from './Link.types';
-export declare const Link: React.ForwardRefExoticComponent<LinkProps & React.RefAttributes<HTMLAnchorElement>>;
-//# sourceMappingURL=Link.d.ts.map
