@@ -1,99 +1,66 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import type { PinInputProps, PinInputSize, PinInputState } from './PinInput.types';
+import { cn, findClasses, type VR } from '../_shared';
+import contract from '../../../contracts/components/PinInput.contract.json';
 
-function cn(...c: (string | undefined | false | null)[]): string {
-  return c.filter(Boolean).join(' ');
-}
+const rules = (contract.variantRules || []) as unknown as VR[];
 
-/**
- * Figma API (160:82793):
- *
- * Размеры ячеек:
- *   sm: 32×32, gap=2px, cornerRadius=8px
- *   md: 40×40, gap=4px, cornerRadius=10px
- *   lg: 48×48, gap=6px, cornerRadius=12px
- *
- * Состояния (border и dot color):
- *   unfilled  → border: --color-border-base,     dot: --color-border-base
- *   filled    → border: --color-border-strong,    dot: --color-text-muted
- *   error     → border: --color-danger-base,      dot: --color-danger-base
- *   disabled  → border: --color-border-disabled,  dot: --color-text-disabled
- *
- * Ячейка: белый фон (--color-surface-1), border 1px solid, cornerRadius.
- * Dot: ELLIPSE ~8px — отображается когда ячейка не сфокусирована или mask=true.
- * Cursor: вертикальная черта когда ячейка активна (не в Figma, но стандартно для PinInput).
- */
-
-const SIZE_CONFIG: Record<PinInputSize, {
-  cellSize: string;
-  gap: string;
-  radius: string;
-  dotSize: string;
-  fontSize: string;
-}> = {
-  sm: { cellSize: 'w-8 h-8',  gap: 'gap-[var(--space-2)]', radius: 'rounded-[8px]',  dotSize: 'w-2 h-2',   fontSize: 'text-style-caption' },
-  md: { cellSize: 'w-10 h-10', gap: 'gap-[var(--space-4)]', radius: 'rounded-[10px]', dotSize: 'w-2.5 h-2.5', fontSize: 'text-style-body' },
-  lg: { cellSize: 'w-12 h-12', gap: 'gap-[var(--space-6)]', radius: 'rounded-[12px]', dotSize: 'w-3 h-3',   fontSize: 'text-style-body-lg' },
+const SIZE_CLASSES: Record<PinInputSize, string> = {
+  sm: 'gap-[var(--space-2)] [--cell-size:var(--space-pin-cell-sm)] [--cell-radius:var(--radius-default)] [--dot-size:var(--space-8)] text-style-caption',
+  md: 'gap-[var(--space-4)] [--cell-size:var(--space-pin-cell-md)] [--cell-radius:var(--radius-medium)] [--dot-size:var(--space-10)] text-style-body',
+  lg: 'gap-[var(--space-6)] [--cell-size:var(--space-pin-cell-lg)] [--cell-radius:var(--radius-medium)] [--dot-size:var(--space-12)] text-style-body-lg',
 };
 
-/**
- * Цвета бордера ячейки по состоянию.
- * active (сфокусированная) — brand-primary.
- */
-function getCellBorderColor(state: PinInputState, isActive: boolean): string {
-  if (isActive) return 'border-[var(--color-brand-primary)]';
-  if (state === 'error')    return 'border-[var(--color-danger-base)]';
-  if (state === 'filled')   return 'border-[var(--color-border-strong)]';
-  if (state === 'disabled') return 'border-[var(--color-border-disabled)]';
-  return 'border-[var(--color-border-base)]';
-}
+const TEXT_CLASSES: Record<PinInputSize, string> = {
+  sm: 'text-style-caption',
+  md: 'text-style-body',
+  lg: 'text-style-body-lg',
+};
 
-/** Цвет точки/контента по состоянию */
-function getDotColor(state: PinInputState): string {
-  if (state === 'error')    return 'bg-[var(--color-danger-base)]';
-  if (state === 'filled')   return 'bg-[var(--color-text-muted)]';
-  if (state === 'disabled') return 'bg-[var(--color-text-disabled)]';
-  return 'bg-[var(--color-border-base)]';
-}
-
-/** Одна ячейка PIN-кода */
 const PinCell: React.FC<{
   value: string;
   index: number;
-  size: PinInputSize;
+  textClass: string;
   state: PinInputState;
   isActive: boolean;
   mask: boolean;
-  inputRef: React.RefObject<HTMLInputElement>;
+  setInputRef: (el: HTMLInputElement | null) => void;
   onCellClick: (index: number) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>, index: number) => void;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>, index: number) => void;
   onPaste: (e: React.ClipboardEvent<HTMLInputElement>) => void;
-}> = ({ value, index, size, state, isActive, mask, inputRef, onCellClick, onKeyDown, onInputChange, onPaste }) => {
-  const { cellSize, radius, dotSize, fontSize } = SIZE_CONFIG[size];
+}> = ({
+  value,
+  index,
+  textClass,
+  state,
+  isActive,
+  mask,
+  setInputRef,
+  onCellClick,
+  onKeyDown,
+  onInputChange,
+  onPaste,
+}) => {
   const isDisabled = state === 'disabled';
   const hasValue = value !== '';
-
-  const borderColor = getCellBorderColor(state, isActive);
-  const dotColor = getDotColor(state);
 
   return (
     <div
       className={cn(
         'relative inline-flex items-center justify-center shrink-0',
-        'bg-[var(--color-surface-1)] border border-solid',
+        'bg-[var(--color-bg-base)] border border-solid border-[var(--border-width-base)]',
+        'w-[var(--cell-size)] h-[var(--cell-size)] rounded-[var(--cell-radius)]',
         'transition-colors duration-150',
-        cellSize,
-        radius,
-        borderColor,
-        isActive && 'shadow-[var(--effect-focus-brand)]',
-        isDisabled && 'cursor-not-allowed opacity-[var(--opacity-disabled)]',
+        isActive
+          ? 'border-[var(--color-brand-primary)] shadow-[var(--effect-focus-brand)]'
+          : 'border-[var(--cell-border,var(--color-border-base))]',
+        isDisabled && 'cursor-not-allowed',
       )}
       onClick={() => !isDisabled && onCellClick(index)}
     >
-      {/* Скрытый input для захвата ввода */}
       <input
-        ref={inputRef}
+        ref={setInputRef}
         type={mask ? 'password' : 'text'}
         inputMode="numeric"
         pattern="[0-9]*"
@@ -109,16 +76,14 @@ const PinCell: React.FC<{
         autoComplete="one-time-code"
       />
 
-      {/* Визуальное содержимое ячейки */}
       {hasValue && !mask && (
-        /* Цифра — отображается открытым текстом */
         <span
           className={cn(
             'font-semibold leading-none select-none',
-            fontSize,
-            state === 'error'    ? 'text-[var(--color-danger-base)]' :
+            textClass,
+            state === 'error' ? 'text-[var(--color-danger-base)]' :
             state === 'disabled' ? 'text-[var(--color-text-disabled)]' :
-                                   'text-[var(--color-text-primary)]',
+            'text-[var(--color-text-primary)]',
           )}
         >
           {value}
@@ -126,16 +91,13 @@ const PinCell: React.FC<{
       )}
 
       {(hasValue && mask) && (
-        /* Точка для masked mode */
-        <span className={cn('rounded-full shrink-0', dotSize, dotColor)} />
+        <span className="rounded-full shrink-0 w-[var(--dot-size)] h-[var(--dot-size)] bg-[var(--cell-dot)]" />
       )}
 
       {!hasValue && (
-        /* Пустая ячейка — dot placeholder (из Figma: ELLIPSE с цветом бордера) */
         isActive
-          /* Курсор-моргание вместо dot когда активна */
-          ? <span className="w-px h-4 bg-[var(--color-brand-primary)] animate-pulse" />
-          : <span className={cn('rounded-full shrink-0', dotSize, dotColor)} />
+          ? <span className="w-px h-[var(--space-16)] bg-[var(--color-brand-primary)] animate-pulse" />
+          : <span className="rounded-full shrink-0 w-[var(--dot-size)] h-[var(--dot-size)] bg-[var(--cell-dot,var(--color-border-base))]" />
       )}
     </div>
   );
@@ -158,7 +120,6 @@ export const PinInput = React.forwardRef<HTMLDivElement, PinInputProps>((props, 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
 
-  /* Синхронизируем с controlledValue */
   useEffect(() => {
     if (controlledValue !== undefined) {
       const chars = controlledValue.split('').slice(0, length);
@@ -171,10 +132,11 @@ export const PinInput = React.forwardRef<HTMLDivElement, PinInputProps>((props, 
     ? controlledValue.split('').slice(0, length).concat(Array(length).fill('')).slice(0, length)
     : internalValue;
 
-  /* Вычисляем визуальное состояние: если все заполнено — filled, иначе unfilled */
   const computedState: PinInputState = stateProp !== 'unfilled' ? stateProp
     : values.every(v => v !== '') ? 'filled'
     : 'unfilled';
+
+  const stateClasses = findClasses(rules, { state: computedState });
 
   const focusCell = useCallback((index: number) => {
     const el = inputRefs.current[index];
@@ -221,20 +183,18 @@ export const PinInput = React.forwardRef<HTMLDivElement, PinInputProps>((props, 
     const newValues = [...Array(length).fill('')];
     pasted.split('').forEach((ch, i) => { newValues[i] = ch; });
     updateValue(newValues);
-    const nextFocus = Math.min(pasted.length, length - 1);
-    focusCell(nextFocus);
+    focusCell(Math.min(pasted.length, length - 1));
   }, [length, updateValue, focusCell]);
-
-  const handleCellClick = useCallback((index: number) => {
-    focusCell(index);
-  }, [focusCell]);
-
-  const { gap } = SIZE_CONFIG[size];
 
   return (
     <div
       ref={ref}
-      className={cn('inline-flex flex-row items-center', gap, className)}
+      className={cn(
+        'inline-flex flex-row items-center',
+        SIZE_CLASSES[size],
+        ...stateClasses,
+        className,
+      )}
       role="group"
       aria-label="PIN input"
       onBlur={(e) => {
@@ -246,13 +206,13 @@ export const PinInput = React.forwardRef<HTMLDivElement, PinInputProps>((props, 
         <PinCell
           key={i}
           index={i}
+          textClass={TEXT_CLASSES[size]}
           value={values[i] ?? ''}
-          size={size}
           state={computedState}
           isActive={activeIndex === i}
           mask={mask}
-          inputRef={{ current: inputRefs.current[i] } as React.RefObject<HTMLInputElement>}
-          onCellClick={handleCellClick}
+          setInputRef={(el) => { inputRefs.current[i] = el; }}
+          onCellClick={focusCell}
           onKeyDown={handleKeyDown}
           onInputChange={handleInputChange}
           onPaste={handlePaste}

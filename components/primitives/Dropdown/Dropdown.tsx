@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect, useRef, useId, useMemo } from 'react';
 import type { DropdownProps, DropdownSize, DropdownOption } from './Dropdown.types';
-import { cn, findClasses, type VR } from '../_shared';
+import { cn, findClasses, getFocusRing, type VR, MENU_ITEM_CLASSES, MENU_PANEL_PADDING } from '../_shared';
 import { IconSlot } from '../_shared/IconSlot';
 import { ClearButton } from '../_shared/ClearButton';
-import { Popover } from '../_shared/Popover';
+import { Popover } from '../Popover/Popover';
 import { Chip } from '../Chip/Chip';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Badge } from '../Badge/Badge';
@@ -19,9 +19,9 @@ import contract from '../../../contracts/components/Dropdown.contract.json';
 const rules = (contract.variantRules || []) as unknown as VR[];
 
 const SIZE_CLASSES: Record<DropdownSize, string> = {
-  sm: '!px-[var(--space-button-x-sm)] !py-[var(--space-button-y-sm)] !min-h-[var(--space-28)] min-w-[var(--space-container-compact-min)] max-w-[var(--space-container-compact-max)] !gap-[var(--space-button-gap-sm)] text-style-caption rounded-[var(--radius-default)]',
-  md: '!px-[var(--space-button-x-md)] !py-[var(--space-button-y-md)] !min-h-[var(--space-36)] min-w-[var(--space-container-content-min)] max-w-[var(--space-container-content-max)] !gap-[var(--space-button-gap-md)] text-style-body rounded-[var(--radius-default)]',
-  lg: '!px-[var(--space-button-x-lg)] !py-[var(--space-button-y-lg)] !min-h-[var(--space-40)] min-w-[var(--space-container-content-min)] max-w-[var(--space-container-wide-max)] !gap-[var(--space-button-gap-lg)] text-style-body-lg rounded-[var(--radius-default)]',
+  sm: 'px-[var(--space-button-x-sm)] py-[var(--space-button-y-sm)] min-h-[var(--space-28)] min-w-[var(--space-container-compact-min)] max-w-[var(--space-container-compact-max)] gap-[var(--space-button-gap-sm)] text-style-caption rounded-[var(--radius-default)]',
+  md: 'px-[var(--space-button-x-md)] py-[var(--space-button-y-md)] min-h-[var(--space-36)] min-w-[var(--space-container-content-min)] max-w-[var(--space-container-content-max)] gap-[var(--space-button-gap-md)] text-style-body rounded-[var(--radius-default)]',
+  lg: 'px-[var(--space-button-x-lg)] py-[var(--space-button-y-lg)] min-h-[var(--space-40)] min-w-[var(--space-container-content-min)] max-w-[var(--space-container-wide-max)] gap-[var(--space-button-gap-lg)] text-style-body-lg rounded-[var(--radius-default)]',
 };
 
 const DefaultChevron: React.FC<{ open: boolean }> = ({ open }) => (
@@ -135,7 +135,7 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>((props, 
     setActiveIndex(0);
   }, [openPopover]);
 
-  useClickOutside(containerRef, close, isOpen);
+  useClickOutside([containerRef, popoverRef], close, isOpen);
   useEscapeKey(close, isOpen);
 
   const toggleOption = useCallback(
@@ -263,10 +263,11 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>((props, 
     el?.scrollIntoView?.({ block: 'nearest' });
   }, [activeIndex]);
 
-  const vcArgs: Record<string, string> = { state: isOpen ? 'open' : 'closed', size };
-  if (appearance) vcArgs.appearance = appearance;
-  const vc = findClasses(rules, vcArgs);
-  const focusRing = (contract.focusRing as string) ?? '';
+  const stateClasses = findClasses(rules, {
+    state: isOpen ? 'open' : 'closed',
+    ...(appearance ? { appearance } : {}),
+  });
+  const focusRing = getFocusRing(contract);
 
   const optionMap = useMemo(
     () => new Map(optionList.map((o) => [o.value, o.label ?? o.value])),
@@ -279,16 +280,16 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>((props, 
   const clearVisible = showClearButton && hasMeaningfulSelection && !disabled;
 
   return (
-    <div ref={mergedRef} className={cn('relative', fullWidth && 'w-full !min-w-0 !max-w-none', className)} {...rest}>
+    <div ref={mergedRef} className={cn('relative', fullWidth && 'w-full min-w-0 max-w-none', className)} {...rest}>
       <div
         ref={triggerRef}
         className={cn(
-          'transition-colors duration-150 font-base box-border flex flex-row items-center w-full',
+          'transition-colors duration-150 font-base box-border flex flex-row items-center w-full border-solid border-[var(--border-width-base)]',
           SIZE_CLASSES[size],
-          ...vc,
+          ...stateClasses,
           !disabled && !isOpen && focusRing,
           disabled ? 'cursor-not-allowed opacity-[var(--opacity-disabled)]' : 'cursor-pointer select-none',
-          fullWidth && '!min-w-0 !max-w-none',
+          fullWidth && 'min-w-0 max-w-none',
         )}
         style={fullWidth ? { maxWidth: 'none', minWidth: 0 } : undefined}
         onClick={toggle}
@@ -361,7 +362,15 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>((props, 
         </span>
       </div>
 
-      <Popover ref={popoverRef} anchorRef={triggerRef} open={isOpen} id={listboxId} aria-multiselectable={multiple}>
+      <Popover
+        ref={popoverRef}
+        anchorRef={triggerRef}
+        open={isOpen}
+        id={listboxId}
+        aria-multiselectable={multiple}
+        contentPadding={MENU_PANEL_PADDING}
+        maxHeight="var(--space-320)"
+      >
         {multiple && hasSelection && (
           <div className="flex flex-wrap gap-1 pb-1 border-b border-[var(--color-divider)] mb-1">
             {selected.map((val) => (
@@ -390,8 +399,8 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>((props, 
                   aria-disabled={opt.disabled || undefined}
                   className={cn(
                     'flex items-center cursor-pointer rounded-[var(--radius-default)]',
-                    multiple ? 'gap-[var(--space-20)]' : 'gap-2',
-                    'px-[var(--space-button-x-sm)] py-[var(--space-button-y-sm)]',
+                    MENU_ITEM_CLASSES[size],
+                    multiple && 'gap-[var(--space-20)]',
                     'hover:bg-[var(--color-surface-3)] transition-colors duration-100',
                     i === activeIndex && 'bg-[var(--color-surface-3)]',
                     opt.disabled && 'opacity-50 cursor-not-allowed',
@@ -420,7 +429,8 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>((props, 
                   size={size}
                   {...itemProps}
                   className={cn(
-                    'cursor-pointer rounded-[var(--radius-default)] hover:bg-[var(--color-surface-3)] transition-colors duration-100 px-[var(--space-button-x-sm)] py-[var(--space-button-y-sm)]',
+                    'cursor-pointer rounded-[var(--radius-default)] hover:bg-[var(--color-surface-3)] transition-colors duration-100',
+                    MENU_ITEM_CLASSES[size],
                     i === activeIndex && 'bg-[var(--color-surface-3)]',
                     itemProps.className,
                   )}

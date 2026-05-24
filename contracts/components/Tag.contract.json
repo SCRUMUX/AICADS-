@@ -49,17 +49,17 @@
         "state": "hover"
       },
       "style": {
-        "background": "color_brand_hover_bg",
-        "textColor": "color_brand_primary",
-        "borderColor": "color_brand_primary",
-        "iconColor": "color_brand_primary"
+        "background": "color_brand_hover",
+        "textColor": "color_text_on_brand",
+        "borderColor": "color_brand_hover",
+        "iconColor": "color_icon_on_brand"
       },
       "tailwindClasses": [
-        "bg-[var(--color-brand-hover-bg)]",
-        "text-[var(--color-brand-primary)]",
-        "[--icon-color:var(--color-brand-primary)]",
+        "bg-[var(--color-brand-hover)]",
+        "text-[var(--color-text-on-brand)]",
+        "[--icon-color:var(--color-icon-on-brand)]",
         "border",
-        "border-[var(--color-brand-primary)]"
+        "border-[var(--color-brand-hover)]"
       ]
     },
     {
@@ -264,8 +264,8 @@
       }
     ]
   },
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "responsiveProps": {
     "paddingX": {
       "sm": "space_tag_x_sm",

@@ -41,7 +41,10 @@
         "cellDotColor": "color_border_base",
         "cellDotOpacity": 0.12
       },
-      "tailwindClasses": []
+      "tailwindClasses": [
+        "[--cell-border:var(--color-border-base)]",
+        "[--cell-dot:var(--color-border-base)]"
+      ]
     },
     {
       "when": {
@@ -52,7 +55,10 @@
         "cellDotColor": "color_text_muted",
         "cellDotOpacity": 1
       },
-      "tailwindClasses": []
+      "tailwindClasses": [
+        "[--cell-border:var(--color-border-strong)]",
+        "[--cell-dot:var(--color-text-muted)]"
+      ]
     },
     {
       "when": {
@@ -63,7 +69,10 @@
         "cellDotColor": "color_danger_base",
         "cellDotOpacity": 1
       },
-      "tailwindClasses": []
+      "tailwindClasses": [
+        "[--cell-border:var(--color-danger-base)]",
+        "[--cell-dot:var(--color-danger-base)]"
+      ]
     },
     {
       "when": {
@@ -76,6 +85,8 @@
         "opacityToken": "opacity_disabled"
       },
       "tailwindClasses": [
+        "[--cell-border:var(--color-border-disabled)]",
+        "[--cell-dot:var(--color-text-disabled)]",
         "opacity-[var(--opacity-disabled)]"
       ]
     },
@@ -89,7 +100,9 @@
       },
       "tailwindClasses": [
         "gap-[var(--space-2)]",
-        "[--cell-size:var(--space-pin-cell-sm)]"
+        "[--cell-size:var(--space-pin-cell-sm)]",
+        "[--cell-radius:var(--radius-default)]",
+        "[--dot-size:var(--space-8)]"
       ]
     },
     {
@@ -102,7 +115,9 @@
       },
       "tailwindClasses": [
         "gap-[var(--space-4)]",
-        "[--cell-size:var(--space-pin-cell-md)]"
+        "[--cell-size:var(--space-pin-cell-md)]",
+        "[--cell-radius:var(--radius-medium)]",
+        "[--dot-size:var(--space-10)]"
       ]
     },
     {
@@ -115,12 +130,14 @@
       },
       "tailwindClasses": [
         "gap-[var(--space-6)]",
-        "[--cell-size:var(--space-pin-cell-lg)]"
+        "[--cell-size:var(--space-pin-cell-lg)]",
+        "[--cell-radius:var(--radius-medium)]",
+        "[--dot-size:var(--space-12)]"
       ]
     }
   ],
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "responsiveProps": {
     "gap": {
       "sm": "space_2",

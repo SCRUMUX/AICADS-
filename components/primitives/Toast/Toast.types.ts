@@ -10,31 +10,32 @@ export type ToastPosition =
   | 'bottom-center'
   | 'bottom-left';
 
-export interface ToastProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Visual variant */
+/**
+ * Shape of a single toast payload as accepted by the imperative `toast()` API.
+ *
+ * NOTE: AICADS no longer ships a presentational `<Toast>` component. The
+ * single visual standard is the sonner-backed `<Toaster>` host plus the
+ * imperative `toast()` function. See docs/migrations/v0.4-to-v0.5.md.
+ */
+export interface ToastItem {
+  /** Unique id (set by the toast engine; not required from callers). */
+  id?: string;
+  /** Visual variant — drives surface and icon colour. */
   appearance?: ToastAppearance;
-  /** Title text */
+  /** Title text. */
   title?: React.ReactNode;
-  /** Description / body text */
+  /** Description / body text. */
   description?: React.ReactNode;
-  /** Leading icon slot */
+  /** Leading icon slot. */
   icon?: React.ReactNode;
-  /** Whether the close button is shown */
+  /** Whether the close button is shown. Default true. */
   showClose?: boolean;
-  /** Called when close is clicked or auto-dismiss fires */
-  onClose?: () => void;
-  /** Auto-dismiss duration in ms. 0 = no auto-dismiss. Default 5000. */
+  /** Auto-dismiss duration in ms. 0 = sticky. Default 5000. */
   duration?: number;
-  /** Whether the toast is currently visible (controls enter/exit animation) */
-  open?: boolean;
-}
-
-export interface ToastItem extends Omit<ToastProps, 'open'> {
-  id: string;
 }
 
 export interface ToasterProps {
-  /** Position of the toast stack on screen */
+  /** Position of the toast stack on screen. */
   position?: ToastPosition;
   /** Maximum number of visible toasts. Default 5. */
   maxVisible?: number;

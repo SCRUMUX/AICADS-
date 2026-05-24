@@ -33,6 +33,7 @@
         "textStyle": "Text/Caption/Base"
       },
       "tailwindClasses": [
+        "bg-[var(--color-surface-3)]",
         "rounded-[var(--radius-full)]",
         "text-style-caption"
       ]
@@ -48,6 +49,7 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-text-muted)]",
+        "bg-[var(--color-surface-3)]",
         "[data-icon=\"user\"]"
       ]
     },
@@ -61,7 +63,8 @@
         "initials": "VK"
       },
       "tailwindClasses": [
-        "[--initials-color:var(--color-text-on-brand)]"
+        "[--initials-color:var(--color-text-on-brand)]",
+        "bg-[var(--color-brand-primary)]"
       ]
     },
     {
@@ -71,7 +74,9 @@
       "style": {
         "bg": "color_surface_3"
       },
-      "tailwindClasses": []
+      "tailwindClasses": [
+        "bg-[var(--color-surface-3)]"
+      ]
     },
     {
       "when": {
@@ -144,8 +149,8 @@
       ]
     }
   ],
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "responsiveProps": {
     "boxSize": {
       "xs": "space_avatar_xs",

@@ -30,7 +30,7 @@ export const Tag = React.forwardRef<HTMLSpanElement, TagProps>((props, ref) => {
   const [internalState, setInternalState] = useState<TagState>('base');
   const effectiveState: TagState = controlledState ?? internalState;
 
-  const vc = findClasses(rules, { appearance, size, state: effectiveState });
+  const appearanceClasses = findClasses(rules, { appearance, state: effectiveState });
   const focusRing = getFocusRing(contract, appearance);
 
   const he = useCallback(
@@ -54,7 +54,7 @@ export const Tag = React.forwardRef<HTMLSpanElement, TagProps>((props, ref) => {
       className={cn(
         'transition-colors duration-150 font-base box-border inline-flex flex-row justify-center items-center border-[var(--border-width-base)] border-solid',
         SIZE_CLASSES[size],
-        ...vc,
+        ...appearanceClasses,
         focusRing,
         className,
       )}

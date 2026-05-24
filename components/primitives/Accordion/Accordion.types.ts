@@ -24,9 +24,12 @@ export interface AccordionProps extends Omit<React.HTMLAttributes<HTMLDivElement
   showIconLeft1?: boolean;
   showIconLeft2?: boolean;
   showBadge?: boolean;
+  /** @deprecated Top accent renders automatically when open. */
   showTopBorder?: boolean;
   /** Take full width of parent container */
   fullWidth?: boolean;
+  /** Uncontrolled initial open state (ignored when `state` is set). */
+  defaultOpen?: boolean;
   content?: React.ReactNode;
   onToggle?: () => void;
 }

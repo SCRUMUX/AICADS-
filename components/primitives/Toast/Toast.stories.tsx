@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Toast, Toaster, toast } from './Toast';
+import { Toaster, toast } from './Toast';
 import type { ToastAppearance } from './Toast.types';
 import { Button } from '../Button/Button';
 
@@ -25,94 +25,37 @@ const WarningIcon: React.FC = () => (
   </svg>
 );
 
-const meta: Meta<typeof Toast> = {
+/**
+ * AICADS v0.5.0 ships only the imperative `toast()` API + `<Toaster />` host.
+ * The legacy presentational `<Toast>` component has been removed — see
+ * docs/migrations/v0.4-to-v0.5.md for the upgrade path.
+ */
+const meta: Meta<typeof Toaster> = {
   title: 'Primitives/Toast',
-  component: Toast,
+  component: Toaster,
   parameters: {
     docs: {
       description: {
         component:
-          '`Toast` — transient notification. Appearances: info, success, warning, danger. Auto-dismisses after a configurable duration. Use `Toaster` + `toast()` for imperative API.',
+          '`toast()` — imperative notification API. Mount `<Toaster />` once near the app root; call `toast({ appearance, title, ... })` from anywhere. Backed by `sonner` under the hood (see `components/primitives/_internal/Toast`).',
       },
     },
   },
-  argTypes: {
-    appearance: { control: 'select', options: ['info', 'success', 'warning', 'danger'] },
-    title:      { control: 'text' },
-    description:{ control: 'text' },
-    showClose:  { control: 'boolean' },
-    duration:   { control: 'number' },
-    open:       { control: 'boolean' },
-    icon:       { control: false },
-  },
 };
 export default meta;
-type Story = StoryObj<typeof Toast>;
-
-export const Default: Story = {
-  args: {
-    appearance: 'info',
-    title: 'Information',
-    description: 'This is an informational notification.',
-    showClose: true,
-    open: true,
-    duration: 0,
-    icon: <InfoIcon />,
-  },
-};
-
-export const AllAppearances: Story = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      {([
-        { appearance: 'info' as const, title: 'Info', desc: 'Something happened.', icon: <InfoIcon /> },
-        { appearance: 'success' as const, title: 'Success', desc: 'Operation completed.', icon: <CheckCircle /> },
-        { appearance: 'warning' as const, title: 'Warning', desc: 'Please review this.', icon: <WarningIcon /> },
-        { appearance: 'danger' as const, title: 'Error', desc: 'Something went wrong.', icon: <WarningIcon /> },
-      ]).map((t) => (
-        <Toast
-          key={t.appearance}
-          appearance={t.appearance}
-          title={t.title}
-          description={t.desc}
-          icon={t.icon}
-          showClose
-          duration={0}
-          onClose={() => {}}
-        />
-      ))}
-    </div>
-  ),
-};
-
-export const WithoutIcon: Story = {
-  args: {
-    appearance: 'success',
-    title: 'Saved',
-    description: 'Your changes have been saved.',
-    showClose: true,
-    open: true,
-    duration: 0,
-  },
-};
-
-export const TitleOnly: Story = {
-  args: {
-    appearance: 'warning',
-    title: 'Connection lost',
-    showClose: true,
-    open: true,
-    duration: 0,
-    icon: <WarningIcon />,
-  },
-};
+type Story = StoryObj<typeof Toaster>;
 
 export const ImperativeAPI: Story = {
   render: () => {
     const appearances: ToastAppearance[] = ['info', 'success', 'warning', 'danger'];
-    const icons = { info: <InfoIcon />, success: <CheckCircle />, warning: <WarningIcon />, danger: <WarningIcon /> };
+    const icons: Record<ToastAppearance, React.ReactNode> = {
+      info: <InfoIcon />,
+      success: <CheckCircle />,
+      warning: <WarningIcon />,
+      danger: <WarningIcon />,
+    };
     return (
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div className="flex flex-wrap gap-[var(--space-8)]">
         <Toaster position="top-right" />
         {appearances.map((a) => (
           <Button
@@ -133,6 +76,45 @@ export const ImperativeAPI: Story = {
             Show {a}
           </Button>
         ))}
+      </div>
+    );
+  },
+};
+
+export const Positions: Story = {
+  render: () => {
+    const positions = ['top-right', 'top-center', 'top-left', 'bottom-right', 'bottom-center', 'bottom-left'] as const;
+    const [position, setPosition] = React.useState<(typeof positions)[number]>('top-right');
+    return (
+      <div className="flex flex-col gap-[var(--space-12)]">
+        <Toaster position={position} />
+        <div className="flex flex-wrap gap-[var(--space-8)]">
+          {positions.map((p) => (
+            <Button
+              key={p}
+              appearance={p === position ? 'brand' : 'base'}
+              size="sm"
+              onClick={() => setPosition(p)}
+            >
+              {p}
+            </Button>
+          ))}
+        </div>
+        <Button
+          appearance="base"
+          size="md"
+          onClick={() =>
+            toast({
+              appearance: 'info',
+              title: `Pinned at ${position}`,
+              description: 'Click any position button above to relocate the stack.',
+              icon: <InfoIcon />,
+              duration: 4000,
+            })
+          }
+        >
+          Fire toast
+        </Button>
       </div>
     );
   },

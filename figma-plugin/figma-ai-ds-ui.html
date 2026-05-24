@@ -170,6 +170,12 @@
           </select>
           <button id="generate-components" class="primary">Generate</button>
         </div>
+        <div class="row" style="margin-top: 4px;">
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: #333; cursor: pointer;">
+            <input id="strict-mode" type="checkbox" />
+            Strict AICADS validation (abort on unknown roles)
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -320,6 +326,16 @@
     document.getElementById('export-tokens').onclick = function () {
       send('export-tokens');
     };
+
+    // AICADS strict-mode toggle — phase 10 task 10.12. Communicates plugin-side
+    // so the manifest validator either warns (default) or aborts (strict).
+    var strictCheckbox = document.getElementById('strict-mode');
+    strictCheckbox.addEventListener('change', function () {
+      parent.postMessage(
+        { pluginMessage: { type: 'set-strict-mode', value: strictCheckbox.checked } },
+        '*'
+      );
+    });
 
     // Приём статуса от плагина
     window.onmessage = function (event) {

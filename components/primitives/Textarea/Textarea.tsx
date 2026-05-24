@@ -1,17 +1,15 @@
-import React, { useState, useCallback, useRef, useId } from 'react';
+import React, { useState, useCallback, useId } from 'react';
 import type { TextareaProps, TextareaSize, TextareaState, TextareaResize } from './Textarea.types';
-import { cn } from '../_shared';
+import { cn, findClasses, getFocusRing, type VR } from '../_shared';
 import { useControllableState } from '../../../hooks/useControllableState';
+import contract from '../../../contracts/components/Textarea.contract.json';
 
-const SIZE_CONFIG: Record<TextareaSize, {
-  padding: string;
-  minHeight: string;
-  textStyle: string;
-  fontWeight: string;
-}> = {
-  sm: { padding: 'px-3 py-[6px]', minHeight: 'min-h-[64px]', textStyle: 'text-style-caption', fontWeight: 'font-medium' },
-  md: { padding: 'px-4 py-2', minHeight: 'min-h-[96px]', textStyle: 'text-style-body', fontWeight: 'font-normal' },
-  lg: { padding: 'px-5 py-[10px]', minHeight: 'min-h-[120px]', textStyle: 'text-style-body-lg', fontWeight: 'font-medium' },
+const rules = (contract.variantRules || []) as unknown as VR[];
+
+const SIZE_CLASSES: Record<TextareaSize, string> = {
+  sm: 'px-[var(--space-button-x-sm)] py-[var(--space-button-y-sm)] gap-[var(--space-4)] min-w-[var(--space-container-compact-min)] max-w-[var(--space-container-compact-max)] min-h-[var(--space-64)] rounded-[var(--radius-default)] text-style-caption font-medium',
+  md: 'px-[var(--space-button-x-md)] py-[var(--space-button-y-md)] gap-[var(--space-6)] min-w-[var(--space-container-content-min)] max-w-[var(--space-container-content-max)] min-h-[var(--space-96)] rounded-[var(--radius-default)] text-style-body font-normal',
+  lg: 'px-[var(--space-button-x-lg)] py-[var(--space-button-y-lg)] gap-[var(--space-8)] min-w-[var(--space-container-wide-min)] max-w-[var(--space-container-wide-max)] min-h-[var(--space-120)] rounded-[var(--radius-default)] text-style-body-lg font-medium',
 };
 
 const RESIZE_CLASS: Record<TextareaResize, string> = {
@@ -21,32 +19,9 @@ const RESIZE_CLASS: Record<TextareaResize, string> = {
   both: 'resize',
 };
 
-type VisualStyle = { bg: string; border: string; focus: boolean; opacity: boolean };
-
-function getVisualStyle(state: TextareaState, invalid: boolean): VisualStyle {
-  if (invalid) {
-    return {
-      bg: state === 'focus' || state === 'hover' ? 'bg-[var(--color-surface-3)]' : 'bg-[var(--color-surface-2)]',
-      border: 'border-[var(--color-danger-base)]',
-      focus: state === 'focus',
-      opacity: false,
-    };
-  }
-  switch (state) {
-    case 'hover':
-      return { bg: 'bg-[var(--color-surface-3)]', border: 'border-[var(--color-border-strong)]', focus: false, opacity: false };
-    case 'focus':
-      return { bg: 'bg-[var(--color-surface-3)]', border: 'border-[var(--color-border-strong)]', focus: true, opacity: false };
-    case 'disabled':
-      return { bg: 'bg-[var(--color-surface-2)]', border: 'border-[var(--color-border-base)]', focus: false, opacity: true };
-    default:
-      return { bg: 'bg-[var(--color-surface-2)]', border: 'border-[var(--color-border-base)]', focus: false, opacity: false };
-  }
-}
-
 const ResizerIcon: React.FC = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="shrink-0">
-    <path d="M13 10L10 13M13 6L6 13" stroke="var(--color-border-strong)" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M13 10L10 13M13 6L6 13" stroke="var(--icon-color)" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
@@ -96,8 +71,9 @@ export const Textarea = React.forwardRef<HTMLDivElement, TextareaProps>((props, 
     return internalState;
   })();
 
-  const { padding, minHeight, textStyle, fontWeight } = SIZE_CONFIG[size];
-  const { bg, border, focus, opacity } = getVisualStyle(effectiveState, invalid);
+  const stateClasses = findClasses(rules, { state: effectiveState });
+  const focusRing = getFocusRing(contract);
+  const isFocused = effectiveState === 'focus';
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -143,13 +119,13 @@ export const Textarea = React.forwardRef<HTMLDivElement, TextareaProps>((props, 
     <div
       ref={ref}
       className={cn(
-        'relative flex flex-col w-full',
-        'rounded-[var(--radius-default)] border border-solid',
+        'relative flex flex-col w-full border-solid border-[var(--border-width-base)]',
         'transition-colors duration-150',
-        bg,
-        border,
-        focus && (invalid ? 'shadow-[var(--effect-focus-danger)]' : 'shadow-[var(--effect-focus-brand)]'),
-        opacity && 'opacity-[var(--opacity-disabled)]',
+        SIZE_CLASSES[size],
+        ...stateClasses,
+        invalid && 'border-[var(--color-danger-base)]',
+        isFocused && !invalid && focusRing,
+        isFocused && invalid && getFocusRing(contract, 'danger'),
         disabled ? 'cursor-not-allowed' : 'cursor-text',
         className,
       )}
@@ -161,7 +137,7 @@ export const Textarea = React.forwardRef<HTMLDivElement, TextareaProps>((props, 
       onBlur={hb}
       {...rest}
     >
-      <div className={cn('flex-1 w-full', padding)}>
+      <div className="flex-1 w-full">
         <textarea
           id={textareaId}
           name={name}
@@ -182,29 +158,24 @@ export const Textarea = React.forwardRef<HTMLDivElement, TextareaProps>((props, 
             'w-full bg-transparent outline-none',
             RESIZE_CLASS[resize],
             '[&::-webkit-resizer]:!appearance-none [&::-webkit-resizer]:!bg-transparent',
-            'text-[var(--color-text-primary)]',
-            'placeholder:text-[var(--color-text-muted)]',
-            textStyle,
-            fontWeight,
-            minHeight,
+            'text-[inherit] placeholder:text-[var(--color-text-muted)]',
+            'min-h-0',
             disabled ? 'cursor-not-allowed' : 'cursor-text',
           )}
           {...textareaProps}
         />
       </div>
 
-      {/* Char count */}
       {showCharCount && (
-        <div className="flex items-center px-2 pb-1">
-          <span className={cn('text-[10px] leading-3', isOverLimit ? 'text-[var(--color-danger-base)]' : 'text-[var(--color-text-muted)]')}>
+        <div className="flex items-center px-[var(--space-8)] pb-[var(--space-4)]">
+          <span className={cn('text-[var(--font-size-10)] leading-[var(--line-height-12)]', isOverLimit ? 'text-[var(--color-danger-base)]' : 'text-[var(--color-text-muted)]')}>
             {charCount}{maxLength !== undefined ? `/${maxLength}` : ''}
           </span>
         </div>
       )}
 
-      {/* Resizer icon — purely decorative, positioned over the native (hidden) resize handle */}
       {resize !== 'none' && (
-        <div className="absolute bottom-[2px] right-[2px] pointer-events-none">
+        <div className="absolute bottom-[var(--space-2)] right-[var(--space-2)] pointer-events-none">
           <ResizerIcon />
         </div>
       )}

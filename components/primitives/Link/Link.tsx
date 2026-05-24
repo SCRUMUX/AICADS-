@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import type { LinkProps, LinkSize, LinkState } from './Link.types';
-import { cn, findClasses, IconSlot, type VR } from '../_shared';
+import { cn, findClasses, getFocusRing, IconSlot, type VR } from '../_shared';
 import contract from '../../../contracts/components/Link.contract.json';
 
 const rules = (contract.variantRules || []) as unknown as VR[];
@@ -39,8 +39,8 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) 
   const [internalState, setInternalState] = useState<LinkState>('base');
   const effectiveState: LinkState = controlledState === 'disabled' ? 'disabled' : controlledState ?? internalState;
 
-  const vc = findClasses(rules, { size, state: effectiveState });
-  const focusRing = (contract.focusRing as string) ?? '';
+  const stateClasses = findClasses(rules, { state: effectiveState });
+  const focusRing = getFocusRing(contract);
 
   const isDisabled = effectiveState === 'disabled';
 
@@ -61,7 +61,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) 
       className={cn(
         'transition-colors duration-150 font-base box-border inline-flex flex-row items-center',
         SIZE_CLASSES[size],
-        ...vc,
+        ...stateClasses,
         focusRing,
         isDisabled && 'cursor-not-allowed',
         className,

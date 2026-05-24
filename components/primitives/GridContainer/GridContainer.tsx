@@ -1,13 +1,23 @@
 import React from 'react';
 import type { GridContainerProps, GridItemProps, GridContainerMaxWidth } from './GridContainer.types';
-import { cn } from '../_shared';
+import { cn, findClasses, type VR } from '../_shared';
+import contract from '../../../contracts/components/GridContainer.contract.json';
 
-const MAX_WIDTH_CLASSES: Record<GridContainerMaxWidth, string> = {
-  mobile: 'max-w-[767px]',
-  tablet: 'max-w-[1439px]',
-  desktop: 'max-w-[1440px]',
-  full: '',
-};
+const rules = (contract.variantRules || []) as unknown as VR[];
+
+/** Static maps — dynamic `col-span-${n}` breaks Tailwind JIT. */
+const TABLET_COL_SPAN = Object.fromEntries(
+  Array.from({ length: 12 }, (_, i) => [i + 1, `tablet:col-span-${i + 1}`]),
+) as Record<number, string>;
+const DESKTOP_COL_SPAN = Object.fromEntries(
+  Array.from({ length: 12 }, (_, i) => [i + 1, `desktop:col-span-${i + 1}`]),
+) as Record<number, string>;
+const TABLET_COL_START = Object.fromEntries(
+  Array.from({ length: 12 }, (_, i) => [i + 1, `tablet:col-start-${i + 1}`]),
+) as Record<number, string>;
+const DESKTOP_COL_START = Object.fromEntries(
+  Array.from({ length: 12 }, (_, i) => [i + 1, `desktop:col-start-${i + 1}`]),
+) as Record<number, string>;
 
 /**
  * Responsive grid container that auto-switches 4→8→12 columns at breakpoints.
@@ -26,6 +36,8 @@ export const GridContainer = React.forwardRef<HTMLDivElement, GridContainerProps
       ...rest
     } = props;
 
+    const layoutClasses = findClasses(rules, { maxWidth: maxWidth as GridContainerMaxWidth });
+
     const customCols = columns
       ? {
           '--gc-mobile-cols': columns.mobile ?? 4,
@@ -38,8 +50,7 @@ export const GridContainer = React.forwardRef<HTMLDivElement, GridContainerProps
       <Tag
         ref={ref}
         className={cn(
-          'grid-container',
-          MAX_WIDTH_CLASSES[maxWidth],
+          ...layoutClasses,
           centered && maxWidth !== 'full' && 'mx-auto',
           className,
         )}
@@ -78,12 +89,12 @@ export const GridItem = React.forwardRef<HTMLDivElement, GridItemProps>(
 
     const responsiveClasses: string[] = [];
     if (typeof span === 'object') {
-      if (span.tablet) responsiveClasses.push(`tablet:col-span-${span.tablet}`);
-      if (span.desktop) responsiveClasses.push(`desktop:col-span-${span.desktop}`);
+      if (span.tablet) responsiveClasses.push(TABLET_COL_SPAN[span.tablet] ?? '');
+      if (span.desktop) responsiveClasses.push(DESKTOP_COL_SPAN[span.desktop] ?? '');
     }
     if (typeof start === 'object') {
-      if (start.tablet) responsiveClasses.push(`tablet:col-start-${start.tablet}`);
-      if (start.desktop) responsiveClasses.push(`desktop:col-start-${start.desktop}`);
+      if (start.tablet) responsiveClasses.push(TABLET_COL_START[start.tablet] ?? '');
+      if (start.desktop) responsiveClasses.push(DESKTOP_COL_START[start.desktop] ?? '');
     }
 
     return (

@@ -1,6 +1,6 @@
 {
   "name": "@UI/Tab",
-  "description": "Tab: визуально согласован с @UI/Button. Полная матрица 4×3×5 (appearance×size×state) как у кнопок: Ghost — как ghost‑кнопка (просто текст), Brand — как brand‑кнопка, Base — как outline base с нижней границей, Outline — как outline‑кнопка без нижней границы.",
+  "description": "Tab: визуально согласован с @UI/Button. Полная матрица 5×3×5 (appearance×size×state): Ghost — как ghost‑кнопка, Brand — как brand‑кнопка, Base — underline с нижней границей, Outline — outline без нижней границы, Ticket — «билет» с обводкой сверху/сбоку без низа (идеален в горизонтальном ряду).",
   "variantProps": [
     "appearance",
     "size",
@@ -11,7 +11,8 @@
       "brand",
       "base",
       "ghost",
-      "outline"
+      "outline",
+      "ticket"
     ],
     "size": [
       "sm",
@@ -339,6 +340,72 @@
     },
     {
       "when": {
+        "appearance": "ticket",
+        "state": "base"
+      },
+      "style": {
+        "background": "color_surface_2",
+        "textColor": "color_text_primary",
+        "borderColor": "color_border_base"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-surface-2)]",
+        "text-[var(--color-text-primary)]",
+        "border-[var(--color-border-base)]"
+      ]
+    },
+    {
+      "when": {
+        "appearance": "ticket",
+        "state": "hover"
+      },
+      "style": {
+        "background": "color_surface_3",
+        "textColor": "color_text_primary",
+        "borderColor": "color_border_strong"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-surface-3)]",
+        "text-[var(--color-text-primary)]",
+        "border-[var(--color-border-strong)]"
+      ]
+    },
+    {
+      "when": {
+        "appearance": "ticket",
+        "state": "active"
+      },
+      "style": {
+        "background": "color_surface_1",
+        "textColor": "color_brand_primary",
+        "borderColor": "color_border_strong"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-surface-1)]",
+        "text-[var(--color-brand-primary)]",
+        "border-[var(--color-border-strong)]"
+      ]
+    },
+    {
+      "when": {
+        "appearance": "ticket",
+        "state": "disabled"
+      },
+      "style": {
+        "background": "color_bg_disabled",
+        "textColor": "color_text_disabled",
+        "borderColor": "color_border_disabled",
+        "opacityToken": "opacity_disabled"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-bg-disabled)]",
+        "text-[var(--color-text-disabled)]",
+        "border-[var(--color-border-disabled)]",
+        "opacity-[var(--opacity-disabled)]"
+      ]
+    },
+    {
+      "when": {
         "size": "sm"
       },
       "style": {
@@ -445,6 +512,24 @@
     },
     {
       "when": {
+        "appearance": "ticket"
+      },
+      "style": {
+        "tabKind": "ticket",
+        "showUnderline": false,
+        "showBackground": true,
+        "showTicket": true,
+        "hasPadding": true,
+        "ticketBorderRadius": "radius_default",
+        "borderRadius": "radius_default"
+      },
+      "tailwindClasses": [
+        "rounded-t-[var(--radius-default)]",
+        "border border-solid border-b-0"
+      ]
+    },
+    {
+      "when": {
         "state": "focus"
       },
       "style": {
@@ -496,8 +581,8 @@
       }
     ]
   },
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "responsiveProps": {
     "paddingX": {
       "sm": "space_4",

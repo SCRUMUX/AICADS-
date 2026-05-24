@@ -1,8 +1,17 @@
 import React, { useCallback } from 'react';
 import type { TableHeaderCellProps, TableHeaderCellSize, TableHeaderCellSort } from './TableHeaderCell.types';
 import { ArrowUpIcon, ArrowDownIcon } from '../../icons';
-import { cn } from '../_shared/utils';
-import { TABLE_SIZE_MAP } from '../_shared/table-tokens';
+import { cn, findClasses, type VR } from '../_shared';
+import { TABLE_ICON_SIZE } from '../_shared/table-tokens';
+import contract from '../../../contracts/components/Table-HeaderCell.contract.json';
+
+const rules = (contract.variantRules || []) as unknown as VR[];
+
+const SIZE_CLASSES: Record<TableHeaderCellSize, string> = {
+  sm: 'px-[var(--space-table-cell-x-sm)] py-[var(--space-table-cell-y-sm)] min-w-[var(--space-table-col-min-sm)] min-h-[var(--space-table-row-h-sm)] text-style-caption',
+  md: 'px-[var(--space-table-cell-x-md)] py-[var(--space-table-cell-y-md)] min-w-[var(--space-table-col-min-md)] min-h-[var(--space-table-row-h-md)] text-style-body-strong',
+  lg: 'px-[var(--space-table-cell-x-lg)] py-[var(--space-table-cell-y-lg)] min-w-[var(--space-table-col-min-lg)] min-h-[var(--space-table-row-h-lg)] text-style-body-strong',
+};
 
 function nextSort(current: TableHeaderCellSort): TableHeaderCellSort {
   if (current === 'none') return 'asc';
@@ -23,12 +32,9 @@ export const TableHeaderCell = React.forwardRef<HTMLTableCellElement, TableHeade
     ...rest
   } = props;
 
-  const { padding, gap, iconSize, headerFont: font } = TABLE_SIZE_MAP[size];
+  const sortClasses = findClasses(rules, { sort: sort as TableHeaderCellSort });
+  const iconPx = TABLE_ICON_SIZE[size];
   const isSorted = sort !== 'none';
-
-  const labelColor = isSorted
-    ? 'text-[var(--color-text-primary)]'
-    : 'text-[var(--color-text-muted)]';
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLTableCellElement>) => {
     if (onSortChange) onSortChange(nextSort(sort));
@@ -42,52 +48,44 @@ export const TableHeaderCell = React.forwardRef<HTMLTableCellElement, TableHeade
       ref={ref}
       scope="col"
       className={cn(
-        /* table-cell чтобы ячейки выравнивались корректно */
-        'bg-[var(--color-surface-1)]',
-        'border-b border-[var(--color-border-base)]',
-        'whitespace-nowrap align-middle',
-        padding,
-        font,
-        onSortChange ? 'cursor-pointer select-none hover:bg-[var(--color-surface-2)] transition-colors duration-150' : '',
+        'border-b border-[var(--color-border-base)] whitespace-nowrap align-middle text-left',
+        SIZE_CLASSES[size],
+        ...sortClasses,
+        onSortChange && 'cursor-pointer select-none hover:bg-[var(--color-surface-2)] transition-colors duration-150',
         className,
       )}
       onClick={onSortChange ? handleClick : onClick}
       {...rest}
     >
-      {/* Внутренний flex-контейнер для иконок и лейбла */}
-      <span className={cn('flex flex-row items-center', gap)}>
-        {/* Icon Left */}
+      <span className="flex flex-row items-center gap-[var(--space-table-cell-gap)]">
         {showIconLeft && iconLeft && (
           <span
-            className="shrink-0 flex items-center justify-center text-[var(--color-icon-muted)]"
-            style={{ width: iconSize, height: iconSize }}
+            className="shrink-0 flex items-center justify-center text-[var(--icon-color)]"
+            style={{ width: iconPx, height: iconPx }}
             aria-hidden="true"
           >
             {iconLeft}
           </span>
         )}
 
-        {/* Label */}
-        <span className={cn('flex-1 min-w-0', labelColor)}>
+        <span className="flex-1 min-w-0 text-[inherit]">
           {children}
         </span>
 
-        {/* Sort Icon */}
         {isSorted && (
           <span
-            className="shrink-0 flex items-center justify-center text-[var(--color-text-primary)]"
-            style={{ width: iconSize, height: iconSize }}
+            className="shrink-0 flex items-center justify-center text-[var(--sort-icon-color)]"
+            style={{ width: iconPx, height: iconPx }}
             aria-hidden="true"
           >
-            <SortIconComponent size={iconSize} />
+            <SortIconComponent size={iconPx} />
           </span>
         )}
 
-        {/* Sort placeholder (invisible) для стабильной ширины */}
         {!isSorted && onSortChange && (
           <span
             className="shrink-0 invisible"
-            style={{ width: iconSize, height: iconSize }}
+            style={{ width: iconPx, height: iconPx }}
             aria-hidden="true"
           />
         )}

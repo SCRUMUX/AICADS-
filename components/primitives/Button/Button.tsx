@@ -7,9 +7,9 @@ import contract from '../../../contracts/components/Button.contract.json';
 const rules = (contract.variantRules || []) as unknown as VR[];
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
-  sm: '!px-[var(--space-button-x-sm)] !py-[var(--space-button-y-sm)] !min-h-[var(--space-button-h-sm)] !max-h-[var(--space-button-h-sm)] min-w-[var(--space-button-h-sm)] !gap-[var(--space-button-gap-sm)] text-style-caption rounded-[var(--radius-button)] [--icon-size:20px]',
-  md: '!px-[var(--space-button-x-md)] !py-[var(--space-button-y-md)] !min-h-[var(--space-button-h-md)] !max-h-[var(--space-button-h-md)] min-w-[var(--space-button-h-md)] !gap-[var(--space-button-gap-md)] text-style-body rounded-[var(--radius-button)] [--icon-size:20px]',
-  lg: '!px-[var(--space-button-x-lg)] !py-[var(--space-button-y-lg)] !min-h-[var(--space-button-h-lg)] !max-h-[var(--space-button-h-lg)] min-w-[var(--space-button-h-lg)] !gap-[var(--space-button-gap-lg)] text-style-body-lg rounded-[var(--radius-button)] [--icon-size:24px]',
+  sm: 'px-[var(--space-button-x-sm)] py-[var(--space-button-y-sm)] min-h-[var(--space-button-h-sm)] max-h-[var(--space-button-h-sm)] min-w-[var(--space-button-h-sm)] gap-[var(--space-button-gap-sm)] text-style-caption rounded-[var(--radius-button)] [--icon-size:20px]',
+  md: 'px-[var(--space-button-x-md)] py-[var(--space-button-y-md)] min-h-[var(--space-button-h-md)] max-h-[var(--space-button-h-md)] min-w-[var(--space-button-h-md)] gap-[var(--space-button-gap-md)] text-style-body rounded-[var(--radius-button)] [--icon-size:20px]',
+  lg: 'px-[var(--space-button-x-lg)] py-[var(--space-button-y-lg)] min-h-[var(--space-button-h-lg)] max-h-[var(--space-button-h-lg)] min-w-[var(--space-button-h-lg)] gap-[var(--space-button-gap-lg)] text-style-body-lg rounded-[var(--radius-button)] [--icon-size:24px]',
 };
 
 const SPINNER_SIZE: Record<ButtonSize, 'xs' | 'sm'> = { sm: 'xs', md: 'xs', lg: 'sm' };
@@ -46,11 +46,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     ? 'disabled'
     : controlledState ?? internalState;
 
-  const vc = findClasses(rules, {
-    appearance,
-    size,
-    state: effectiveState === 'focus' ? 'base' : effectiveState,
-  });
+  const stateKey: ButtonState = effectiveState === 'focus' ? 'base' : effectiveState;
+  // Appearance + state colours come from the contract only — size/layout lives in SIZE_CLASSES.
+  const appearanceClasses = findClasses(rules, { appearance, state: stateKey });
   const focusRing = getFocusRing(contract, appearance);
 
   const he = useCallback(
@@ -113,10 +111,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
       className={cn(
         'transition-colors duration-150 font-base box-border flex flex-row justify-center items-center border-[var(--border-width-base)] border-solid',
         SIZE_CLASSES[size],
-        ...vc,
+        ...appearanceClasses,
         !isDisabled && focusRing,
         isDisabled && 'cursor-not-allowed pointer-events-none',
-        fullWidth && 'w-full !min-w-0',
+        fullWidth && 'w-full min-w-0',
         className,
       )}
       onMouseEnter={he}

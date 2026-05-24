@@ -14,7 +14,7 @@ const meta: Meta<typeof Chip> = {
   title: 'Primitives/Chip',
   component: Chip,
   parameters: {
-    docs: { description: { component: "Chip: фильтр/тег с удалением. appearance (base/brand), size (sm/md/lg), state (base/selected/disabled). Close-иконка показана по умолчанию. Иконка слева — опциональна." } },
+    docs: { description: { component: "Chip: фильтр/тег с удалением. appearance (base/brand), size (sm/md/lg), state (base/selected/disabled/exclude). Close-иконка показана по умолчанию. Иконка слева — опциональна." } },
   },
   argTypes: {
     appearance: { control: 'select', options: APPEARANCES },

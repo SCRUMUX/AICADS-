@@ -39,9 +39,9 @@ const SpinButton: React.FC<{
 const rules = (contract.variantRules || []) as unknown as VR[];
 
 const SIZE_CLASSES: Record<InputSize, string> = {
-  sm: '!px-[var(--space-button-x-sm)] !py-[var(--space-button-y-sm)] !min-h-[var(--space-28)] !max-h-[var(--space-28)] min-w-[var(--space-container-compact-min)] !gap-[var(--space-button-gap-sm)] text-style-caption rounded-[var(--radius-default)] [--icon-size:20px]',
-  md: '!px-[var(--space-button-x-md)] !py-[var(--space-button-y-md)] !min-h-[var(--space-36)] !max-h-[var(--space-36)] min-w-[var(--space-container-content-min)] !gap-[var(--space-button-gap-md)] text-style-body rounded-[var(--radius-default)] [--icon-size:20px]',
-  lg: '!px-[var(--space-button-x-lg)] !py-[var(--space-button-y-lg)] !min-h-[var(--space-40)] !max-h-[var(--space-40)] min-w-[var(--space-container-content-min)] !gap-[var(--space-button-gap-lg)] text-style-body-lg rounded-[var(--radius-default)] [--icon-size:24px]',
+  sm: 'px-[var(--space-button-x-sm)] py-[var(--space-button-y-sm)] min-h-[var(--space-28)] max-h-[var(--space-28)] min-w-[var(--space-container-compact-min)] gap-[var(--space-button-gap-sm)] text-style-caption rounded-[var(--radius-default)] [--icon-size:20px]',
+  md: 'px-[var(--space-button-x-md)] py-[var(--space-button-y-md)] min-h-[var(--space-36)] max-h-[var(--space-36)] min-w-[var(--space-container-content-min)] gap-[var(--space-button-gap-md)] text-style-body rounded-[var(--radius-default)] [--icon-size:20px]',
+  lg: 'px-[var(--space-button-x-lg)] py-[var(--space-button-y-lg)] min-h-[var(--space-40)] max-h-[var(--space-40)] min-w-[var(--space-container-content-min)] gap-[var(--space-button-gap-lg)] text-style-body-lg rounded-[var(--radius-default)] [--icon-size:24px]',
 };
 
 export const Input = React.forwardRef<HTMLDivElement, InputProps>((props, ref) => {
@@ -140,12 +140,13 @@ export const Input = React.forwardRef<HTMLDivElement, InputProps>((props, ref) =
     onChange?.({ target: el } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
   }, [disabled, readOnly, setValue, onChange]);
 
-  const variantState = effectiveState === 'focus' ? 'base' : effectiveState;
-  const vc = findClasses(rules, {
-    appearance,
-    size,
-    state: variantState,
-  });
+  const variantState: InputState =
+    effectiveState === 'focus'
+      ? 'base'
+      : effectiveState === 'base' && hasFilled && controlledState === undefined
+        ? 'filled'
+        : effectiveState;
+  const appearanceClasses = findClasses(rules, { appearance, state: variantState });
   const focusRing = getFocusRing(contract, appearance);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -186,12 +187,12 @@ export const Input = React.forwardRef<HTMLDivElement, InputProps>((props, ref) =
     <div
       ref={ref}
       className={cn(
-        'group transition-colors duration-150 font-base box-border flex flex-row justify-center items-center',
+        'group transition-colors duration-150 font-base box-border flex flex-row justify-center items-center border-solid border-[var(--border-width-base)]',
         SIZE_CLASSES[size],
-        ...vc,
+        ...appearanceClasses,
         !disabled && focusRing,
         disabled ? 'cursor-not-allowed opacity-[var(--opacity-disabled)]' : 'cursor-text',
-        fullWidth && 'w-full !min-w-0',
+        fullWidth && 'w-full min-w-0',
         className,
       )}
       onMouseEnter={he}

@@ -26,7 +26,7 @@ export const AllChartTypes: Story = {
     <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', padding: 16 }}>
       {(['bar', 'line', 'donut'] as SkeletonChartType[]).map((t) => (
         <div key={t}>
-          <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>chartType={t}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 6 }}>chartType={t}</div>
           <SkeletonChart size="sm" shimmer chartType={t} />
         </div>
       ))}
@@ -39,7 +39,7 @@ export const AllSizes: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 16 }}>
       {(['sm', 'md', 'lg'] as SkeletonChartSize[]).map((s) => (
         <div key={s}>
-          <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>size={s}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 6 }}>size={s}</div>
           <SkeletonChart size={s} shimmer chartType="bar" />
         </div>
       ))}
@@ -54,11 +54,11 @@ export const FullMatrix: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 32, padding: 16 }}>
       {(['bar', 'line', 'donut'] as SkeletonChartType[]).map((t) => (
         <div key={t}>
-          <div style={{ fontSize: 11, color: '#666', marginBottom: 8 }}>chartType={t}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>chartType={t}</div>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
             {(['sm', 'md', 'lg'] as SkeletonChartSize[]).map((s) => (
               <div key={s}>
-                <div style={{ fontSize: 10, color: '#aaa', marginBottom: 4 }}>{s}</div>
+                <div style={{ fontSize: 10, color: 'var(--color-text-muted)', marginBottom: 4 }}>{s}</div>
                 <SkeletonChart size={s} shimmer chartType={t} />
               </div>
             ))}

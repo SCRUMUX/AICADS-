@@ -47,7 +47,7 @@ export const AllSizes: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: 240 }}>
       {(['sm', 'md', 'lg'] as DividerSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>size={s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>size={s}</span>
           <Divider size={s} orientation="horizontal" appearance="base" />
         </div>
       ))}
@@ -61,7 +61,7 @@ export const AllAppearances: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: 240 }}>
       {(['base', 'strong'] as DividerAppearance[]).map((a) => (
         <div key={a} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>appearance={a}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>appearance={a}</span>
           <Divider size="md" orientation="horizontal" appearance={a} />
         </div>
       ))}
@@ -75,7 +75,7 @@ export const Vertical: Story = {
     <div style={{ display: 'flex', flexDirection: 'row', gap: 24, alignItems: 'center' }}>
       {(['sm', 'md', 'lg'] as DividerSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>size={s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>size={s}</span>
           <div style={{ height: 60, display: 'flex', alignItems: 'center' }}>
             <Divider size={s} orientation="vertical" appearance="base" />
           </div>
@@ -121,12 +121,12 @@ export const FullMatrix: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 16 }}>
       {(['horizontal', 'vertical'] as DividerOrientation[]).map((o) => (
         <div key={o}>
-          <div style={{ fontSize: 11, color: '#666', marginBottom: 8 }}>orientation={o}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>orientation={o}</div>
           <div style={{ display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
             {(['sm', 'md', 'lg'] as DividerSize[]).map((s) =>
               (['base', 'strong'] as DividerAppearance[]).map((a) => (
                 <div key={`${s}-${a}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                  <span style={{ fontSize: 10, color: '#aaa' }}>{s}/{a}</span>
+                  <span style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>{s}/{a}</span>
                   {o === 'horizontal' ? (
                     <div style={{ width: 80 }}>
                       <Divider size={s} orientation={o} appearance={a} />

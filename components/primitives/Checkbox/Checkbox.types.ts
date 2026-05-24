@@ -39,7 +39,6 @@ export type CheckboxState =
   | 'disabled-exclude';
 
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
-  /** Размер */
   size?: CheckboxSize;
   /**
    * Визуальное состояние (override).

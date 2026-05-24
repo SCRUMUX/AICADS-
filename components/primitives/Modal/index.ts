@@ -3,4 +3,4 @@
  * Regenerate: npm run components:generate
  */
 export { Modal } from './Modal';
-export type { ModalProps, ModalVariant, ModalShowClose, ModalShowFooter } from './Modal.types';
+export type { ModalProps, ModalVariant, ModalSize } from './Modal.types';

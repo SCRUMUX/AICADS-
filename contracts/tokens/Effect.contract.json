@@ -40,13 +40,25 @@
         "effect_focus_brand": {
           "usage": "Buttons, inputs, selects",
           "layers": [
-            { "type": "DROP_SHADOW", "offsetX": 0, "offsetY": 0, "blur": 0, "spread": 2, "colorTokenRef": "color_focus_outline", "opacity": 1.0 }
+            { "type": "DROP_SHADOW", "offsetX": 0, "offsetY": 0, "blur": 0, "spread": 1, "colorTokenRef": "color_focus_outline", "opacity": 1.0 }
           ]
         },
         "effect_focus_danger": {
           "usage": "Error-state fields",
           "layers": [
-            { "type": "DROP_SHADOW", "offsetX": 0, "offsetY": 0, "blur": 0, "spread": 2, "colorTokenRef": "color_danger_base", "opacity": 1.0 }
+            { "type": "DROP_SHADOW", "offsetX": 0, "offsetY": 0, "blur": 0, "spread": 1, "colorTokenRef": "color_danger_base", "opacity": 1.0 }
+          ]
+        },
+        "effect_focus_success": {
+          "usage": "Success-state fields",
+          "layers": [
+            { "type": "DROP_SHADOW", "offsetX": 0, "offsetY": 0, "blur": 0, "spread": 1, "colorTokenRef": "color_success_base", "opacity": 1.0 }
+          ]
+        },
+        "effect_focus_warning": {
+          "usage": "Warning-state fields",
+          "layers": [
+            { "type": "DROP_SHADOW", "offsetX": 0, "offsetY": 0, "blur": 0, "spread": 1, "colorTokenRef": "color_warning_base", "opacity": 1.0 }
           ]
         }
       }
@@ -84,7 +96,9 @@
     "references": {
       "effect_elevation_glow": "color_brand_primary",
       "effect_focus_brand": "color_focus_outline",
-      "effect_focus_danger": "color_danger_base"
+      "effect_focus_danger": "color_danger_base",
+      "effect_focus_success": "color_success_base",
+      "effect_focus_warning": "color_warning_base"
     }
   },
   "constraints": {

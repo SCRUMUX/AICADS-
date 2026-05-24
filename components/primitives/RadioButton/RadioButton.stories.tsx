@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { RadioButton } from './RadioButton';
+import { RadioGroup } from './RadioGroup';
 
 const SIZES = ['xs', 'sm', 'md', 'lg'] as const;
 const STATES = ['base', 'filled', 'focus', 'always-filled', 'disabled'] as const;
@@ -102,7 +103,8 @@ export const WithLabel: Story = {
 };
 
 /* ── Radio Group (интерактивный) ── */
-export const RadioGroup: Story = {
+export const RadioGroupStory: Story = {
+  name: 'Radio Group',
   render: (args) => {
     const [selected, setSelected] = useState('option1');
     const options = [
@@ -116,19 +118,22 @@ export const RadioGroup: Story = {
         <legend style={{ fontSize: 14, fontWeight: 600, marginBottom: 8, color: 'var(--color-text-primary)' }}>
           Выберите вариант
         </legend>
-        {options.map((opt) => (
-          <RadioButton
-            key={opt.value}
-            {...args}
-            name="demo-group"
-            value={opt.value}
-            checked={selected === opt.value}
-            disabled={opt.disabled}
-            label={opt.label}
-            onChange={() => setSelected(opt.value)}
-            state={opt.disabled ? 'disabled' : selected === opt.value ? 'always-filled' : 'base'}
-          />
-        ))}
+        <RadioGroup
+          value={selected}
+          onValueChange={setSelected}
+          name="demo-group"
+          style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
+        >
+          {options.map((opt) => (
+            <RadioButton
+              key={opt.value}
+              {...args}
+              value={opt.value}
+              disabled={opt.disabled}
+              label={opt.label}
+            />
+          ))}
+        </RadioGroup>
       </fieldset>
     );
   },

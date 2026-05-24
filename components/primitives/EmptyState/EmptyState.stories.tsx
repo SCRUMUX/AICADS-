@@ -107,7 +107,7 @@ export const AllLayouts: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       {(['vertical', 'horizontal'] as EmptyStateLayout[]).map((l) => (
         <div key={l}>
-          <div style={{ fontSize: 11, color: '#888', marginBottom: 8 }}>layout={l}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>layout={l}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-start' }}>
             {(['sm', 'md', 'lg'] as EmptyStateSize[]).map((s) => (
               <EmptyState
@@ -230,11 +230,11 @@ export const FullMatrix: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
       {(['base', 'info', 'success', 'warning', 'danger'] as EmptyStateAppearance[]).map((a) => (
         <div key={a}>
-          <div style={{ fontSize: 11, color: '#888', marginBottom: 8 }}>appearance={a}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>appearance={a}</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-start' }}>
             {(['sm', 'md', 'lg'] as EmptyStateSize[]).map((s) => (
               <div key={s} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div style={{ fontSize: 10, color: '#999' }}>size={s} / vertical</div>
+                <div style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>size={s} / vertical</div>
                 <EmptyState
                   size={s}
                   appearance={a}
@@ -247,7 +247,7 @@ export const FullMatrix: Story = {
                   icon={<SearchIcon size={s === 'sm' ? 32 : s === 'md' ? 48 : 64} />}
                   ctaButton={<Button appearance={a === 'base' || a === 'info' ? 'brand' : a} size="sm">Add item</Button>}
                 />
-                <div style={{ fontSize: 10, color: '#999' }}>size={s} / horizontal</div>
+                <div style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>size={s} / horizontal</div>
                 <EmptyState
                   size={s}
                   appearance={a}

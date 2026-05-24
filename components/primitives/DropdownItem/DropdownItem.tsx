@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
-import type { DropdownItemProps, DropdownItemSize, DropdownItemAppearance } from './DropdownItem.types';
-import { cn, findClasses, IconSlot, type VR } from '../_shared';
+import type { DropdownItemProps, DropdownItemSize } from './DropdownItem.types';
+import { cn, findClasses, getFocusRing, IconSlot, type VR } from '../_shared';
 import contract from '../../../contracts/components/DropdownItem.contract.json';
 
 const rules = (contract.variantRules || []) as unknown as VR[];
@@ -12,7 +12,7 @@ const SIZE_CLASSES: Record<DropdownItemSize, string> = {
 };
 
 const ChevronRight: React.FC = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="w-full h-full">
     <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
@@ -38,8 +38,8 @@ export const DropdownItem = React.forwardRef<HTMLDivElement, DropdownItemProps &
   } = props;
 
   const appearance = appearanceProp ?? itemType ?? 'default';
-  const vc = findClasses(rules, { size, itemType: appearance });
-  const focusRing = (contract.focusRing as string) ?? '';
+  const appearanceClasses = findClasses(rules, { itemType: appearance });
+  const focusRing = getFocusRing(contract);
 
   const hasSubmenu = submenuItems && submenuItems.length > 0;
   const [submenuOpen, setSubmenuOpen] = useState(false);
@@ -72,9 +72,9 @@ export const DropdownItem = React.forwardRef<HTMLDivElement, DropdownItemProps &
     <div
       ref={ref ?? itemRef}
       className={cn(
-        'relative transition-colors duration-150 font-base box-border flex flex-row justify-start items-center',
+        'relative transition-colors duration-150 font-base box-border flex flex-row justify-start items-center text-[var(--item-text)]',
         SIZE_CLASSES[size],
-        ...vc,
+        ...appearanceClasses,
         focusRing,
         className,
       )}
@@ -85,21 +85,25 @@ export const DropdownItem = React.forwardRef<HTMLDivElement, DropdownItemProps &
       {...rest}
     >
       {showCheckbox && checkbox && <div className="shrink-0 flex items-center">{checkbox}</div>}
-      {showIconLeft && iconLeft && <IconSlot icon={iconLeft} className="shrink-0" />}
+      {showIconLeft && iconLeft && <IconSlot icon={iconLeft} className="shrink-0 text-[var(--item-icon)]" />}
       <span className="flex-1 min-w-0 truncate">{children}</span>
       {showBadge && badge && <div className="shrink-0 flex items-center">{badge}</div>}
       {hasSubmenu ? (
-        <span className="shrink-0 flex items-center justify-center text-[var(--color-text-muted)]" style={{ width: 'var(--icon-size, 20px)', height: 'var(--icon-size, 20px)' }}>
+        <span className="shrink-0 flex items-center justify-center w-[var(--icon-size,20px)] h-[var(--icon-size,20px)] text-[var(--item-icon)]">
           <ChevronRight />
         </span>
       ) : showIconRight && iconRight ? (
-        <IconSlot icon={iconRight} className="shrink-0" />
+        <IconSlot icon={iconRight} className="shrink-0 text-[var(--item-icon)]" />
       ) : null}
 
-      {/* Submenu popover */}
       {hasSubmenu && submenuOpen && (
         <div
-          className="absolute left-full top-0 ml-1 z-50 min-w-[160px] bg-[var(--color-surface-1)] border border-[var(--color-border-base)] rounded-[var(--radius-default)] shadow-elevation-2 py-1"
+          className={cn(
+            'absolute left-full top-0 z-popover min-w-[var(--space-160)]',
+            'bg-[var(--color-surface-1)] border border-[var(--border-width-base)] border-[var(--color-border-base)]',
+            'rounded-default shadow-elevation-2 p-[var(--space-dropdown-popover-inset)]',
+          )}
+          style={{ marginLeft: 'var(--space-dropdown-submenu-offset, var(--space-4))' }}
           onMouseEnter={openSubmenu}
           onMouseLeave={closeSubmenu}
         >
@@ -108,10 +112,7 @@ export const DropdownItem = React.forwardRef<HTMLDivElement, DropdownItemProps &
               key={i}
               size={size}
               {...subProps}
-              className={cn(
-                'cursor-pointer rounded-[var(--radius-default)] hover:bg-[var(--color-brand-hover-bg)] px-[var(--space-button-x-sm)] py-[var(--space-button-y-sm)]',
-                subProps.className,
-              )}
+              className={cn('cursor-pointer hover:bg-[var(--color-surface-3)]', subProps.className)}
               onClick={() => subClick?.()}
             >
               {subChildren}

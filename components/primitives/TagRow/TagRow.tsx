@@ -2,9 +2,9 @@
  * AUTO-GENERATED – do not edit by hand.
  * Regenerate: npm run components:generate
  */
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import type { TagRowProps } from './TagRow.types';
-import { cn, findClasses, getFocusRing, type VR } from '../_shared';
+import { cn, findClasses, type VR } from '../_shared';
 import contract from '../../../contracts/components/TagRow.contract.json';
 
 const rules = (contract.variantRules || []) as unknown as VR[];
@@ -16,17 +16,15 @@ export const TagRow = React.forwardRef<HTMLDivElement, TagRowProps>((props, ref)
     ...rest
   } = props;
 
-  const vc = findClasses(rules, {  });
-  const focusRing = getFocusRing(contract);
+  const layoutClasses = findClasses(rules, {});
 
   return (
     <div
-      ref={ref as any}
+      ref={ref as React.Ref<HTMLDivElement>}
       className={cn(
-        'transition-colors duration-150 font-base box-border',
-        ...vc,
-        focusRing,
-        className
+        'inline-flex flex-row items-center',
+        ...layoutClasses,
+        className,
       )}
       {...rest}
     >

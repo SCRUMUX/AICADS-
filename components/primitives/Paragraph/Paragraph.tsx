@@ -1,37 +1,14 @@
 import React from 'react';
 import type { ParagraphProps, ParagraphSize, ParagraphBreakpoint } from './Paragraph.types';
-import { cn } from '../_shared';
+import { cn, findClasses, type VR } from '../_shared';
+import contract from '../../../contracts/components/Paragraph.contract.json';
 
-/**
- * Figma API (160:82623):
- *
- * Все варианты: padding=32px, layout=VERTICAL, нет fills/strokes/effects.
- *
- * Размеры текста (fontSize / fontWeight / lineHeight):
- *   sm: 12px / 400 / 16px
- *   md: 14px / 400 / 20px
- *   lg: 16px / 400 / 24px
- *
- * Ширина контейнера (breakpoint):
- *   mobile:     320px
- *   tablet:     480px
- *   desktop-sm: 640px
- *   desktop-lg: 800px
- *
- * Цвет текста: --color-text-primary (VariableID:159:42926)
- */
+const rules = (contract.variantRules || []) as unknown as VR[];
 
 const SIZE_CLASSES: Record<ParagraphSize, string> = {
-  sm: 'text-style-caption',
+  sm: 'text-style-body-sm',
   md: 'text-style-body',
   lg: 'text-style-body-lg',
-};
-
-const BREAKPOINT_WIDTH: Record<ParagraphBreakpoint, string> = {
-  'mobile':     'w-[var(--space-paragraph-max-mobile)]',
-  'tablet':     'w-[var(--space-paragraph-max-tablet)]',
-  'desktop-sm': 'w-[var(--space-paragraph-max-desktop-sm)]',
-  'desktop-lg': 'w-[var(--space-paragraph-max-desktop-lg)]',
 };
 
 const ALIGN_CLASSES: Record<string, string> = {
@@ -53,18 +30,25 @@ const ParagraphInner = React.forwardRef<HTMLParagraphElement, ParagraphProps>((p
     ...rest
   } = props;
 
+  const baseClasses = findClasses(rules, {});
+  const breakpointClasses = breakpoint
+    ? findClasses(rules, { breakpoint: breakpoint as ParagraphBreakpoint })
+    : [];
+
   return (
     <p
       ref={ref}
       className={cn(
-        'font-normal box-border',
+        'font-normal box-border text-[var(--color-text-primary)]',
         SIZE_CLASSES[size],
-        breakpoint ? BREAKPOINT_WIDTH[breakpoint] : 'w-full',
+        ...baseClasses,
+        ...breakpointClasses,
+        !breakpoint && 'w-full',
         ALIGN_CLASSES[align] ?? 'text-left',
         className,
       )}
       style={{
-        color: color ?? 'var(--color-text-primary)',
+        color: color ?? undefined,
         ...style,
       }}
       {...rest}

@@ -1,41 +1,24 @@
 export type TableSize = 'sm' | 'md' | 'lg';
 
-export interface TableSizeSpec {
-  padding: string;
-  gap: string;
-  iconSize: number;
-  cellFont: string;
-  headerFont: string;
-  rowH: number;
-  checkboxColWidth: number;
-}
-
-export const TABLE_SIZE_MAP: Record<TableSize, TableSizeSpec> = {
-  sm: {
-    padding: 'px-3 py-[3px]',
-    gap: 'gap-1.5',
-    iconSize: 16,
-    cellFont: 'text-[12px] font-medium leading-4',
-    headerFont: 'text-[12px] font-medium leading-4',
-    rowH: 28,
-    checkboxColWidth: 40,
-  },
-  md: {
-    padding: 'px-4 py-[6px]',
-    gap: 'gap-1.5',
-    iconSize: 16,
-    cellFont: 'text-[14px] font-normal leading-5',
-    headerFont: 'text-[14px] font-semibold leading-5',
-    rowH: 36,
-    checkboxColWidth: 48,
-  },
-  lg: {
-    padding: 'px-5 py-[8px]',
-    gap: 'gap-1.5',
-    iconSize: 20,
-    cellFont: 'text-[14px] font-normal leading-5',
-    headerFont: 'text-[14px] font-semibold leading-5',
-    rowH: 44,
-    checkboxColWidth: 56,
-  },
+/** Checkbox column width (px) — layout data without matching spacing token. */
+export const TABLE_CHECKBOX_WIDTH: Record<TableSize, number> = {
+  sm: 40,
+  md: 48,
+  lg: 56,
 };
+
+/** Icon slot size (px) per table size. */
+export const TABLE_ICON_SIZE: Record<TableSize, number> = {
+  sm: 16,
+  md: 16,
+  lg: 20,
+};
+
+/** @deprecated Use TABLE_CHECKBOX_WIDTH */
+export const TABLE_SIZE_MAP = {
+  sm: { checkboxColWidth: TABLE_CHECKBOX_WIDTH.sm, iconSize: TABLE_ICON_SIZE.sm },
+  md: { checkboxColWidth: TABLE_CHECKBOX_WIDTH.md, iconSize: TABLE_ICON_SIZE.md },
+  lg: { checkboxColWidth: TABLE_CHECKBOX_WIDTH.lg, iconSize: TABLE_ICON_SIZE.lg },
+} as const;
+
+export type TableSizeSpec = (typeof TABLE_SIZE_MAP)[TableSize];

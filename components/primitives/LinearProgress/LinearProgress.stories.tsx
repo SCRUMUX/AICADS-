@@ -46,7 +46,7 @@ export const AllSizes: Story = {
     <div style={{ width: 240, display: 'flex', flexDirection: 'column', gap: 12 }}>
       {(['sm', 'md', 'lg'] as LinearProgressSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>size={s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>size={s}</span>
           <LinearProgress size={s} value={65} />
         </div>
       ))}
@@ -60,7 +60,7 @@ export const FigmaExamples: Story = {
     <div style={{ width: 240, display: 'flex', flexDirection: 'column', gap: 12 }}>
       {[25, 50, 75].map((v) => (
         <div key={v} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>{v}%</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{v}%</span>
           <LinearProgress size="md" value={v} />
         </div>
       ))}
@@ -74,7 +74,7 @@ export const FullMatrix: Story = {
     <div style={{ width: 280, display: 'flex', flexDirection: 'column', gap: 16 }}>
       {([0, 25, 50, 75, 100] as number[]).map((v) => (
         <div key={v} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>{v}%</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{v}%</span>
           {(['sm', 'md', 'lg'] as LinearProgressSize[]).map((s) => (
             <LinearProgress key={s} size={s} value={v} />
           ))}
@@ -90,7 +90,7 @@ export const EdgeCases: Story = {
     <div style={{ width: 240, display: 'flex', flexDirection: 'column', gap: 12 }}>
       {[0, 100].map((v) => (
         <div key={v} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>{v}%</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{v}%</span>
           <LinearProgress size="md" value={v} />
         </div>
       ))}
@@ -121,17 +121,17 @@ export const Animated: Story = {
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <button
             onClick={() => setRunning((r) => !r)}
-            style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, border: '1px solid #ccc', cursor: 'pointer', background: running ? '#fee' : 'white' }}
+            style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, border: '1px solid var(--color-border-base)', cursor: 'pointer', background: running ? 'var(--color-danger-surface)' : 'var(--color-surface-1)' }}
           >
             {running ? 'Pause' : value >= 100 ? 'Replay' : 'Start'}
           </button>
           <button
             onClick={() => { setValue(0); setRunning(false); }}
-            style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, border: '1px solid #ccc', cursor: 'pointer', background: 'white' }}
+            style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, border: '1px solid var(--color-border-base)', cursor: 'pointer', background: 'var(--color-surface-1)' }}
           >
             Reset
           </button>
-          <span style={{ fontSize: 12, color: '#666' }}>{value}%</span>
+          <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>{value}%</span>
         </div>
       </div>
     );
@@ -146,7 +146,7 @@ export const Interactive: Story = {
       <div style={{ width: 280, display: 'flex', flexDirection: 'column', gap: 12 }}>
         {(['sm', 'md', 'lg'] as LinearProgressSize[]).map((s) => (
           <div key={s} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <span style={{ fontSize: 11, color: '#888' }}>{s}</span>
+            <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{s}</span>
             <LinearProgress size={s} value={value} />
           </div>
         ))}
@@ -158,7 +158,7 @@ export const Interactive: Story = {
           onChange={(e) => setValue(Number(e.target.value))}
           style={{ width: '100%', marginTop: 4 }}
         />
-        <span style={{ fontSize: 12, color: '#666' }}>{value}%</span>
+        <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>{value}%</span>
       </div>
     );
   },

@@ -1,0 +1,122 @@
+{
+  "$schema": "./schemas/ai-patterns-v1.schema.json",
+  "name": "@ai-ds/core",
+  "version": "0.6.0",
+  "description": "AICADS pattern manifest — distributable blocks, spacing recipes, and page templates for AI/Replit assemblers.",
+  "conventions": {
+    "blockImport": "import { HeroBlock } from '@ai-ds/core/blocks/HeroBlock'",
+    "pageImport": "import { LandingPageTemplate } from '@ai-ds/core/blocks/LandingPageTemplate'",
+    "recipeImport": "import { resolveRecipe, SPACING_RECIPES } from '@ai-ds/core/recipes'",
+    "patternsJson": "import patterns from '@ai-ds/core/patterns' assert { type: 'json' }"
+  },
+  "patterns": {
+    "marketing.hero.centered": {
+      "block": "HeroBlock",
+      "recipe": "section.hero",
+      "category": "marketing",
+      "primitives": [
+        "SectionHeader",
+        "Button",
+        "Paragraph",
+        "Badge"
+      ],
+      "storyReference": "Blocks/Marketing/HeroBlock",
+      "uxReference": "shadcn:hero-01",
+      "whenToUse": "Landing page above-the-fold with primary and secondary CTA"
+    },
+    "marketing.features.grid": {
+      "block": "FeaturesBlock",
+      "recipe": "section.features",
+      "category": "marketing",
+      "primitives": [
+        "SectionHeader",
+        "Card",
+        "GridContainer",
+        "GridItem",
+        "Paragraph"
+      ],
+      "storyReference": "Blocks/Marketing/FeaturesBlock",
+      "uxReference": "shadcn:features-01",
+      "whenToUse": "Feature grid with 2 or 3 columns"
+    },
+    "marketing.pricing.three-tier": {
+      "block": "PricingBlock",
+      "recipe": "section.pricing",
+      "category": "marketing",
+      "primitives": [
+        "SectionHeader",
+        "Card",
+        "Button",
+        "Badge",
+        "Divider"
+      ],
+      "storyReference": "Blocks/Marketing/PricingBlock",
+      "uxReference": "shadcn:pricing-01",
+      "whenToUse": "Three-tier pricing comparison with highlighted plan"
+    },
+    "marketing.cta.banner": {
+      "block": "CTABlock",
+      "recipe": "section.cta",
+      "category": "marketing",
+      "primitives": [
+        "SectionHeader",
+        "Card",
+        "Button",
+        "Paragraph"
+      ],
+      "storyReference": "Blocks/Marketing/CTABlock",
+      "uxReference": "shadcn:cta-01",
+      "whenToUse": "Mid-page or pre-footer call-to-action banner"
+    },
+    "marketing.footer.minimal": {
+      "block": "FooterBlock",
+      "recipe": "section.footer",
+      "category": "marketing",
+      "primitives": [
+        "Link",
+        "Paragraph",
+        "Divider",
+        "GridContainer"
+      ],
+      "storyReference": "Blocks/Marketing/FooterBlock",
+      "uxReference": "shadcn:footer-01",
+      "whenToUse": "Site footer with link columns and copyright"
+    },
+    "app.shell.dashboard": {
+      "block": "AppShellBlock",
+      "recipe": "section.app-shell",
+      "category": "app",
+      "primitives": [
+        "AppSidebarBlock",
+        "Tab",
+        "Card",
+        "SectionHeader"
+      ],
+      "storyReference": "Blocks/App/AppShellBlock",
+      "whenToUse": "Dashboard layout with sidebar and main content"
+    },
+    "app.sidebar.nav": {
+      "block": "AppSidebarBlock",
+      "recipe": "section.app-shell",
+      "category": "app",
+      "primitives": [
+        "Tab"
+      ],
+      "storyReference": "Blocks/App/AppShellBlock",
+      "whenToUse": "Vertical navigation sidebar for app shells"
+    }
+  },
+  "pageTemplates": {
+    "marketing.landing.default": {
+      "description": "Standard SaaS landing page section order",
+      "sections": [
+        "marketing.hero.centered",
+        "marketing.features.grid",
+        "marketing.pricing.three-tier",
+        "marketing.cta.banner",
+        "marketing.footer.minimal"
+      ],
+      "component": "LandingPageTemplate"
+    }
+  }
+}

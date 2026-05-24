@@ -2,13 +2,13 @@
 /*
  * TAILWIND CONFIGURATION - TOKEN-DRIVEN
  * =====================================
- * 
+ *
  * This configuration is designed to be fully derived from design tokens.
  * All values reference CSS custom properties to maintain single source of truth.
- * 
+ *
  * IMPORTANT: Do not add hardcoded values here.
  * All styling values must come from tokens.
- * 
+ *
  * Token Categories Mapped:
  * - colors: From Color.contract.json (semantic + primitives)
  * - fontFamily: From Typography.contract.json
@@ -18,17 +18,30 @@
  * - borderRadius: From Radius.contract.json
  * - boxShadow: From Effect.contract.json (elevation, focus)
  * - screens: From Layout.contract.json (breakpoints)
+ *
+ * PORTABILITY
+ * -----------
+ * The `content.files` globs are resolved against this file's directory via
+ * `path.resolve(__dirname, ...)`, so the config works regardless of where
+ * `@ai-ds/core` lives in the consumer's tree (npm workspace, classic
+ * node_modules, Replit). Consumers extend `content.files` with their own
+ * source globs through Tailwind's preset/extend mechanism.
  */
+
+const path = require('path');
+
+// Root of the @ai-ds/core package, resolved relative to this config file:
+//   config/tailwind/tailwind.config.cjs  ->  ../..  ->  package root
+const CORE_ROOT = path.resolve(__dirname, '../..');
 
 module.exports = {
   content: {
-    relative: true,
+    relative: false,
     files: [
-      '../../packages/core/src/**/*.{js,ts,jsx,tsx}',
-      '../../packages/core/components/**/*.{js,ts,jsx,tsx}',
-      '../../packages/core/contracts/components/*.contract.json',
-      './pages/**/*.{js,ts,jsx,tsx}',
-      './.storybook/**/*.{js,ts,jsx,tsx}',
+      path.join(CORE_ROOT, 'components/**/*.{js,ts,jsx,tsx}'),
+      path.join(CORE_ROOT, 'contracts/components/*.contract.json'),
+      path.join(CORE_ROOT, 'layout/**/*.{js,ts,jsx,tsx}'),
+      path.join(CORE_ROOT, 'hooks/**/*.{js,ts,jsx,tsx}'),
     ],
   },
   
@@ -217,6 +230,7 @@ module.exports = {
         'medium': 'var(--radius-medium)',
         'large': 'var(--radius-large)',
         'xl': 'var(--radius-xl)',
+        'md-plus': 'var(--radius-md-plus)',
         '2xl': 'var(--radius-2xl)',
         '3xl': 'var(--radius-3xl)',
         'section': 'var(--radius-section)',
@@ -254,6 +268,8 @@ module.exports = {
         // Focus rings
         'focus-brand': 'var(--effect-focus-brand)',
         'focus-danger': 'var(--effect-focus-danger)',
+        'focus-success': 'var(--effect-focus-success)',
+        'focus-warning': 'var(--effect-focus-warning)',
       },
       
       // =====================================================================

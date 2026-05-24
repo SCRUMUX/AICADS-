@@ -37,7 +37,7 @@ export const AllStates: Story = {
     <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
       {(['idle', 'loading', 'success', 'error'] as CaptchaState[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
-          <span style={{ fontSize: 11, color: '#888' }}>state={s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>state={s}</span>
           <Captcha state={s} />
         </div>
       ))}
@@ -100,13 +100,13 @@ export const Interactive: Story = {
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
-        <div style={{ fontSize: 12, color: '#666' }}>
+        <div style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>
           Click the widget to simulate verification (70% success rate).
         </div>
         <div onClick={handleClick} style={{ cursor: state === 'loading' ? 'not-allowed' : 'pointer' }}>
           <Captcha state={state} />
         </div>
-        <div style={{ fontSize: 11, color: '#888', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div style={{ fontSize: 11, color: 'var(--color-text-muted)', display: 'flex', flexDirection: 'column', gap: 2 }}>
           {log.map((l, i) => <span key={i}>{l}</span>)}
         </div>
         {(state === 'success' || state === 'error') && (
@@ -115,7 +115,7 @@ export const Interactive: Story = {
             style={{
               fontSize: 12,
               padding: '4px 12px',
-              border: '1px solid #ccc',
+              border: '1px solid var(--color-border-base)',
               borderRadius: 4,
               cursor: 'pointer',
               background: 'white',

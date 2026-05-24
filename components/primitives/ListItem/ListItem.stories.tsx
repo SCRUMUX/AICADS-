@@ -243,10 +243,10 @@ export const FullMatrix: Story = {
     <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
       {(['iconNav', 'iconMeta', 'avatarContact', 'checkboxSelect'] as ListItemVariant[]).map((v) => (
         <div key={v} style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ fontSize: 11, color: '#666', marginBottom: 4, paddingLeft: 4 }}>{v}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 4, paddingLeft: 4 }}>{v}</div>
           {(['sm', 'md', 'lg'] as ListItemSize[]).map((s) => (
             <div key={s} style={{ display: 'flex', flexDirection: 'column', marginBottom: 8 }}>
-              <div style={{ fontSize: 10, color: '#999', paddingLeft: 4, marginBottom: 2 }}>{s}</div>
+              <div style={{ fontSize: 10, color: 'var(--color-text-muted)', paddingLeft: 4, marginBottom: 2 }}>{s}</div>
               {(['base', 'hover', 'selected', 'disabled'] as ListItemState[]).map((st) => (
                 <ListItem
                   key={st}

@@ -225,8 +225,8 @@
       ]
     }
   ],
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "element": "div",
   "rootLayout": "horizontal",
   "rootSizing": {

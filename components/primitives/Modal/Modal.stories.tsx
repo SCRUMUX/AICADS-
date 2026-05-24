@@ -65,7 +65,7 @@ const ModalDemo: React.FC<{
 }) => {
   const [open, setOpen] = useState(true);
   return (
-    <div style={{ position: 'relative', width: '100%', minHeight: 280, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', padding: 24 }}>
+    <div style={{ position: 'relative', width: '100%', minHeight: 280, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-surface-2)', padding: 24 }}>
       {!open && (
         <Button appearance="brand" size="sm" onClick={() => setOpen(true)}>
           Open modal
@@ -104,10 +104,10 @@ export const Default: Story = {
 // ─── All Variants ─────────────────────────────────────────────────────────────
 export const AllVariants: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, padding: 24, background: '#f1f5f9' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, padding: 24, background: 'var(--color-surface-2)' }}>
       {VARIANTS.map((v) => (
         <div key={v} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <span style={{ fontSize: 11, color: '#666' }}>variant={v}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>variant={v}</span>
           <ModalDemo
             variant={v}
             title={`${v.charAt(0).toUpperCase() + v.slice(1)} dialog`}
@@ -122,10 +122,10 @@ export const AllVariants: Story = {
 // ─── All Sizes ────────────────────────────────────────────────────────────────
 export const AllSizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 24, background: '#f1f5f9' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 24, background: 'var(--color-surface-2)' }}>
       {SIZES.map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <span style={{ fontSize: 11, color: '#666' }}>size={s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>size={s}</span>
           <ModalDemo size={s} title={`Size ${s}`} content={`This modal uses size="${s}".`} />
         </div>
       ))}
@@ -211,7 +211,7 @@ export const Interactive: Story = {
             </Button>
           ))}
         </div>
-        <div style={{ fontSize: 11, color: '#888', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div style={{ fontSize: 11, color: 'var(--color-text-muted)', display: 'flex', flexDirection: 'column', gap: 2 }}>
           {log.map((l, i) => <span key={i}>{l}</span>)}
         </div>
         <Modal
@@ -231,25 +231,46 @@ export const Interactive: Story = {
   },
 };
 
-// ─── Full Matrix: variants × config combos ────────────────────────────────────
+// ─── Full Matrix: variants × config combos (embedded panel previews) ───────────
+const MATRIX_CONFIGS = [
+  { label: 'close + footer', showClose: true, showFooter: true },
+  { label: 'close only', showClose: true, showFooter: false },
+  { label: 'footer only', showClose: false, showFooter: true },
+  { label: 'minimal', showClose: false, showFooter: false },
+] as const;
+
 export const FullMatrix: Story = {
   render: () => (
-    <div style={{ padding: 24, background: '#f1f5f9', display: 'flex', flexDirection: 'column', gap: 32 }}>
+    <div style={{ padding: 24, background: 'var(--color-surface-2)', display: 'flex', flexDirection: 'column', gap: 40 }}>
       {VARIANTS.map((v) => (
-        <div key={v} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
-          <div style={{ fontSize: 11, color: '#666', gridColumn: '1 / -1' }}>variant={v}</div>
-          {[
-            { label: 'close + footer', showClose: true, showFooter: true },
-            { label: 'close only', showClose: true, showFooter: false },
-            { label: 'footer only', showClose: false, showFooter: true },
-            { label: 'minimal', showClose: false, showFooter: false },
-          ].map((cfg) => (
-            <div key={cfg.label} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <span style={{ fontSize: 10, color: '#999' }}>{cfg.label}</span>
-              <Modal variant={v} showClose={cfg.showClose} showFooter={cfg.showFooter} open portal={false} title="Dialog title" content="Dialog body." style={{ position: 'relative' }} />
-            </div>
-          ))}
-        </div>
+        <section key={v}>
+          <h3 style={{ margin: '0 0 16px', fontSize: 13, fontWeight: 600, color: 'var(--color-text-primary)' }}>
+            variant={v}
+          </h3>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: 20,
+              alignItems: 'start',
+            }}
+          >
+            {MATRIX_CONFIGS.map((cfg) => (
+              <div key={cfg.label} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{cfg.label}</span>
+                <Modal
+                  embedded
+                  size="sm"
+                  variant={v}
+                  showClose={cfg.showClose}
+                  showFooter={cfg.showFooter}
+                  title="Dialog title"
+                  content="Dialog body text for preview."
+                />
+              </div>
+            ))}
+          </div>
+        </section>
       ))}
     </div>
   ),

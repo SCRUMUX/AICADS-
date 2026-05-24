@@ -25,7 +25,7 @@ export const AllSizes: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 16 }}>
       {(['sm', 'md', 'lg'] as SkeletonPageSize[]).map((s) => (
         <div key={s}>
-          <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>size={s}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 6 }}>size={s}</div>
           <SkeletonPage size={s} shimmer />
         </div>
       ))}
@@ -41,11 +41,11 @@ export const FullMatrix: Story = {
       {(['sm', 'md', 'lg'] as SkeletonPageSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
           <div>
-            <div style={{ fontSize: 10, color: '#aaa', marginBottom: 4 }}>{s} shimmer</div>
+            <div style={{ fontSize: 10, color: 'var(--color-text-muted)', marginBottom: 4 }}>{s} shimmer</div>
             <SkeletonPage size={s} shimmer />
           </div>
           <div>
-            <div style={{ fontSize: 10, color: '#aaa', marginBottom: 4 }}>{s} static</div>
+            <div style={{ fontSize: 10, color: 'var(--color-text-muted)', marginBottom: 4 }}>{s} static</div>
             <SkeletonPage size={s} shimmer={false} />
           </div>
         </div>

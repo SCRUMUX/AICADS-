@@ -37,9 +37,8 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>((props, ref) 
   } = props;
 
   const isDisabled = disabled || state === 'disabled';
-  const isExclude = state === 'exclude';
 
-  const vc = findClasses(rules, { appearance, size, state: isExclude ? 'base' : state });
+  const appearanceClasses = findClasses(rules, { appearance, state: isDisabled ? 'disabled' : state });
   const focusRing = getFocusRing(contract, appearance);
 
   const handleCloseClick = useCallback(
@@ -71,13 +70,12 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>((props, ref) 
       role="option"
       aria-selected={state === 'selected' || undefined}
       className={cn(
-        'transition-colors duration-150 font-base box-border flex flex-row justify-center items-center',
+        'transition-colors duration-150 font-base box-border flex flex-row justify-center items-center border-[var(--border-width-base)] border-solid',
         SIZE_CLASSES[size],
-        ...vc,
+        ...appearanceClasses,
         !isDisabled && focusRing,
-        !isDisabled && 'cursor-pointer hover:brightness-95 active:brightness-90',
+        !isDisabled && 'cursor-pointer',
         isDisabled && 'cursor-not-allowed pointer-events-none',
-        isExclude && 'opacity-60 border border-dashed border-[var(--color-border-strong)]',
         className,
       )}
       onClick={onClick}
@@ -85,7 +83,7 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>((props, ref) 
       {...rest}
     >
       {showLeftIcon && iconLeft && <IconSlot icon={iconLeft} />}
-      <span className={cn('truncate max-w-[120px]', isExclude && 'line-through')}>{children}</span>
+      <span className={cn('truncate max-w-[var(--space-120)]', state === 'exclude' && 'line-through')}>{children}</span>
       {showCloseIcon && (
         <span
           role="button"

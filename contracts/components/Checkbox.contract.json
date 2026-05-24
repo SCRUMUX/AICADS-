@@ -16,11 +16,14 @@
       "unchecked",
       "checked",
       "indeterminate",
+      "exclude",
       "focus-unchecked",
       "focus-checked",
+      "focus-exclude",
       "disabled-unchecked",
       "disabled-checked",
-      "disabled-indeterminate"
+      "disabled-indeterminate",
+      "disabled-exclude"
     ]
   },
   "variantRules": [
@@ -37,6 +40,7 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-surface-3)]",
         "border",
         "border-[var(--color-border-strong)]",
         "rounded-default"
@@ -55,6 +59,7 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
         "border",
         "border-[var(--color-brand-primary)]",
         "rounded-default",
@@ -74,10 +79,31 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
         "border",
         "border-[var(--color-brand-primary)]",
         "rounded-default",
         "[data-icon=\"close-x\"]"
+      ]
+    },
+    {
+      "when": {
+        "state": "exclude"
+      },
+      "style": {
+        "bg": "color_brand_primary",
+        "borderColor": "color_brand_primary",
+        "borderRadius": "radius_default",
+        "icon": "minus",
+        "iconColor": "color_icon_on_brand"
+      },
+      "tailwindClasses": [
+        "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
+        "border",
+        "border-[var(--color-brand-primary)]",
+        "rounded-default",
+        "[data-icon=\"minus\"]"
       ]
     },
     {
@@ -91,6 +117,7 @@
         "opacityToken": "opacity_disabled"
       },
       "tailwindClasses": [
+        "bg-[var(--color-surface-3)]",
         "border",
         "border-[var(--color-border-strong)]",
         "rounded-default",
@@ -111,6 +138,7 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
         "border",
         "border-[var(--color-brand-primary)]",
         "rounded-default",
@@ -132,11 +160,34 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
         "border",
         "border-[var(--color-brand-primary)]",
         "rounded-default",
         "opacity-[var(--opacity-disabled)]",
         "[data-icon=\"close-x\"]"
+      ]
+    },
+    {
+      "when": {
+        "state": "disabled-exclude"
+      },
+      "style": {
+        "bg": "color_brand_primary",
+        "borderColor": "color_brand_primary",
+        "borderRadius": "radius_default",
+        "icon": "minus",
+        "iconColor": "color_icon_on_brand",
+        "opacityToken": "opacity_disabled"
+      },
+      "tailwindClasses": [
+        "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
+        "border",
+        "border-[var(--color-brand-primary)]",
+        "rounded-default",
+        "opacity-[var(--opacity-disabled)]",
+        "[data-icon=\"minus\"]"
       ]
     },
     {
@@ -204,9 +255,11 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-surface-3)]",
         "border",
-        "border-[var(--color-brand-primary)]",
-        "rounded-default"
+        "border-transparent",
+        "rounded-default",
+        "shadow-focus-brand"
       ]
     },
     {
@@ -223,15 +276,39 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
         "border",
-        "border-[var(--color-brand-primary)]",
+        "border-transparent",
         "rounded-default",
+        "shadow-focus-brand",
         "[data-icon=\"check\"]"
+      ]
+    },
+    {
+      "when": {
+        "state": "focus-exclude"
+      },
+      "style": {
+        "bg": "color_brand_primary",
+        "borderColor": "color_brand_primary",
+        "borderRadius": "radius_default",
+        "icon": "minus",
+        "iconColor": "color_icon_on_brand",
+        "focusRing": "effect_focus_brand"
+      },
+      "tailwindClasses": [
+        "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
+        "border",
+        "border-transparent",
+        "rounded-default",
+        "shadow-focus-brand",
+        "[data-icon=\"minus\"]"
       ]
     }
   ],
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "responsiveProps": {
     "boxSize": {
       "xs": "space_12",

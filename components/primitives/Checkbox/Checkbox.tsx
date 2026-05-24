@@ -1,8 +1,9 @@
-import React, { useId, useRef, useEffect, useState, useCallback } from 'react';
+import React, { useId, useState, useCallback } from 'react';
 import type { CheckboxProps, CheckboxSize, CheckboxState } from './Checkbox.types';
 import { cn, findClasses, type VR } from '../_shared';
 import contract from '../../../contracts/components/Checkbox.contract.json';
 import { useControllableState } from '../../../hooks/useControllableState';
+import { RadixCheckbox } from '../_internal';
 
 // MANUAL OVERRIDES:
 // - Tri-state checkbox cycle (exclude state)
@@ -11,15 +12,18 @@ import { useControllableState } from '../../../hooks/useControllableState';
 
 const rules = (contract.variantRules || []) as unknown as VR[];
 
-const SIZE_CONFIG: Record<CheckboxSize, {
-  px: number;
-  iconPx: number;
-  labelSize: string;
-}> = {
-  xs: { px: 12, iconPx: 8,  labelSize: 'text-style-caption-xs' },
-  sm: { px: 16, iconPx: 10, labelSize: 'text-style-caption-xs' },
-  md: { px: 20, iconPx: 12, labelSize: 'text-style-caption' },
-  lg: { px: 24, iconPx: 14, labelSize: 'text-style-body' },
+const SIZE_CLASSES: Record<CheckboxSize, string> = {
+  xs: 'w-[var(--space-12)] h-[var(--space-12)] [--icon-size:var(--space-10)]',
+  sm: 'w-[var(--space-16)] h-[var(--space-16)] [--icon-size:var(--space-icon-checkbox-sm)]',
+  md: 'w-[var(--space-20)] h-[var(--space-20)] [--icon-size:var(--space-12)]',
+  lg: 'w-[var(--space-24)] h-[var(--space-24)] [--icon-size:var(--space-14)]',
+};
+
+const LABEL_SIZE_CLASSES: Record<CheckboxSize, string> = {
+  xs: 'text-style-caption-xs',
+  sm: 'text-style-caption-xs',
+  md: 'text-style-caption',
+  lg: 'text-style-body',
 };
 
 function getIconFlags(state: CheckboxState) {
@@ -30,27 +34,38 @@ function getIconFlags(state: CheckboxState) {
   return { showCheck: isCheck, showPlus: isPlus, showMinus: isMinus, strikethrough: isStrike };
 }
 
-const CheckIcon: React.FC<{ size: number }> = ({ size }) => (
-  <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true" className="animate-check-pop">
+function stateToRadixChecked(state: CheckboxState): boolean | 'indeterminate' {
+  if (state === 'checked' || state === 'focus-checked' || state === 'disabled-checked') return true;
+  if (
+    state === 'indeterminate' || state === 'disabled-indeterminate'
+    || state === 'exclude' || state === 'focus-exclude' || state === 'disabled-exclude'
+  ) return 'indeterminate';
+  return false;
+}
+
+const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className={cn('animate-check-pop', className)}>
     <path d="M2.5 8L6.5 12L13.5 4.5" stroke="var(--color-text-on-brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 /** Plus — indeterminate (частичный выбор) */
-const PlusIcon: React.FC<{ size: number }> = ({ size }) => (
-  <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true" className="animate-check-pop">
+const PlusIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className={cn('animate-check-pop', className)}>
     <path d="M8 3.5V12.5M3.5 8H12.5" stroke="var(--color-text-on-brand)" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
 /** Minus — exclude (кроме) */
-const MinusIcon: React.FC<{ size: number }> = ({ size }) => (
-  <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true" className="animate-check-pop">
+const MinusIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className={cn('animate-check-pop', className)}>
     <path d="M3.5 8H12.5" stroke="var(--color-text-on-brand)" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
-export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props, ref) => {
+const ICON_SIZE_CLASS = 'w-[var(--icon-size)] h-[var(--icon-size)]';
+
+export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>((props, ref) => {
   const {
     size = 'md',
     state: stateProp,
@@ -70,35 +85,33 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props
 
   const autoId = useId();
   const id = idProp ?? autoId;
-  const innerRef = useRef<HTMLInputElement>(null);
-  const resolvedRef = (ref as React.RefObject<HTMLInputElement> | null) ?? innerRef;
+  const isVisualOverride = stateProp !== undefined;
 
   const [effectiveChecked, setChecked] = useControllableState<boolean>({
     value: checkedProp,
     defaultValue: defaultChecked ?? false,
   });
 
-  useEffect(() => {
-    if (resolvedRef.current) {
-      resolvedRef.current.indeterminate = indeterminate;
-    }
-  }, [indeterminate, resolvedRef]);
-
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(e.target.checked);
-    onChange?.(e);
-  }, [setChecked, onChange]);
+  const handleCheckedChange = useCallback((next: boolean | 'indeterminate') => {
+    if (isVisualOverride) return;
+    const boolChecked = next === true;
+    setChecked(boolChecked);
+    onChange?.({
+      target: { checked: boolChecked, type: 'checkbox', value: 'on' },
+      currentTarget: { checked: boolChecked, type: 'checkbox', value: 'on' },
+    } as React.ChangeEvent<HTMLInputElement>);
+  }, [isVisualOverride, onChange, setChecked]);
 
-  const handleFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocus = useCallback((e: React.FocusEvent<HTMLButtonElement>) => {
     setIsFocused(true);
-    onFocus?.(e);
+    onFocus?.(e as unknown as React.FocusEvent<HTMLInputElement>);
   }, [onFocus]);
 
-  const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+  const handleBlur = useCallback((e: React.FocusEvent<HTMLButtonElement>) => {
     setIsFocused(false);
-    onBlur?.(e);
+    onBlur?.(e as unknown as React.FocusEvent<HTMLInputElement>);
   }, [onBlur]);
 
   const effectiveState: CheckboxState = (() => {
@@ -115,10 +128,15 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props
     return 'unchecked';
   })();
 
-  const { px, iconPx, labelSize } = SIZE_CONFIG[size];
-  const vc = findClasses(rules, { state: effectiveState, size });
+  const stateClasses = findClasses(rules, { state: effectiveState });
   const { showCheck, showPlus, showMinus, strikethrough } = getIconFlags(effectiveState);
   const isDisabled = effectiveState.startsWith('disabled') || disabled;
+
+  const radixChecked: boolean | 'indeterminate' = isVisualOverride
+    ? stateToRadixChecked(stateProp!)
+    : exclude || indeterminate
+      ? 'indeterminate'
+      : effectiveChecked;
 
   return (
     <label
@@ -129,52 +147,34 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props
         className,
       )}
     >
-      <span
-        className="relative shrink-0 inline-flex items-center justify-center"
-        style={{ width: px, height: px }}
+      <RadixCheckbox.Root
+        ref={ref}
+        id={id}
+        checked={radixChecked}
+        onCheckedChange={handleCheckedChange}
+        disabled={isDisabled}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        aria-checked={exclude ? 'mixed' : indeterminate ? 'mixed' : effectiveChecked}
+        className={cn(
+          'inline-flex shrink-0 items-center justify-center',
+          'border-solid border-[var(--border-width-base)] transition-all duration-150',
+          SIZE_CLASSES[size],
+          ...stateClasses,
+        )}
+        {...rest}
       >
-        <input
-          ref={resolvedRef}
-          id={id}
-          type="checkbox"
-          checked={effectiveChecked}
-          disabled={isDisabled}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          aria-checked={exclude ? 'mixed' : indeterminate ? 'mixed' : effectiveChecked}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            opacity: 0,
-            cursor: isDisabled ? 'not-allowed' : 'pointer',
-            zIndex: 1,
-            margin: 0,
-          }}
-          {...rest}
-        />
-
-        <span
-          aria-hidden="true"
-          className={cn(
-            'inline-flex shrink-0 items-center justify-center',
-            'border-solid transition-all duration-150',
-            ...vc,
-          )}
-          style={{ width: px, height: px, pointerEvents: 'none' }}
-        >
-          {showCheck && <CheckIcon size={iconPx} />}
-          {showPlus  && <PlusIcon  size={iconPx} />}
-          {showMinus && <MinusIcon size={iconPx} />}
-        </span>
-      </span>
+        <RadixCheckbox.Indicator className="flex items-center justify-center">
+          {showCheck && <CheckIcon className={ICON_SIZE_CLASS} />}
+          {showPlus  && <PlusIcon  className={ICON_SIZE_CLASS} />}
+          {showMinus && <MinusIcon className={ICON_SIZE_CLASS} />}
+        </RadixCheckbox.Indicator>
+      </RadixCheckbox.Root>
 
       {label && (
         <span
           className={cn(
-            labelSize,
+            LABEL_SIZE_CLASSES[size],
             'leading-none select-none',
             isDisabled
               ? 'text-[var(--color-text-disabled)]'

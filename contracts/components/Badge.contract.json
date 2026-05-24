@@ -166,7 +166,6 @@
       "tailwindClasses": [
         "px-[var(--space-4)]",
         "py-[var(--space-2)]",
-        "min-w-[var(--space-badge-min-sm)]",
         "min-h-[var(--space-badge-min-sm)]",
         "rounded-pill",
         "text-style-caption-xs"
@@ -187,7 +186,6 @@
       "tailwindClasses": [
         "px-[var(--space-6)]",
         "py-[var(--space-3)]",
-        "min-w-[var(--space-badge-min-md)]",
         "min-h-[var(--space-badge-min-md)]",
         "rounded-pill",
         "text-style-caption"
@@ -208,15 +206,16 @@
       "tailwindClasses": [
         "px-[var(--space-8)]",
         "py-[var(--space-4)]",
-        "min-w-[var(--space-badge-min-lg)]",
         "min-h-[var(--space-badge-min-lg)]",
         "rounded-pill",
         "text-style-body"
       ]
     }
   ],
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
+  "focusRingSuccess": "focus-visible:outline-none focus-visible:shadow-focus-success focus-visible:border-transparent",
+  "focusRingWarning": "focus-visible:outline-none focus-visible:shadow-focus-warning focus-visible:border-transparent",
   "responsiveProps": {
     "paddingX": {
       "sm": "space_4",
@@ -256,7 +255,7 @@
     "cross": "hug"
   },
   "rootAlign": {
-    "main": "end",
+    "main": "center",
     "cross": "center"
   },
   "slots": [

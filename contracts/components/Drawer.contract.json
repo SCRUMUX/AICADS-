@@ -41,7 +41,9 @@
       "style": {
         "width": 320
       },
-      "tailwindClasses": []
+      "tailwindClasses": [
+        "w-[var(--space-320)]"
+      ]
     },
     {
       "when": {
@@ -50,7 +52,9 @@
       "style": {
         "width": 480
       },
-      "tailwindClasses": []
+      "tailwindClasses": [
+        "w-[var(--space-480)]"
+      ]
     },
     {
       "when": {
@@ -59,7 +63,9 @@
       "style": {
         "width": 640
       },
-      "tailwindClasses": []
+      "tailwindClasses": [
+        "w-[var(--space-640)]"
+      ]
     },
     {
       "when": {
@@ -80,6 +86,6 @@
       "tailwindClasses": []
     }
   ],
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger"
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent"
 }

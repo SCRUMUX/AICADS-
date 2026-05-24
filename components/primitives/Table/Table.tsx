@@ -1,32 +1,18 @@
 import React from 'react';
-import type { TableProps, TableSize, TableAppearance, TableColumn } from './Table.types';
+import type { TableProps, TableSize, TableAppearance } from './Table.types';
 import { TableHeaderRow } from '../TableHeaderRow/TableHeaderRow';
 import { TableRow } from '../TableRow/TableRow';
 import { TableCell } from '../TableCell/TableCell';
+import { cn, findClasses, type VR } from '../_shared';
+import contract from '../../../contracts/components/Table.contract.json';
 
-function cn(...c: (string | undefined | false | null)[]): string {
-  return c.filter(Boolean).join(' ');
-}
+const rules = (contract.variantRules || []) as unknown as VR[];
 
-/**
- * Figma API (161:92875):
- *
- * Appearance (внешний контейнер):
- *   base     → border 1px border-base   (#E5E7EB), cornerRadius=4px
- *   striped  → border 1px border-base   (#E5E7EB), cornerRadius=4px + чётные строки surface-2
- *   bordered → border 1px border-strong (#CBD5E1), cornerRadius=4px
- *
- * Структура: <div wrapper rounded> → <table border-collapse> → <thead> → <tbody>
- *
- * overflow-hidden на wrapper даёт скругление, border-collapse на table — корректные границы ячеек.
- *
- * striped: чётные tbody tr получают bg surface-2 через :nth-child(even).
- */
-
-function getWrapperBorder(appearance: TableAppearance): string {
-  if (appearance === 'bordered') return 'border border-[var(--color-border-strong)]';
-  return 'border border-[var(--color-border-base)]';
-}
+const SIZE_CLASSES: Record<TableSize, string> = {
+  sm: 'min-w-[var(--space-table-min-sm)]',
+  md: 'min-w-[var(--space-table-min-md)]',
+  lg: 'min-w-[var(--space-table-min-lg)]',
+};
 
 export const Table = React.forwardRef<HTMLTableElement, TableProps>((props, ref) => {
   const {
@@ -47,6 +33,8 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>((props, ref)
     ...rest
   } = props;
 
+  const appearanceClasses = findClasses(rules, { appearance: appearance as TableAppearance });
+
   const headerColumns = columns?.map((col) => ({
     key:          col.key,
     label:        col.label,
@@ -57,11 +45,11 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>((props, ref)
   }));
 
   return (
-    /* Обёртка нужна для overflow-hidden + border-radius, т.к. на <table> они не работают */
     <div
       className={cn(
-        'rounded-[4px] overflow-hidden',
-        getWrapperBorder(appearance),
+        'overflow-hidden',
+        SIZE_CLASSES[size],
+        ...appearanceClasses,
         className,
       )}
       style={style}
@@ -69,14 +57,11 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>((props, ref)
       <table
         ref={ref}
         className={cn(
-          'border-collapse w-full',
-          'bg-[var(--color-surface-1)]',
-          /* striped: чётные строки получают surface-2 */
+          'w-full border-collapse bg-[var(--color-surface-1)]',
           appearance === 'striped' && '[&_tbody_tr:nth-child(even)]:bg-[var(--color-surface-2)]',
         )}
         {...rest}
       >
-        {/* ── THEAD ── */}
         {(columns || headerCheckbox !== undefined) && (
           <thead>
             <TableHeaderRow
@@ -88,7 +73,6 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>((props, ref)
           </thead>
         )}
 
-        {/* ── TBODY через columns/rows ── */}
         {rows && columns && (
           <tbody>
             {rows.map((row, rowIndex) => {
@@ -135,7 +119,6 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>((props, ref)
           </tbody>
         )}
 
-        {/* ── TBODY через children ── */}
         {!rows && children && (
           <tbody>
             {children}

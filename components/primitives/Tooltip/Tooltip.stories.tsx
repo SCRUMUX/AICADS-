@@ -48,22 +48,22 @@ export const AllAppearances: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 16 }}>
       {/* Light background context */}
-      <div style={{ background: '#F7F8FA', borderRadius: 8, padding: 24, display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-        <span style={{ fontSize: 11, color: '#888', width: '100%' }}>Light background (base = dark tooltip)</span>
+      <div style={{ background: 'var(--color-bg-base)', borderRadius: 8, padding: 24, display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+        <span style={{ fontSize: 11, color: 'var(--color-text-muted)', width: '100%' }}>Light background (base = dark tooltip)</span>
         {(['base', 'success', 'warning', 'danger'] as TooltipAppearance[]).map((a) => (
           <div key={a} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
             <TooltipBubble content="Tooltip text" position="top" appearance={a} />
-            <span style={{ fontSize: 11, color: '#888' }}>{a}</span>
+            <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{a}</span>
           </div>
         ))}
       </div>
       {/* Dark background context */}
-      <div data-theme="dark" style={{ background: '#1A2330', borderRadius: 8, padding: 24, display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-        <span style={{ fontSize: 11, color: '#9AA6B2', width: '100%' }}>Dark background (base = light tooltip)</span>
+      <div data-theme="dark" style={{ background: 'var(--color-bg-base)', borderRadius: 8, padding: 24, display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+        <span style={{ fontSize: 11, color: 'var(--color-text-muted)', width: '100%' }}>Dark background (base = light tooltip)</span>
         {(['base', 'success', 'warning', 'danger'] as TooltipAppearance[]).map((a) => (
           <div key={a} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
             <TooltipBubble content="Tooltip text" position="top" appearance={a} />
-            <span style={{ fontSize: 11, color: '#9AA6B2' }}>{a}</span>
+            <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{a}</span>
           </div>
         ))}
       </div>
@@ -78,7 +78,7 @@ export const AllPositions: Story = {
       {(['top', 'bottom', 'left', 'right'] as TooltipPosition[]).map((p) => (
         <div key={p} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
           <TooltipBubble content="Tooltip text" position={p} appearance="base" />
-          <span style={{ fontSize: 11, color: '#888' }}>{p}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{p}</span>
         </div>
       ))}
     </div>
@@ -91,12 +91,12 @@ export const FullMatrix: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 16 }}>
       {(['top', 'bottom', 'left', 'right'] as TooltipPosition[]).map((pos) => (
         <div key={pos}>
-          <div style={{ fontSize: 11, color: '#666', marginBottom: 8 }}>position={pos}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>position={pos}</div>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
             {(['base', 'success', 'warning', 'danger'] as TooltipAppearance[]).map((a) => (
               <div key={a} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <TooltipBubble content="Tooltip text" position={pos} appearance={a} />
-                <span style={{ fontSize: 10, color: '#aaa' }}>{a}</span>
+                <span style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>{a}</span>
               </div>
             ))}
           </div>
@@ -166,16 +166,16 @@ export const InvertedBase: StoryObj = {
   render: () => (
     <div style={{ display: 'flex', gap: 0, borderRadius: 8, overflow: 'hidden' }}>
       {/* Light side */}
-      <div style={{ flex: 1, background: '#FFFFFF', padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-        <span style={{ fontSize: 11, color: '#888' }}>Light theme</span>
+      <div style={{ flex: 1, background: 'var(--color-surface-1)', padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+        <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Light theme</span>
         <TooltipBubble content="Tooltip text" position="top" appearance="base" />
-        <span style={{ fontSize: 11, color: '#aaa' }}>dark bubble</span>
+        <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>dark bubble</span>
       </div>
       {/* Dark side */}
-      <div data-theme="dark" style={{ flex: 1, background: '#1A2330', padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-        <span style={{ fontSize: 11, color: '#9AA6B2' }}>Dark theme</span>
+      <div data-theme="dark" style={{ flex: 1, background: 'var(--color-bg-base)', padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+        <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Dark theme</span>
         <TooltipBubble content="Tooltip text" position="top" appearance="base" />
-        <span style={{ fontSize: 11, color: '#485B76' }}>light bubble</span>
+        <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>light bubble</span>
       </div>
     </div>
   ),

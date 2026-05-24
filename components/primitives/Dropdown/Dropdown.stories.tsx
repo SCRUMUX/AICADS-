@@ -153,7 +153,7 @@ export const MultiSelect: Story = {
     return (
       <div style={{ padding: 16, minHeight: 360, maxWidth: 400 }}>
         <p style={{ fontSize: 12, color: 'var(--color-text-muted)', marginBottom: 8 }}>
-          Выбрано: {selected.join(', ') || 'ничего'}
+          Выбрано: {selected.join(', ') || 'ничего'}. Режим «кроме» (exclude) — см. story <strong>ExcludeMode</strong>.
         </p>
         <Dropdown
           size="md"

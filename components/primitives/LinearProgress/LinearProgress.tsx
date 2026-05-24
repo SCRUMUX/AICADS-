@@ -1,20 +1,16 @@
 import React from 'react';
 import type { LinearProgressProps, LinearProgressSize } from './LinearProgress.types';
+import { cn, findClasses, type VR } from '../_shared';
+import contract from '../../../contracts/components/LinearProgress.contract.json';
 
-function cn(...c: (string | undefined | false | null)[]): string {
-  return c.filter(Boolean).join(' ');
-}
+const rules = (contract.variantRules || []) as unknown as VR[];
 
-// ─── Size config (from Figma) ─────────────────────────────────────────────────
-// sm: H=4px, md: H=6px, lg: H=8px
-// cornerRadius = 9999 (pill) on both track and fill
-const SIZE_HEIGHT: Record<LinearProgressSize, string> = {
-  sm: 'h-1',    // 4px
-  md: 'h-1.5',  // 6px
-  lg: 'h-2',    // 8px
+const SIZE_CLASSES: Record<LinearProgressSize, string> = {
+  sm: 'h-[var(--space-track-h-sm)]',
+  md: 'h-[var(--space-track-h-md)]',
+  lg: 'h-[var(--space-track-h-lg)]',
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export const LinearProgress = React.forwardRef<HTMLDivElement, LinearProgressProps>((props, ref) => {
   const {
     size = 'md',
@@ -26,6 +22,7 @@ export const LinearProgress = React.forwardRef<HTMLDivElement, LinearProgressPro
   } = props;
 
   const pct = Math.max(0, Math.min(100, value));
+  const colorClasses = findClasses(rules, {});
 
   return (
     <div
@@ -36,21 +33,19 @@ export const LinearProgress = React.forwardRef<HTMLDivElement, LinearProgressPro
       aria-valuemax={100}
       aria-label={label ?? `Progress: ${pct}%`}
       className={cn(
-        // Track: pill shape, surface-3 background, full width of container
-        'relative w-full overflow-hidden rounded-full',
-        SIZE_HEIGHT[size],
-        'bg-[var(--color-surface-3)]',
-        'transition-all duration-150',
+        'relative w-full overflow-hidden transition-all duration-150',
+        SIZE_CLASSES[size],
+        ...colorClasses,
+        'bg-[var(--track-bg)]',
         className,
       )}
       style={style}
       {...rest}
     >
-      {/* Fill: pill shape, brand-primary, width = value% */}
       <div
         className={cn(
-          'absolute left-0 top-0 h-full rounded-full',
-          'bg-[var(--color-brand-primary)]',
+          'absolute left-0 top-0 h-full rounded-pill',
+          'bg-[var(--fill-color)]',
           'transition-[width] duration-300 ease-in-out',
         )}
         style={{ width: `${pct}%` }}

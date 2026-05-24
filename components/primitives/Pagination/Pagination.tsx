@@ -2,46 +2,37 @@ import React, { useState } from 'react';
 import type { PaginationProps, PaginationSize, PaginationAppearance } from './Pagination.types';
 import { Button } from '../Button/Button';
 import { ChevronLeftIcon, ChevronRightIcon } from '../../icons';
+import { cn, findClasses, getFocusRing, type VR } from '../_shared';
+import contract from '../../../contracts/components/Pagination.contract.json';
 
-function cn(...c: (string | undefined | false | null)[]): string {
-  return c.filter(Boolean).join(' ');
-}
+const rules = (contract.variantRules || []) as unknown as VR[];
 
-/**
- * Figma API (160:86574):
- * sm: H=28, gap=4, Prev/Next square 28×28, icon 16px
- * md: H=32, gap=6, Prev/Next square 32×32, icon 20px
- * lg: H=40, gap=8, Prev/Next square 40×40, icon 24px
- *
- * compact text: "currentPage / totalPages", fontSize=12, fw=500, color=text-primary
- */
-
-const SIZE_CONFIG: Record<PaginationSize, { gap: string; btnSize: string; iconSize: number }> = {
-  sm: { gap: 'gap-[var(--space-4)]',  btnSize: 'w-7 h-7',  iconSize: 16 },
-  md: { gap: 'gap-[var(--space-6)]',  btnSize: 'w-8 h-8',  iconSize: 20 },
-  lg: { gap: 'gap-[var(--space-8)]',  btnSize: 'w-10 h-10', iconSize: 24 },
+const SIZE_CLASSES: Record<PaginationSize, string> = {
+  sm: 'gap-[var(--space-button-gap-sm)]',
+  md: 'gap-[var(--space-button-gap-md)]',
+  lg: 'gap-[var(--space-button-gap-lg)]',
 };
 
-/**
- * Стиль активной и неактивной страницы по appearance.
- * Неактивные всегда ghost. Активная зависит от appearance.
- */
-function getActiveAppearance(appearance: PaginationAppearance): PaginationAppearance {
-  return appearance; // brand → brand, base → base, ghost → ghost
-}
+const NAV_BTN_SIZE: Record<PaginationSize, string> = {
+  sm: 'w-[var(--space-button-h-sm)] h-[var(--space-button-h-sm)]',
+  md: 'w-[var(--space-button-h-md)] h-[var(--space-button-h-md)]',
+  lg: 'w-[var(--space-button-h-lg)] h-[var(--space-button-h-lg)]',
+};
 
-/**
- * Квадратная кнопка Prev/Next — иконка в квадратном контейнере без padding.
- * Из Figma: cornerRadius=2, нет fills/strokes, icon color = text-muted.
- */
+const NAV_ICON_SIZE: Record<PaginationSize, number> = {
+  sm: 16,
+  md: 20,
+  lg: 24,
+};
+
 const NavButton: React.FC<{
   direction: 'prev' | 'next';
   size: PaginationSize;
   disabled?: boolean;
   onClick?: () => void;
 }> = ({ direction, size, disabled, onClick }) => {
-  const { btnSize, iconSize } = SIZE_CONFIG[size];
   const Icon = direction === 'prev' ? ChevronLeftIcon : ChevronRightIcon;
+  const focusRing = getFocusRing(contract);
 
   return (
     <button
@@ -50,14 +41,15 @@ const NavButton: React.FC<{
       onClick={onClick}
       aria-label={direction === 'prev' ? 'Previous page' : 'Next page'}
       className={cn(
-        'inline-flex items-center justify-center shrink-0 rounded-[2px]',
+        'inline-flex items-center justify-center shrink-0 rounded-[var(--radius-default)]',
         'transition-colors duration-150',
         'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-2)]',
         'disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed disabled:pointer-events-none',
-        btnSize,
+        NAV_BTN_SIZE[size],
+        focusRing,
       )}
     >
-      <Icon size={iconSize} />
+      <Icon size={NAV_ICON_SIZE[size]} />
     </button>
   );
 };
@@ -96,14 +88,10 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>((props,
     onNext?.();
   };
 
-  const { gap } = SIZE_CONFIG[size];
+  const appearanceClasses = findClasses(rules, { appearance });
   const isPrevDisabled = currentPage <= 1;
   const isNextDisabled = currentPage >= totalPages;
 
-  /**
-   * Вычисляем окно страниц вокруг текущей:
-   * pageWindowSize=3 → показываем 3 страницы
-   */
   const getPageWindow = (): number[] => {
     const half = Math.floor(pageWindowSize / 2);
     let start = Math.max(1, currentPage - half);
@@ -114,14 +102,23 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>((props,
     return pages;
   };
 
+  const getActiveAppearance = (active: boolean): PaginationAppearance | 'ghost' => {
+    if (!active) return 'ghost';
+    return appearance;
+  };
+
   return (
     <nav
       ref={ref as React.Ref<HTMLElement>}
       aria-label="pagination"
-      className={cn('inline-flex flex-row items-center', gap, className)}
+      className={cn(
+        'inline-flex flex-row items-center',
+        SIZE_CLASSES[size],
+        ...appearanceClasses,
+        className,
+      )}
       {...rest}
     >
-      {/* Prev */}
       <NavButton
         direction="prev"
         size={size}
@@ -129,7 +126,6 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>((props,
         onClick={handlePrev}
       />
 
-      {/* with-numbers: кнопки страниц как Button instances */}
       {variant === 'with-numbers' && (
         <>
           {getPageWindow().map((page) => {
@@ -138,7 +134,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>((props,
               <Button
                 key={page}
                 size={size}
-                appearance={isActive ? getActiveAppearance(appearance) : 'ghost'}
+                appearance={getActiveAppearance(isActive)}
                 onClick={() => handlePageChange(page)}
                 aria-label={`Page ${page}`}
                 aria-current={isActive ? 'page' : undefined}
@@ -150,18 +146,12 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>((props,
         </>
       )}
 
-      {/* compact: "currentPage / totalPages" */}
       {variant === 'compact' && (
-        <span
-          className="text-style-caption-xs font-medium text-[var(--color-text-primary)] select-none whitespace-nowrap"
-        >
+        <span className="text-style-caption-xs font-medium text-[var(--color-text-primary)] select-none whitespace-nowrap">
           {currentPage} / {totalPages}
         </span>
       )}
 
-      {/* minimal: только Prev + Next (уже рендерятся выше/ниже) */}
-
-      {/* Next */}
       <NavButton
         direction="next"
         size={size}

@@ -1,8 +1,28 @@
+/* eslint-disable no-hardcoded-tokens */
+/*
+ * ScrollBar is @deprecated in v0.5.0 and will be removed in v0.6.0. We
+ * intentionally do NOT modernise its hardcoded pixel values — they are frozen
+ * for backwards compatibility. New code must use `<ScrollArea>` from
+ * `@ai-ds/core/shared`, which is fully token-driven.
+ */
 import React, { useRef, useCallback, useState } from 'react';
 import type { ScrollBarProps, ScrollBarSize, ScrollBarShape, ScrollBarOrientation } from './ScrollBar.types';
+import { cn } from '../_shared';
 
-function cn(...c: (string | undefined | false | null)[]): string {
-  return c.filter(Boolean).join(' ');
+// ─── Deprecation runtime warning ─────────────────────────────────────────────
+// AICADS v0.5.0 deprecates the standalone presentational <ScrollBar> in favour
+// of the Radix-backed <ScrollArea> (components/primitives/_shared/ScrollArea).
+// <ScrollBar> will be removed in v0.6.0. See docs/migrations/v0.4-to-v0.5.md.
+let warned = false;
+function warnDeprecated() {
+  if (warned) return;
+  warned = true;
+  if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+    console.warn(
+      '[AICADS] <ScrollBar> is deprecated and will be removed in v0.6.0. ' +
+        'Use <ScrollArea> from @ai-ds/core/shared instead.',
+    );
+  }
 }
 
 // ─── Size config ──────────────────────────────────────────────────────────────
@@ -60,6 +80,10 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({ direction, size }) => {
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
+/**
+ * @deprecated Use `<ScrollArea>` from `@ai-ds/core/shared` instead. Will be
+ * removed in AICADS v0.6.0. See `docs/migrations/v0.4-to-v0.5.md`.
+ */
 const ScrollBarInner = React.forwardRef<HTMLDivElement, ScrollBarProps>(({
   orientation = 'horizontal',
   size = 'sm',
@@ -71,6 +95,7 @@ const ScrollBarInner = React.forwardRef<HTMLDivElement, ScrollBarProps>(({
   className,
   style,
 }, ref) => {
+  warnDeprecated();
   const { trackThickness, thumbSize, arrowContainer } = SIZE_CONFIG[size];
   const isHorizontal = orientation === 'horizontal';
 

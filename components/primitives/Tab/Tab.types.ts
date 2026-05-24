@@ -3,9 +3,9 @@
  * Regenerate: npm run components:generate
  */
 
-/** Tab: визуально согласован с @UI/Button. Полная матрица 4×3×5 (appearance×size×state) как у кнопок: Ghost — как ghost‑кнопка (просто текст), Brand — как brand‑кнопка, Base — как outline base с нижней границей, Outline — как outline‑кнопка без нижней границы. */
+/** Tab: appearance (brand/base/ghost/outline/ticket), size (sm/md/lg), state (base/hover/active/focus/disabled). Ticket — «билет» с обводкой сверху/сбоку без низа. */
 
-export type TabAppearance = 'brand' | 'base' | 'ghost' | 'outline';
+export type TabAppearance = 'brand' | 'base' | 'ghost' | 'outline' | 'ticket';
 
 export type TabSize = 'sm' | 'md' | 'lg';
 
@@ -16,6 +16,8 @@ export interface TabProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   appearance?: TabAppearance;
   size?: TabSize;
   state?: TabState;
+  /** Value when used inside `<Tabs>` */
+  value?: string;
   iconLeft?: React.ReactNode;
   badge?: React.ReactNode;
   iconRight?: React.ReactNode;

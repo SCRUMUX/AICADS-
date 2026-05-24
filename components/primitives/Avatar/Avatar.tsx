@@ -1,39 +1,19 @@
 import React from 'react';
-import type { AvatarProps } from './Avatar.types';
+import type { AvatarProps, AvatarSize, AvatarVariant } from './Avatar.types';
 import { Badge } from '../Badge/Badge';
 import { PersonCircleIcon } from '../../icons';
+import contract from '../../../contracts/components/Avatar.contract.json';
+import { cn, findClasses, type VR } from '../_shared';
 
-function cn(...c: (string | undefined | false | null)[]): string {
-  return c.filter(Boolean).join(' ');
-}
+const rules = (contract.variantRules || []) as unknown as VR[];
 
-/**
- * Размеры из Figma API (xs=24, sm=32, md=40, lg=48, xl=56) через CSS-переменные токенов.
- */
-const SIZE_TOKENS: Record<string, string> = {
-  xs: 'var(--space-avatar-xs)',
-  sm: 'var(--space-avatar-sm)',
-  md: 'var(--space-avatar-md)',
-  lg: 'var(--space-avatar-lg)',
-  xl: 'var(--space-avatar-xl)',
-};
-
-/** Размер иконки person-circle (из contract.iconSizeMap) */
-const ICON_SIZE: Record<string, number> = {
-  xs: 16,
-  sm: 20,
-  md: 20,
-  lg: 24,
-  xl: 24,
-};
-
-/** Размер шрифта инициалов — пропорционально размеру аватара */
-const INITIALS_FONT: Record<string, string> = {
-  xs: '9px',
-  sm: '11px',
-  md: '14px',
-  lg: '16px',
-  xl: '18px',
+/** Layout + typography from contract size rules (box, badge slot, icon, initials scale). */
+const SIZE_CLASSES: Record<AvatarSize, string> = {
+  xs: 'w-[var(--space-avatar-xs)] h-[var(--space-avatar-xs)] [--badge-size:var(--space-8)] [--icon-size:var(--space-16)] text-[var(--font-size-10)] leading-[var(--line-height-12)]',
+  sm: 'w-[var(--space-avatar-sm)] h-[var(--space-avatar-sm)] [--badge-size:var(--space-8)] [--icon-size:var(--space-20)] text-[var(--font-size-10)] leading-[var(--line-height-12)]',
+  md: 'w-[var(--space-avatar-md)] h-[var(--space-avatar-md)] [--badge-size:var(--space-10)] [--icon-size:var(--space-20)] text-[var(--font-size-14)] leading-[var(--line-height-16)]',
+  lg: 'w-[var(--space-avatar-lg)] h-[var(--space-avatar-lg)] [--badge-size:var(--space-12)] [--icon-size:var(--space-24)] text-[var(--font-size-16)] leading-[var(--line-height-20)]',
+  xl: 'w-[var(--space-avatar-xl)] h-[var(--space-avatar-xl)] [--badge-size:var(--space-14)] [--icon-size:var(--space-24)] text-[var(--font-size-18)] leading-[var(--line-height-24)]',
 };
 
 export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
@@ -50,100 +30,70 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>((props, ref)
     ...rest
   } = props;
 
-  const sizeToken = SIZE_TOKENS[size];
-  const iconSize = ICON_SIZE[size] ?? 20;
-
-  const bgClass =
-    variant === 'registered-no-photo'
-      ? 'bg-[var(--color-brand-primary)]'
-      : 'bg-[var(--color-surface-3)]';
+  const appearanceClasses = findClasses(rules, { variant: variant as AvatarVariant });
 
   return (
-    /*
-     * Корневой div — НЕ имеет overflow-hidden, чтобы badge не обрезался.
-     * position: relative нужен для абсолютного позиционирования badge.
-     */
     <div
       ref={ref}
-      className={cn('relative inline-flex shrink-0', className)}
-      style={{ width: sizeToken, height: sizeToken, ...style }}
+      className={cn('relative inline-flex shrink-0', SIZE_CLASSES[size], className)}
+      style={style}
       {...rest}
     >
-      {/*
-       * Внутренний круглый контейнер — clipping только здесь.
-       * Абсолютный, занимает весь родитель.
-       */}
       <span
         className={cn(
-          'absolute inset-0 rounded-full overflow-hidden',
-          bgClass,
+          'absolute inset-0 overflow-hidden rounded-[var(--radius-full)]',
+          ...appearanceClasses,
         )}
       >
-        {/* guest — иконка PersonCircle */}
         {variant === 'guest' && (
           <span
             className="absolute inset-0 flex items-center justify-center"
-            style={{ color: 'var(--color-text-muted)' }}
+            style={{ color: 'var(--icon-color, var(--color-text-muted))' }}
           >
             <PersonCircleIcon
-              size={iconSize}
-              style={{ width: '100%', height: '100%', display: 'block' }}
+              style={{
+                width: 'var(--icon-size)',
+                height: 'var(--icon-size)',
+                display: 'block',
+              }}
             />
           </span>
         )}
 
-        {/* registered-no-photo — инициалы */}
         {variant === 'registered-no-photo' && (
           <span
-            className="absolute inset-0 flex items-center justify-center font-semibold leading-none select-none"
-            style={{ color: 'var(--color-text-on-brand)', fontSize: INITIALS_FONT[size] }}
+            className="absolute inset-0 flex items-center justify-center font-semibold select-none"
+            style={{ color: 'var(--initials-color, var(--color-text-on-brand))' }}
           >
             {initials}
           </span>
         )}
 
-        {/* registered-with-photo — фото */}
         {variant === 'registered-with-photo' && src && (
           <img
             src={src}
             alt={initials}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         )}
 
-        {/* Fallback для registered-with-photo без src */}
         {variant === 'registered-with-photo' && !src && (
           <span
-            className="absolute inset-0 flex items-center justify-center font-semibold leading-none select-none"
-            style={{ color: 'var(--color-text-on-brand)', fontSize: INITIALS_FONT[size] }}
+            className="absolute inset-0 flex items-center justify-center font-semibold select-none"
+            style={{ color: 'var(--initials-color, var(--color-text-on-brand))' }}
           >
             {initials}
           </span>
         )}
       </span>
 
-      {/*
-       * Badge — вне clipping-контейнера, абсолютно в правом нижнем углу.
-       * bottom/right отрицательные чтобы badge выступал наружу как в Figma.
-       */}
       {showBadge && (
-        <span
-          className="absolute z-10 flex items-center justify-center"
-          style={{ bottom: '-3px', right: '-3px' }}
-        >
+        <span className="absolute z-10 flex items-center justify-center -bottom-[var(--space-3)] -right-[var(--space-3)]">
           {badge ?? (
             <Badge
               appearance="brand"
               size="sm"
-              style={{
-                padding: '1px 4px',
-                minWidth: '16px',
-                minHeight: '16px',
-                fontSize: '10px',
-                lineHeight: '14px',
-                borderRadius: '9999px',
-                boxSizing: 'border-box',
-              }}
+              className="px-[var(--space-1)] py-0 min-w-[var(--space-16)] min-h-[var(--space-16)] leading-none"
             >
               {badgeContent}
             </Badge>

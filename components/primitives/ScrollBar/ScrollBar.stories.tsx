@@ -47,7 +47,7 @@ export const AllSizesHorizontal: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20, padding: 16 }}>
       {(['sm', 'md', 'lg'] as ScrollBarSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>size={s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>size={s}</span>
           <ScrollBar size={s} orientation="horizontal" shape="circle" value={40} trackLength={156} />
         </div>
       ))}
@@ -61,7 +61,7 @@ export const BothShapes: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20, padding: 16 }}>
       {(['circle', 'rect'] as ScrollBarShape[]).map((sh) => (
         <div key={sh} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>shape={sh}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>shape={sh}</span>
           <ScrollBar size="sm" orientation="horizontal" shape={sh} value={33} trackLength={156} />
         </div>
       ))}
@@ -75,7 +75,7 @@ export const Vertical: Story = {
     <div style={{ display: 'flex', flexDirection: 'row', gap: 24, alignItems: 'flex-start', padding: 16 }}>
       {(['sm', 'md', 'lg'] as ScrollBarSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>size={s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>size={s}</span>
           <ScrollBar size={s} orientation="vertical" shape="circle" value={25} trackLength={160} />
         </div>
       ))}
@@ -89,7 +89,7 @@ export const VerticalBothShapes: Story = {
     <div style={{ display: 'flex', flexDirection: 'row', gap: 32, alignItems: 'flex-start', padding: 16 }}>
       {(['circle', 'rect'] as ScrollBarShape[]).map((sh) => (
         <div key={sh} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>shape={sh}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>shape={sh}</span>
           <ScrollBar size="sm" orientation="vertical" shape={sh} value={33} trackLength={160} />
         </div>
       ))}
@@ -118,7 +118,7 @@ export const InteractiveHorizontal: StoryObj = {
           onChange={(e) => setVal(Number(e.target.value))}
           style={{ width: 200 }}
         />
-        <span style={{ fontSize: 12, color: '#888' }}>value={val}</span>
+        <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>value={val}</span>
       </div>
     );
   },
@@ -145,7 +145,7 @@ export const InteractiveVertical: StoryObj = {
             value={val}
             onChange={(e) => setVal(Number(e.target.value))}
           />
-          <span style={{ fontSize: 12, color: '#888' }}>value={val}</span>
+          <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>value={val}</span>
         </div>
       </div>
     );
@@ -158,7 +158,7 @@ export const WithoutArrows: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 16 }}>
       {(['sm', 'md', 'lg'] as ScrollBarSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <span style={{ fontSize: 11, color: '#888' }}>size={s}, no arrows</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>size={s}, no arrows</span>
           <ScrollBar size={s} orientation="horizontal" shape="circle" value={50} showArrows={false} trackLength={120} />
         </div>
       ))}
@@ -172,12 +172,12 @@ export const FullMatrix: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 16 }}>
       {(['horizontal', 'vertical'] as ScrollBarOrientation[]).map((o) => (
         <div key={o}>
-          <div style={{ fontSize: 11, color: '#666', marginBottom: 8 }}>orientation={o}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>orientation={o}</div>
           <div style={{ display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
             {(['sm', 'md', 'lg'] as ScrollBarSize[]).map((s) =>
               (['circle', 'rect'] as ScrollBarShape[]).map((sh) => (
                 <div key={`${s}-${sh}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                  <span style={{ fontSize: 10, color: '#aaa' }}>{s}/{sh}</span>
+                  <span style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>{s}/{sh}</span>
                   <ScrollBar
                     size={s}
                     orientation={o}

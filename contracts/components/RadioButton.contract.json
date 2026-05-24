@@ -34,6 +34,7 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-surface-3)]",
         "border",
         "border-[var(--color-border-strong)]",
         "rounded-pill"
@@ -52,6 +53,7 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
         "border",
         "border-[var(--color-brand-primary)]",
         "rounded-pill",
@@ -72,6 +74,7 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-brand-primary)]",
         "border",
         "border-[var(--color-brand-primary)]",
         "rounded-pill",
@@ -90,6 +93,7 @@
         "opacityToken": "opacity_disabled"
       },
       "tailwindClasses": [
+        "bg-[var(--color-surface-3)]",
         "border",
         "border-[var(--color-border-strong)]",
         "rounded-pill",
@@ -165,9 +169,11 @@
       },
       "tailwindClasses": [
         "[--icon-color:var(--color-icon-on-brand)]",
+        "bg-[var(--color-surface-3)]",
         "border",
-        "border-[var(--color-brand-primary)]",
-        "rounded-pill"
+        "border-transparent",
+        "rounded-pill",
+        "shadow-focus-brand"
       ]
     }
   ],
@@ -204,8 +210,8 @@
       }
     ]
   },
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "responsiveProps": {
     "boxSize": {
       "xs": "space_12",

@@ -47,7 +47,7 @@ export const AllSizes: Story = {
       {(['xs', 'sm', 'md', 'lg'] as SwitchSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
           <Switch size={s} defaultChecked />
-          <span style={{ fontSize: 11, color: '#888' }}>{s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{s}</span>
         </div>
       ))}
     </div>
@@ -61,7 +61,7 @@ export const AllStates: Story = {
       {(['on', 'off', 'disabled-on', 'disabled-off'] as SwitchState[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
           <Switch size="md" state={s} />
-          <span style={{ fontSize: 11, color: '#888' }}>{s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{s}</span>
         </div>
       ))}
     </div>
@@ -79,7 +79,7 @@ export const Interactive: StoryObj = {
           defaultChecked={false}
           onToggle={(v) => setLog(prev => [`toggled → ${v}`, ...prev.slice(0, 4)])}
         />
-        <div style={{ fontSize: 11, color: '#888', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div style={{ fontSize: 11, color: 'var(--color-text-muted)', display: 'flex', flexDirection: 'column', gap: 2 }}>
           {log.map((l, i) => <span key={i}>{l}</span>)}
         </div>
       </div>
@@ -93,11 +93,11 @@ export const FullMatrix: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 8 }}>
       {(['xs', 'sm', 'md', 'lg'] as SwitchSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          <span style={{ fontSize: 11, color: '#888', width: 24 }}>{s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)', width: 24 }}>{s}</span>
           {(['on', 'off', 'disabled-on', 'disabled-off'] as SwitchState[]).map((st) => (
             <div key={st} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
               <Switch size={s} state={st} />
-              <span style={{ fontSize: 9, color: '#aaa' }}>{st}</span>
+              <span style={{ fontSize: 9, color: 'var(--color-text-muted)' }}>{st}</span>
             </div>
           ))}
         </div>

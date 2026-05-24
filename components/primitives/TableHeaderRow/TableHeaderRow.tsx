@@ -1,23 +1,17 @@
 import React from 'react';
 import type { TableHeaderRowProps, TableHeaderRowSize } from './TableHeaderRow.types';
 import { TableHeaderCell } from '../TableHeaderCell/TableHeaderCell';
-import { cn } from '../_shared/utils';
-import { TABLE_SIZE_MAP } from '../_shared/table-tokens';
+import { cn, findClasses, type VR } from '../_shared';
+import { TABLE_CHECKBOX_WIDTH } from '../_shared/table-tokens';
+import contract from '../../../contracts/components/Table-HeaderRow.contract.json';
 
-/**
- * Figma API (161:90330):
- *
- * Размеры (H):
- *   sm: H=28px → HeaderCell size=sm (py=3px × 2 + lh16 = 22px → row total 28)
- *   md: H=36px → HeaderCell size=md (py=6px × 2 + lh20 = 32px → row total 36... фактически py+lh+py)
- *   lg: H=44px → HeaderCell size=lg (py=8px × 2 + lh20 = 36px... в Figma H=44 для cell тоже)
- *
- * Фон: surface-1 (белый). Border: bottom 1px border-base.
- * Рендерится как <tr> внутри <thead>.
- *
- * showCheckboxColumn=true → первый <th> с Checkbox (ширина = H строки).
- */
+const rules = (contract.variantRules || []) as unknown as VR[];
 
+const SIZE_CLASSES: Record<TableHeaderRowSize, string> = {
+  sm: 'min-h-[var(--space-table-row-h-sm)]',
+  md: 'min-h-[var(--space-table-row-h-md)]',
+  lg: 'min-h-[var(--space-table-row-h-lg)]',
+};
 
 export const TableHeaderRow = React.forwardRef<HTMLTableRowElement, TableHeaderRowProps>((props, ref) => {
   const {
@@ -30,18 +24,19 @@ export const TableHeaderRow = React.forwardRef<HTMLTableRowElement, TableHeaderR
     ...rest
   } = props;
 
-  const checkboxPx = TABLE_SIZE_MAP[size].checkboxColWidth;
+  const baseClasses = findClasses(rules, {});
+  const checkboxPx = TABLE_CHECKBOX_WIDTH[size];
 
   return (
     <tr
       ref={ref}
       className={cn(
-        'bg-[var(--color-surface-1)]',
+        SIZE_CLASSES[size],
+        ...baseClasses,
         className,
       )}
       {...rest}
     >
-      {/* Checkbox column */}
       {showCheckboxColumn && (
         <th
           scope="col"
@@ -54,7 +49,6 @@ export const TableHeaderRow = React.forwardRef<HTMLTableRowElement, TableHeaderR
         </th>
       )}
 
-      {/* Columns via config array */}
       {columns
         ? columns.map((col, i) => (
             <TableHeaderCell

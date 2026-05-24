@@ -96,12 +96,12 @@
       "style": {
         "background": "color_success_subtle",
         "borderColor": "color_success_base",
-        "textColor": "color_success_text",
+        "textColor": "color_success_base",
         "iconColor": "color_success_base"
       },
       "tailwindClasses": [
         "bg-[var(--color-success-subtle)]",
-        "text-[var(--color-success-text)]",
+        "text-[var(--color-success-base)]",
         "[--icon-color:var(--color-success-base)]",
         "border",
         "border-[var(--color-success-base)]"
@@ -114,12 +114,12 @@
       "style": {
         "background": "color_danger_subtle",
         "borderColor": "color_danger_base",
-        "textColor": "color_danger_text",
+        "textColor": "color_danger_base",
         "iconColor": "color_danger_base"
       },
       "tailwindClasses": [
         "bg-[var(--color-danger-subtle)]",
-        "text-[var(--color-danger-text)]",
+        "text-[var(--color-danger-base)]",
         "[--icon-color:var(--color-danger-base)]",
         "border",
         "border-[var(--color-danger-base)]"
@@ -163,8 +163,8 @@
       ]
     }
   ],
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "responsiveProps": {
     "textStyle": {
       "sm": "Text/Body/SM",

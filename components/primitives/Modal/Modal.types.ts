@@ -17,6 +17,8 @@ export interface ModalProps {
   confirmButton?: React.ReactNode;
   open?: boolean;
   portal?: boolean;
+  /** Storybook / inline preview: panel only, no overlay or portal positioning. */
+  embedded?: boolean;
   confirmLoading?: boolean;
   className?: string;
   style?: React.CSSProperties;

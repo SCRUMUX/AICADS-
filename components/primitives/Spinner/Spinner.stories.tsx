@@ -39,7 +39,7 @@ export const AllSizes: Story = {
       {(['xs', 'sm', 'md', 'lg', 'xl'] as SpinnerSize[]).map((s) => (
         <div key={s} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <Spinner size={s} appearance="brand" />
-          <span style={{ fontSize: 11, color: '#888' }}>{s}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{s}</span>
         </div>
       ))}
     </div>
@@ -53,7 +53,7 @@ export const AllAppearances: Story = {
       {(['brand', 'base'] as SpinnerAppearance[]).map((a) => (
         <div key={a} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <Spinner size="md" appearance={a} />
-          <span style={{ fontSize: 11, color: '#888' }}>{a}</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>{a}</span>
         </div>
       ))}
       {/* inherit — shown on colored bg */}
@@ -61,7 +61,7 @@ export const AllAppearances: Story = {
         <div style={{ background: 'var(--color-brand-primary)', borderRadius: 8, padding: 8, display: 'inline-flex' }}>
           <Spinner size="md" appearance="inherit" />
         </div>
-        <span style={{ fontSize: 11, color: '#888' }}>inherit (on brand bg)</span>
+        <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>inherit (on brand bg)</span>
       </div>
     </div>
   ),
@@ -73,14 +73,14 @@ export const FullMatrix: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 16 }}>
       {(['brand', 'base', 'inherit'] as SpinnerAppearance[]).map((a) => (
         <div key={a}>
-          <div style={{ fontSize: 11, color: '#666', marginBottom: 8 }}>appearance={a}</div>
+          <div style={{ fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 8 }}>appearance={a}</div>
           <div style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
             {(['xs', 'sm', 'md', 'lg', 'xl'] as SpinnerSize[]).map((s) => (
               <div key={s} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
                 <div style={a === 'inherit' ? { background: 'var(--color-brand-primary)', borderRadius: 6, padding: 6, display: 'inline-flex' } : {}}>
                   <Spinner size={s} appearance={a} />
                 </div>
-                <span style={{ fontSize: 10, color: '#aaa' }}>{s}</span>
+                <span style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>{s}</span>
               </div>
             ))}
           </div>
@@ -104,7 +104,7 @@ export const Base: Story = {
 export const Inherit: StoryObj = {
   render: () => (
     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', padding: 16 }}>
-      {['var(--color-brand-primary)', 'var(--color-danger-base)', 'var(--color-success-base)', '#333'].map((bg) => (
+      {['var(--color-brand-primary)', 'var(--color-danger-base)', 'var(--color-success-base)', 'var(--color-text-primary)'].map((bg) => (
         <div key={bg} style={{ background: bg, borderRadius: 8, padding: 12, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
           <Spinner size="md" appearance="inherit" />
         </div>

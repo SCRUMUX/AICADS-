@@ -38,17 +38,15 @@ export const AutocompleteItem = React.forwardRef<HTMLDivElement, AutocompleteIte
   } = props;
 
   const appearance = appearanceProp ?? itemType ?? 'default';
-  const vc = findClasses(rules, { size: size, itemType: appearance });
-  const focusRing = (contract.focusRing as string) ?? '';
+  const appearanceClasses = findClasses(rules, { itemType: appearance });
 
   return (
     <div
       ref={ref as any}
       className={cn(
-        'transition-colors duration-150 font-base box-border flex flex-row justify-start items-center cursor-pointer hover:bg-[var(--color-brand-hover-bg)] rounded-[var(--radius-default)]',
+        'transition-colors duration-150 font-base box-border flex flex-row justify-start items-center cursor-pointer hover:bg-[var(--color-brand-hover-bg)] rounded-[var(--radius-default)] outline-none focus:outline-none focus-visible:outline-none focus-visible:shadow-none',
         SIZE_CLASSES[size],
-        ...vc,
-        focusRing,
+        ...appearanceClasses,
         className
       )}
       {...rest}

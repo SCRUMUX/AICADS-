@@ -1,117 +1,33 @@
 import React, { useState, useCallback } from 'react';
-import type { CardProps, CardVariant, CardSize, CardState } from './Card.types';
+import type { CardProps, CardSize, CardState } from './Card.types';
+import contract from '../../../contracts/components/Card.contract.json';
+import { cn, findClasses, getFocusRing, type VR } from '../_shared';
 
-function cn(...c: (string | undefined | false | null)[]): string {
-  return c.filter(Boolean).join(' ');
-}
+const rules = (contract.variantRules || []) as unknown as VR[];
 
-/**
- * Figma API (160:75500):
- *
- * Размеры (padding / gap / title / content):
- *   sm: 6px / 4px / 12px w500 lh16 / 10px w400 lh12
- *   md: 9px / 6px / 14px w600 lh20 / 12px w400 lh16
- *   lg: 12px / 8px / 16px w600 lh24 / 14px w400 lh20
- *
- * cornerRadius = 4px на всех вариантах.
- *
- * Варианты (fill | border):
- *   base     → surface-2    | border-base (VariableID:159:42941)
- *   outlined → surface-1    | border-strong (VariableID:159:42942)
- *   elevated → surface-1    | нет + DROP_SHADOW 0 1 3 rgba(0,0,0,0.12)
- *   filled   → surface-3    | border-base
- *
- * Состояния:
- *   hover    → fill: surface-3 (все варианты)
- *   focus    → fill: surface-2 + border: border-strong + focus ring
- *   disabled → opacity-disabled
- */
-
-const SIZE_CONFIG: Record<CardSize, {
-  padding:     string;
-  gap:         string;
-  titleFont:   string;
-  contentFont: string;
-}> = {
-  sm: {
-    padding:     'p-[6px]',
-    gap:         'gap-1',
-    titleFont:   'text-[12px] font-medium leading-4',
-    contentFont: 'text-[10px] font-normal leading-3',
-  },
-  md: {
-    padding:     'p-[9px]',
-    gap:         'gap-1.5',
-    titleFont:   'text-[14px] font-semibold leading-5',
-    contentFont: 'text-[12px] font-normal leading-4',
-  },
-  lg: {
-    padding:     'p-3',
-    gap:         'gap-2',
-    titleFont:   'text-[16px] font-semibold leading-6',
-    contentFont: 'text-[14px] font-normal leading-5',
-  },
+const SIZE_CLASSES: Record<CardSize, string> = {
+  sm: 'px-[var(--space-inset-s)] py-[var(--space-inset-s)] gap-[var(--space-4)] min-w-[var(--space-container-compact-min)] max-w-[var(--space-container-compact-max)]',
+  md: 'px-[var(--space-inset-m)] py-[var(--space-inset-m)] gap-[var(--space-6)] min-w-[var(--space-container-content-min)] max-w-[var(--space-container-content-max)]',
+  lg: 'px-[var(--space-inset-l)] py-[var(--space-inset-l)] gap-[var(--space-8)] min-w-[var(--space-container-wide-min)] max-w-[var(--space-container-wide-max)]',
 };
 
-type StyleSpec = {
-  bg:      string;
-  border:  string;
-  shadow:  string;
+const TITLE_CLASS: Record<CardSize, string> = {
+  sm: 'text-style-caption',
+  md: 'text-style-body-strong',
+  lg: 'text-style-h4',
 };
 
-function getBaseStyle(variant: CardVariant): StyleSpec {
-  switch (variant) {
-    case 'outlined':
-      return {
-        bg:     'bg-[var(--color-surface-1)]',
-        border: 'border border-[var(--color-border-strong)]',
-        shadow: '',
-      };
-    case 'elevated':
-      return {
-        bg:     'bg-[var(--color-surface-1)]',
-        border: 'border-0',
-        shadow: 'shadow-[0_1px_3px_rgba(0,0,0,0.12)]',
-      };
-    case 'filled':
-      return {
-        bg:     'bg-[var(--color-surface-3)]',
-        border: 'border border-[var(--color-border-base)]',
-        shadow: '',
-      };
-    default: // base
-      return {
-        bg:     'bg-[var(--color-surface-2)]',
-        border: 'border border-[var(--color-border-base)]',
-        shadow: '',
-      };
-  }
-}
+const CONTENT_GAP: Record<CardSize, string> = {
+  sm: 'gap-[var(--space-4)]',
+  md: 'gap-[var(--space-6)]',
+  lg: 'gap-[var(--space-8)]',
+};
 
-function getStateStyle(state: CardState): Partial<StyleSpec> & { focusRing: boolean; opacity: boolean } {
-  switch (state) {
-    case 'hover':
-      return {
-        bg:        'bg-[var(--color-surface-3)]',
-        focusRing: false,
-        opacity:   false,
-      };
-    case 'focus':
-      return {
-        bg:        'bg-[var(--color-surface-2)]',
-        border:    'border border-[var(--color-border-strong)]',
-        focusRing: true,
-        opacity:   false,
-      };
-    case 'disabled':
-      return {
-        focusRing: false,
-        opacity:   true,
-      };
-    default:
-      return { focusRing: false, opacity: false };
-  }
-}
+const CONTENT_CLASS: Record<CardSize, string> = {
+  sm: 'text-style-body-xs',
+  md: 'text-style-body-sm',
+  lg: 'text-style-body',
+};
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => {
   const {
@@ -129,6 +45,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
     onMouseLeave,
     onFocus,
     onBlur,
+    tabIndex,
     ...rest
   } = props;
 
@@ -136,74 +53,71 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
 
   const effectiveState: CardState = (() => {
     if (stateProp) return stateProp;
-    if (disabled)  return 'disabled';
+    if (disabled) return 'disabled';
     return internalState;
   })();
 
-  const baseStyle   = getBaseStyle(variant);
-  const stateStyle  = getStateStyle(effectiveState);
-
-  const bg     = stateStyle.bg     ?? baseStyle.bg;
-  const border = stateStyle.border ?? baseStyle.border;
-  const shadow = baseStyle.shadow;
-
-  const { padding, gap, titleFont, contentFont } = SIZE_CONFIG[size];
+  const stateKey: CardState = effectiveState === 'focus' ? 'base' : effectiveState;
+  const appearanceClasses = findClasses(rules, { variant, state: stateKey });
+  const focusRing = getFocusRing(contract);
+  const isDisabled = effectiveState === 'disabled' || disabled;
 
   const he = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!disabled) setInternalState('hover');
+    if (!isDisabled) setInternalState('hover');
     onMouseEnter?.(e);
-  }, [disabled, onMouseEnter]);
+  }, [isDisabled, onMouseEnter]);
 
   const hl = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!disabled) setInternalState('base');
+    if (!isDisabled) setInternalState('base');
     onMouseLeave?.(e);
-  }, [disabled, onMouseLeave]);
+  }, [isDisabled, onMouseLeave]);
 
   const hf = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
-    if (!disabled) setInternalState('focus');
+    if (!isDisabled) setInternalState('focus');
     onFocus?.(e);
-  }, [disabled, onFocus]);
+  }, [isDisabled, onFocus]);
 
   const hb = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
     setInternalState('base');
     onBlur?.(e);
   }, [onBlur]);
 
+  const focusBorderClasses =
+    effectiveState === 'focus'
+      ? findClasses(rules, { state: 'focus' })
+      : [];
+
   return (
     <div
       ref={ref}
+      tabIndex={tabIndex ?? (isDisabled ? undefined : 0)}
       className={cn(
-        'flex flex-col w-full rounded-[4px] transition-colors duration-150 box-border',
-        padding,
-        gap,
-        bg,
-        border,
-        shadow,
-        stateStyle.focusRing && 'shadow-[var(--effect-focus-brand)]',
-        stateStyle.opacity   && 'opacity-[var(--opacity-disabled)] cursor-not-allowed',
+        'flex flex-col w-full rounded-[var(--radius-medium)] transition-colors duration-150 box-border border-solid border-[var(--border-width-base)]',
+        SIZE_CLASSES[size],
+        ...appearanceClasses,
+        ...focusBorderClasses,
+        !isDisabled && focusRing,
+        isDisabled && 'opacity-[var(--opacity-disabled)] cursor-not-allowed pointer-events-none',
         className,
       )}
       onMouseEnter={he}
       onMouseLeave={hl}
       onFocus={hf}
       onBlur={hb}
+      aria-disabled={isDisabled || undefined}
       {...rest}
     >
-      {/* Header slot (медиа / изображение) */}
-      {header && (
-        <div className="w-full">{header}</div>
-      )}
+      {header && <div className="w-full">{header}</div>}
 
-      {/* Content area */}
       {(title !== undefined || description !== undefined || children !== undefined) && (
-        <div className={cn('flex flex-col w-full', gap)}>
+        <div className={cn('flex flex-col w-full', CONTENT_GAP[size])}>
           {title !== undefined && (
-            <span className={cn(titleFont, 'text-[var(--color-text-primary)] leading-none')}>
+            <span className={cn(TITLE_CLASS[size], 'text-[var(--color-text-primary)] leading-none')}>
               {title}
             </span>
           )}
           {description !== undefined && (
-            <span className={cn(contentFont, 'text-[var(--color-text-primary)]')}>
+            <span className={cn(CONTENT_CLASS[size], 'text-[var(--color-text-primary)]')}>
               {description}
             </span>
           )}
@@ -211,10 +125,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
         </div>
       )}
 
-      {/* Footer slot (actions) */}
-      {footer && (
-        <div className="w-full mt-auto">{footer}</div>
-      )}
+      {footer && <div className="w-full mt-auto">{footer}</div>}
     </div>
   );
 });

@@ -25,12 +25,12 @@ const SkeletonBlockInner = React.forwardRef<HTMLDivElement, SkeletonBlockProps>(
   shimmer = true,
   width,
   height,
-  radius = 2,
+  radius = 'var(--radius-default)',
   className,
   style,
 }, ref) => {
-  const isCircle = radius === 9999 || radius === '9999';
-  const borderRadius = isCircle ? '9999px' : (typeof radius === 'number' ? radius : radius);
+  const isCircle = radius === 9999 || radius === '9999' || radius === 'var(--radius-full)' || radius === 'var(--radius-pill)';
+  const borderRadius = isCircle ? '9999px' : radius;
 
   return (
     <div

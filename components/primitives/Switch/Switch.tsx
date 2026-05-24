@@ -1,23 +1,24 @@
 import React, { useState, useCallback } from 'react';
 import type { SwitchProps, SwitchSize, SwitchState } from './Switch.types';
 import contract from '../../../contracts/components/Switch.contract.json';
+import { cn, findClasses, getFocusRing, type VR } from '../_shared';
+import { RadixSwitch } from '../_internal';
 
-type VR = { when: Record<string, string>; tailwindClasses: string[] };
 const rules = (contract.variantRules || []) as unknown as VR[];
 
-function findClasses(args: Record<string, string>): string[] {
-  return rules
-    .filter(r => { for (const k of Object.keys(r.when)) { if (r.when[k] !== args[k]) return false; } return true; })
-    .flatMap(r => r.tailwindClasses);
-}
+const SIZE_CLASSES: Record<SwitchSize, string> = {
+  xs: '[--thumb-size:var(--space-8)] w-[var(--space-switch-track-w-xs)] h-[var(--space-switch-track-h-xs)] rounded-pill',
+  sm: '[--thumb-size:var(--space-12)] w-[var(--space-switch-track-w-sm)] h-[var(--space-switch-track-h-sm)] rounded-pill',
+  md: '[--thumb-size:var(--space-control-box-sm)] w-[var(--space-switch-track-w-md)] h-[var(--space-switch-track-h-md)] rounded-pill',
+  lg: '[--thumb-size:var(--space-control-box-md)] w-[var(--space-switch-track-w-lg)] h-[var(--space-switch-track-h-lg)] rounded-pill',
+};
 
-function cn(...c: (string | undefined | false | null)[]): string {
-  return c.filter(Boolean).join(' ');
-}
-
-const isOnState   = (s: SwitchState) => s === 'on'          || s === 'disabled-on';
+const isOnState = (s: SwitchState) => s === 'on' || s === 'disabled-on';
 const isDisabledState = (s: SwitchState) => s === 'disabled-on' || s === 'disabled-off';
 
+/**
+ * Switch — pill track + sliding thumb, backed by `@radix-ui/react-switch`.
+ */
 export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>((props, ref) => {
   const {
     size = 'sm',
@@ -31,16 +32,13 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>((props, r
     ...rest
   } = props;
 
-  // Uncontrolled internal state — used when `state` prop is not provided
   const [internalOn, setInternalOn] = useState<boolean>(
-    controlledState !== undefined ? isOnState(controlledState) : defaultChecked
+    controlledState !== undefined ? isOnState(controlledState) : defaultChecked,
   );
 
-  // Derive effective on/off from controlled or internal state
   const isControlled = controlledState !== undefined;
-  const effectiveOn  = isControlled ? isOnState(controlledState!) : internalOn;
+  const effectiveOn = isControlled ? isOnState(controlledState!) : internalOn;
 
-  // Resolve effective state string for variant lookup
   const effectiveState: SwitchState = (() => {
     const isDisabled = disabled || (isControlled && isDisabledState(controlledState!));
     if (isDisabled) return effectiveOn ? 'disabled-on' : 'disabled-off';
@@ -49,55 +47,57 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>((props, r
 
   const effectiveDisabled = effectiveState === 'disabled-on' || effectiveState === 'disabled-off';
 
-  const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    if (effectiveDisabled) return;
-    if (!isControlled) {
-      setInternalOn(prev => {
-        const next = !prev;
-        onToggle?.(next);
-        return next;
-      });
-    } else {
-      onToggle?.(!effectiveOn);
-    }
-    onClick?.(e);
-  }, [effectiveDisabled, isControlled, effectiveOn, onToggle, onClick]);
+  const handleCheckedChange = useCallback(
+    (checked: boolean) => {
+      if (effectiveDisabled) return;
+      if (!isControlled) {
+        setInternalOn(checked);
+      }
+      onToggle?.(checked);
+    },
+    [effectiveDisabled, isControlled, onToggle],
+  );
 
-  const vc = findClasses({ size: size, state: effectiveState });
-  const focusRing = (contract.focusRing as string) ?? '';
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick?.(e);
+    },
+    [onClick],
+  );
+
+  const stateClasses = findClasses(rules, { state: effectiveState });
+  const focusRing = getFocusRing(contract);
 
   return (
-    <button
+    <RadixSwitch.Root
       ref={ref}
-      type="button"
+      checked={effectiveOn}
+      onCheckedChange={handleCheckedChange}
       disabled={effectiveDisabled}
-      role="switch"
-      aria-checked={effectiveOn}
       onClick={handleClick}
       className={cn(
-        'transition-colors duration-200 box-border relative inline-flex items-center shrink-0 bg-[var(--track-bg,transparent)] border-[var(--border-width-base)] border-solid border-transparent',
-        ...vc,
+        'transition-colors duration-200 box-border relative inline-flex items-center shrink-0',
+        'bg-[var(--track-bg,transparent)] border-[var(--border-width-base)] border-solid border-transparent',
+        SIZE_CLASSES[size],
+        ...stateClasses,
         !effectiveDisabled && focusRing,
         effectiveDisabled && 'cursor-not-allowed pointer-events-none',
-        className
+        className,
       )}
       {...rest}
     >
-      {/* Thumb — slides via translateX */}
-      <span
-        className="absolute rounded-full transition-transform duration-200 bg-[var(--thumb-bg,var(--color-icon-on-brand))] border border-[var(--thumb-border,transparent)] shadow-sm"
-        style={{
-          width:     'var(--thumb-size, 12px)',
-          height:    'var(--thumb-size, 12px)',
-          transform: effectiveOn
-            ? 'translateX(calc(100% + var(--space-2, 2px)))'
-            : 'translateX(var(--space-2, 2px))',
-          top:       '50%',
-          marginTop: 'calc(var(--thumb-size, 12px) / -2)',
-          left:      0,
-        }}
+      <RadixSwitch.Thumb
+        className={cn(
+          'absolute rounded-full transition-transform duration-200 shadow-sm',
+          'bg-[var(--thumb-bg,var(--color-icon-on-brand))] border border-[var(--thumb-border,transparent)]',
+          'w-[var(--thumb-size)] h-[var(--thumb-size)]',
+          'left-0 top-1/2 -mt-[calc(var(--thumb-size)/2)]',
+          'data-[state=checked]:translate-x-[calc(100%+var(--space-2))]',
+          'data-[state=unchecked]:translate-x-[var(--space-2)]',
+        )}
       />
-    </button>
+      {children}
+    </RadixSwitch.Root>
   );
 });
 

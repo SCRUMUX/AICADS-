@@ -104,7 +104,7 @@ export const FullMatrix: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 16 }}>
       {APPEARANCES.map((a) => (
         <div key={a} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <span style={{ width: 60, fontSize: 11, color: '#888' }}>{a}</span>
+          <span style={{ width: 60, fontSize: 11, color: 'var(--color-text-muted)' }}>{a}</span>
           {SIZES.map((s) =>
             STATES.map((st) => (
               <Tag key={`${a}-${s}-${st}`} appearance={a} size={s} state={st}>{`${s}/${st}`}</Tag>

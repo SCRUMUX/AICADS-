@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect, useRef, useId, useMemo } from 'react';
 import type { AutocompleteProps, AutocompleteSize, AutocompleteOption } from './Autocomplete.types';
-import { cn, findClasses, type VR } from '../_shared';
+import { cn, findClasses, getFocusRing, type VR, MENU_ITEM_CLASSES, MENU_PANEL_PADDING } from '../_shared';
 import { IconSlot } from '../_shared/IconSlot';
 import { ClearButton } from '../_shared/ClearButton';
-import { Popover } from '../_shared/Popover';
+import { Popover } from '../Popover/Popover';
 import { Chip } from '../Chip/Chip';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Badge } from '../Badge/Badge';
@@ -16,13 +16,14 @@ import { usePopoverState } from '../../../hooks/usePopoverState';
 import { useOverflowCounter } from '../../../hooks/useOverflowCounter';
 import { mergeRefs } from '../../../hooks/mergeRefs';
 import contract from '../../../contracts/components/Autocomplete.contract.json';
+import { Cmdk } from '../_internal';
 
 const rules = (contract.variantRules || []) as unknown as VR[];
 
 const SIZE_CLASSES: Record<AutocompleteSize, string> = {
-  sm: '!px-[var(--space-button-x-sm)] !py-[var(--space-button-y-sm)] !min-h-[var(--space-28)] min-w-[var(--space-container-compact-min)] !gap-[var(--space-button-gap-sm)] text-style-caption rounded-[var(--radius-default)] [--icon-size:20px]',
-  md: '!px-[var(--space-button-x-md)] !py-[var(--space-button-y-md)] !min-h-[var(--space-36)] min-w-[var(--space-container-content-min)] !gap-[var(--space-button-gap-md)] text-style-body rounded-[var(--radius-default)] [--icon-size:20px]',
-  lg: '!px-[var(--space-button-x-lg)] !py-[var(--space-button-y-lg)] !min-h-[var(--space-40)] min-w-[var(--space-container-content-min)] !gap-[var(--space-button-gap-lg)] text-style-body-lg rounded-[var(--radius-default)] [--icon-size:24px]',
+  sm: 'px-[var(--space-button-x-sm)] py-[var(--space-button-y-sm)] min-h-[var(--space-28)] min-w-[var(--space-container-compact-min)] gap-[var(--space-button-gap-sm)] text-style-caption rounded-[var(--radius-default)] [--icon-size:20px]',
+  md: 'px-[var(--space-button-x-md)] py-[var(--space-button-y-md)] min-h-[var(--space-36)] min-w-[var(--space-container-content-min)] gap-[var(--space-button-gap-md)] text-style-body rounded-[var(--radius-default)] [--icon-size:20px]',
+  lg: 'px-[var(--space-button-x-lg)] py-[var(--space-button-y-lg)] min-h-[var(--space-40)] min-w-[var(--space-container-content-min)] gap-[var(--space-button-gap-lg)] text-style-body-lg rounded-[var(--radius-default)] [--icon-size:24px]',
 };
 
 const SearchIcon: React.FC = () => (
@@ -165,7 +166,7 @@ export const Autocomplete = React.forwardRef<HTMLDivElement, AutocompleteProps>(
   }, [minLength, query, openInternal]);
 
   // ── Click outside / Escape ──
-  useClickOutside(containerRef, close, isOpen);
+  useClickOutside([containerRef, popoverRef], close, isOpen);
   useEscapeKey(close, isOpen);
 
   // ── Focus input when opened ──
@@ -289,10 +290,11 @@ export const Autocomplete = React.forwardRef<HTMLDivElement, AutocompleteProps>(
     el?.scrollIntoView?.({ block: 'nearest' });
   }, [activeIndex]);
 
-  const vcArgs: Record<string, string> = { state: isOpen ? 'open' : 'closed', size };
-  if (appearance) vcArgs.appearance = appearance;
-  const vc = findClasses(rules, vcArgs);
-  const focusRing = (contract.focusRing as string) ?? '';
+  const stateClasses = findClasses(rules, {
+    state: isOpen ? 'open' : 'closed',
+    ...(appearance ? { appearance } : {}),
+  });
+  const focusRing = getFocusRing(contract);
 
   const optionMap = useMemo(
     () => new Map(optionList.map((o) => [o.value, o.label ?? o.value])),
@@ -306,17 +308,17 @@ export const Autocomplete = React.forwardRef<HTMLDivElement, AutocompleteProps>(
   const showClear = (showClearIcon || query.length > 0 || allChipValues.length > 0) && !disabled;
 
   return (
-    <div ref={mergedRef} className={cn('relative', fullWidth && 'w-full !min-w-0 !max-w-none', className)} {...rest}>
+    <div ref={mergedRef} className={cn('relative', fullWidth && 'w-full min-w-0 max-w-none', className)} {...rest}>
       {/* ── Trigger ── */}
       <div
         ref={triggerRef}
         className={cn(
           'transition-colors duration-150 font-base box-border flex flex-row items-center overflow-hidden w-full',
           SIZE_CLASSES[size],
-          ...vc,
+          ...stateClasses,
           !disabled && !isOpen && focusRing,
           disabled ? 'cursor-not-allowed opacity-[var(--opacity-disabled)]' : isOpen ? 'cursor-text' : 'cursor-pointer select-none',
-          fullWidth && '!min-w-0 !max-w-none',
+          fullWidth && 'min-w-0 max-w-none',
         )}
         style={fullWidth ? { maxWidth: 'none', minWidth: 0 } : undefined}
         onClick={() => { openPopover(); inputRef.current?.focus(); }}
@@ -377,7 +379,7 @@ export const Autocomplete = React.forwardRef<HTMLDivElement, AutocompleteProps>(
           ref={inputRef}
           className={cn(
             'bg-transparent outline-none text-[inherit] font-[inherit] leading-[inherit] placeholder:text-[var(--color-text-muted)]',
-            isOpen ? 'flex-1 min-w-[40px] cursor-text' : 'sr-only',
+            isOpen ? 'flex-1 min-w-[var(--space-40)] cursor-text' : 'sr-only',
           )}
           placeholder={placeholder}
           value={query}
@@ -399,7 +401,15 @@ export const Autocomplete = React.forwardRef<HTMLDivElement, AutocompleteProps>(
       </div>
 
       {/* ── Popover ── */}
-      <Popover ref={popoverRef} anchorRef={triggerRef} open={isOpen} id={listboxId} aria-multiselectable={multiple}>
+      <Popover
+        ref={popoverRef}
+        anchorRef={triggerRef}
+        open={isOpen}
+        id={listboxId}
+        aria-multiselectable={multiple}
+        contentPadding={MENU_PANEL_PADDING}
+        maxHeight="var(--space-320)"
+      >
         {/* Selected/excluded chips at top */}
         {multiple && allChipValues.length > 0 && (
           <div className="flex flex-wrap gap-1 pb-1 border-b border-[var(--color-divider)] mb-1">
@@ -431,43 +441,48 @@ export const Autocomplete = React.forwardRef<HTMLDivElement, AutocompleteProps>(
           </div>
         )}
 
-        {/* Filtered results */}
-        {!loading && filteredOptions.length > 0 &&
-          filteredOptions.map((opt, i) => {
-            const isSelected = selected.includes(opt.value);
-            const isExcluded = excluded.includes(opt.value);
-            return (
-              <div
-                key={opt.value}
-                id={`ac-opt-${i}`}
-                data-index={i}
-                role="option"
-                aria-selected={isSelected}
-                aria-disabled={opt.disabled || undefined}
-                className={cn(
-                  'flex items-center cursor-pointer rounded-[var(--radius-default)]',
-                  multiple ? 'gap-[var(--space-20)]' : 'gap-2',
-                  'px-[var(--space-button-x-sm)] py-[var(--space-button-y-sm)]',
-                  'hover:bg-[var(--color-surface-3)] transition-colors duration-100',
-                  i === activeIndex && 'bg-[var(--color-surface-3)]',
-                  opt.disabled && 'opacity-50 cursor-not-allowed',
-                )}
-                onClick={() => !opt.disabled && toggleOption(opt.value)}
-              >
-                {multiple && (
-                  <span className="pointer-events-none shrink-0 flex items-center">
-                    <Checkbox size="md" checked={isSelected} exclude={isExcluded} onChange={() => {}} />
-                  </span>
-                )}
-                <span className={cn('flex-1 min-w-0 truncate', isExcluded && 'line-through text-[var(--color-text-muted)]')}>
-                  {opt.label ?? opt.value}
-                </span>
-                {!multiple && isSelected && (
-                  <span className="shrink-0 flex items-center text-[var(--color-brand-primary)]"><CheckIcon /></span>
-                )}
-              </div>
-            );
-          })}
+        {/* Filtered results — cmdk list */}
+        {!loading && filteredOptions.length > 0 && (
+          <Cmdk.Command shouldFilter={false} loop className="flex flex-col">
+            <Cmdk.List>
+              {filteredOptions.map((opt, i) => {
+                const isSelected = selected.includes(opt.value);
+                const isExcluded = excluded.includes(opt.value);
+                return (
+                  <Cmdk.Item
+                    key={opt.value}
+                    value={opt.value}
+                    disabled={opt.disabled}
+                    data-index={i}
+                    id={`ac-opt-${i}`}
+                    onSelect={() => !opt.disabled && toggleOption(opt.value)}
+                    className={cn(
+                      'flex items-center cursor-pointer rounded-[var(--radius-default)]',
+                      MENU_ITEM_CLASSES[size],
+                      multiple && 'gap-[var(--space-20)]',
+                      'text-[var(--color-text-primary)]',
+                      'aria-selected:bg-[var(--color-surface-3)] data-[selected=true]:bg-[var(--color-surface-3)]',
+                      'data-[disabled=true]:opacity-50 data-[disabled=true]:pointer-events-none',
+                      i === activeIndex && 'bg-[var(--color-surface-3)]',
+                    )}
+                  >
+                    {multiple && (
+                      <span className="pointer-events-none shrink-0 flex items-center">
+                        <Checkbox size="md" checked={isSelected} exclude={isExcluded} onChange={() => {}} />
+                      </span>
+                    )}
+                    <span className={cn('flex-1 min-w-0 truncate', isExcluded && 'line-through text-[var(--color-text-muted)]')}>
+                      {opt.label ?? opt.value}
+                    </span>
+                    {!multiple && isSelected && (
+                      <span className="shrink-0 flex items-center text-[var(--color-brand-primary)]"><CheckIcon /></span>
+                    )}
+                  </Cmdk.Item>
+                );
+              })}
+            </Cmdk.List>
+          </Cmdk.Command>
+        )}
 
         {/* Legacy items */}
         {!loading && items && filteredOptions.length === 0 &&

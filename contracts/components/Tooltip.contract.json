@@ -43,12 +43,14 @@
         "appearance": "base"
       },
       "style": {
-        "background": "color_bg_base",
-        "textColor": "color_text_primary"
+        "background": "color_tooltip_bg",
+        "textColor": "color_tooltip_text"
       },
       "tailwindClasses": [
-        "bg-[var(--color-bg-base)]",
-        "text-[var(--color-text-primary)]"
+        "[--bubble-bg:var(--color-tooltip-bg)]",
+        "[--bubble-text:var(--color-tooltip-text)]",
+        "bg-[var(--bubble-bg)]",
+        "text-[var(--bubble-text)]"
       ]
     },
     {
@@ -57,11 +59,13 @@
       },
       "style": {
         "background": "color_success_base",
-        "textColor": "color_success_text"
+        "textColor": "color_text_on_brand"
       },
       "tailwindClasses": [
-        "bg-[var(--color-success-base)]",
-        "text-[var(--color-success-text)]"
+        "[--bubble-bg:var(--color-success-base)]",
+        "[--bubble-text:var(--color-text-on-brand)]",
+        "bg-[var(--bubble-bg)]",
+        "text-[var(--bubble-text)]"
       ]
     },
     {
@@ -70,11 +74,13 @@
       },
       "style": {
         "background": "color_warning_base",
-        "textColor": "color_warning_text"
+        "textColor": "color_text_primary"
       },
       "tailwindClasses": [
-        "bg-[var(--color-warning-base)]",
-        "text-[var(--color-warning-text)]"
+        "[--bubble-bg:var(--color-warning-base)]",
+        "[--bubble-text:var(--color-text-primary)]",
+        "bg-[var(--bubble-bg)]",
+        "text-[var(--bubble-text)]"
       ]
     },
     {
@@ -83,11 +89,13 @@
       },
       "style": {
         "background": "color_danger_base",
-        "textColor": "color_danger_text"
+        "textColor": "color_text_on_brand"
       },
       "tailwindClasses": [
-        "bg-[var(--color-danger-base)]",
-        "text-[var(--color-danger-text)]"
+        "[--bubble-bg:var(--color-danger-base)]",
+        "[--bubble-text:var(--color-text-on-brand)]",
+        "bg-[var(--bubble-bg)]",
+        "text-[var(--bubble-text)]"
       ]
     },
     {
@@ -143,8 +151,8 @@
       ]
     }
   ],
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "element": "div",
   "rootLayout": "vertical",
   "rootSizing": {

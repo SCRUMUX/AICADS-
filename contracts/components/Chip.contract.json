@@ -19,7 +19,8 @@
     "state": [
       "base",
       "selected",
-      "disabled"
+      "disabled",
+      "exclude"
     ]
   },
   "variantRules": [
@@ -107,17 +108,61 @@
         "state": "selected"
       },
       "style": {
-        "background": "color_brand_hover_bg",
-        "textColor": "color_brand_primary",
-        "borderColor": "color_brand_primary",
-        "iconColor": "color_brand_primary"
+        "background": "color_brand_pressed",
+        "textColor": "color_text_on_brand",
+        "borderColor": "color_brand_pressed",
+        "iconColor": "color_icon_on_brand"
       },
       "tailwindClasses": [
-        "bg-[var(--color-brand-hover-bg)]",
-        "text-[var(--color-brand-primary)]",
-        "[--icon-color:var(--color-brand-primary)]",
+        "bg-[var(--color-brand-pressed)]",
+        "text-[var(--color-text-on-brand)]",
+        "[--icon-color:var(--color-icon-on-brand)]",
         "border",
-        "border-[var(--color-brand-primary)]"
+        "border-[var(--color-brand-pressed)]"
+      ]
+    },
+    {
+      "when": {
+        "appearance": "base",
+        "state": "exclude"
+      },
+      "style": {
+        "background": "color_surface_2",
+        "textColor": "color_text_primary",
+        "borderColor": "color_border_strong",
+        "iconColor": "color_icon_on_base",
+        "opacityToken": "opacity_disabled"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-surface-2)]",
+        "text-[var(--color-text-primary)]",
+        "[--icon-color:var(--color-icon-on-base)]",
+        "border",
+        "border-dashed",
+        "border-[var(--color-border-strong)]",
+        "opacity-60"
+      ]
+    },
+    {
+      "when": {
+        "appearance": "brand",
+        "state": "exclude"
+      },
+      "style": {
+        "background": "color_brand_primary",
+        "textColor": "color_text_on_brand",
+        "borderColor": "color_border_strong",
+        "iconColor": "color_icon_on_brand",
+        "opacityToken": "opacity_disabled"
+      },
+      "tailwindClasses": [
+        "bg-[var(--color-brand-primary)]",
+        "text-[var(--color-text-on-brand)]",
+        "[--icon-color:var(--color-icon-on-brand)]",
+        "border",
+        "border-dashed",
+        "border-[var(--color-border-strong)]",
+        "opacity-60"
       ]
     },
     {
@@ -199,8 +244,8 @@
       ]
     }
   ],
-  "focusRing": "focus:outline-none focus:shadow-focus-brand",
-  "focusRingDanger": "focus:outline-none focus:shadow-focus-danger",
+  "focusRing": "focus-visible:outline-none focus-visible:shadow-focus-brand focus-visible:border-transparent",
+  "focusRingDanger": "focus-visible:outline-none focus-visible:shadow-focus-danger focus-visible:border-transparent",
   "responsiveProps": {
     "paddingX": {
       "sm": "space_tag_x_sm",

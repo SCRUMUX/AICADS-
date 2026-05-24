@@ -1,35 +1,31 @@
 import React from 'react';
 import type { SkeletonTableProps, SkeletonTableSize } from './SkeletonTable.types';
 import { SkeletonBlock } from '../_shared/SkeletonBlock';
+import { cn, getSkeletonContainerClasses } from '../_shared';
 
-// в”Ђв”Ђв”Ђ Size config в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ
-// From Figma:
-//   sm: W=320  вЂ” 4 cols, col widths [48,112,80,80], rowH=28, cellPad L12 T3 R12 B3
-//   md: W=460  вЂ” 4 cols, col widths proportionally wider
-//   lg: W=600  вЂ” 4 cols
-// Header row has a darker bg (surface-2), data rows alternate with dividers.
+/**
+ * SkeletonTable — token-driven outer container, table grid silhouette stays
+ * here. Cell paddings (cellPadX, cellPadY) are kept as numbers per-size
+ * because they have no clean tokens that hit the Figma values (12/14/16 by
+ * 3/4/5) — they live as component-internal layout data.
+ */
 const SIZE: Record<SkeletonTableSize, {
-  width: number; rowH: number; cellPadX: number; cellPadY: number;
+  rowH: number; cellPadX: number; cellPadY: number;
   colWidths: number[]; headerCellH: number;
 }> = {
-  sm: { width: 320, rowH: 28, cellPadX: 12, cellPadY: 3, colWidths: [48, 112, 80, 80], headerCellH: 8 },
-  md: { width: 460, rowH: 32, cellPadX: 14, cellPadY: 4, colWidths: [64, 160, 112, 120], headerCellH: 8 },
-  lg: { width: 600, rowH: 36, cellPadX: 16, cellPadY: 5, colWidths: [80, 200, 150, 170], headerCellH: 8 },
+  sm: { rowH: 28, cellPadX: 12, cellPadY: 3, colWidths: [48, 112, 80, 80],   headerCellH: 8 },
+  md: { rowH: 32, cellPadX: 14, cellPadY: 4, colWidths: [64, 160, 112, 120], headerCellH: 8 },
+  lg: { rowH: 36, cellPadX: 16, cellPadY: 5, colWidths: [80, 200, 150, 170], headerCellH: 8 },
 };
 
-// Line widths inside cells (skeleton content block)
 const CELL_LINE_WIDTHS = [
-  [17, 53, 45, 28], // row 1
-  [22, 70, 38, 40], // row 2
-  [17, 53, 45, 28], // row 3
-  [22, 70, 38, 40], // row 4
+  [17, 53, 45, 28],
+  [22, 70, 38, 40],
+  [17, 53, 45, 28],
+  [22, 70, 38, 40],
 ];
 
-function cn(...c: (string | undefined | false | null)[]): string {
-  return c.filter(Boolean).join(' ');
-}
-
-const SkeletonTableInner = React.forwardRef<HTMLDivElement, SkeletonTableProps>(({ 
+const SkeletonTableInner = React.forwardRef<HTMLDivElement, SkeletonTableProps>(({
   size = 'sm',
   shimmer = true,
   rows = 4,
@@ -39,50 +35,48 @@ const SkeletonTableInner = React.forwardRef<HTMLDivElement, SkeletonTableProps>(
 }, ref) => {
   const s = SIZE[size];
   const colWidths = s.colWidths.slice(0, cols);
-  const totalW = s.width;
+  const totalW = colWidths.reduce((a, b) => a + b, 0) + (colWidths.length - 1);
+  const containerClasses = getSkeletonContainerClasses('table', size);
 
   const renderRow = (rowIdx: number, isHeader: boolean) => {
     const lineWidths = CELL_LINE_WIDTHS[rowIdx % CELL_LINE_WIDTHS.length];
     return (
       <div
         key={rowIdx}
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          width: totalW,
-          height: s.rowH,
-          backgroundColor: isHeader ? 'var(--color-surface-2)' : undefined,
-        }}
+        className={cn(
+          'flex flex-row',
+          isHeader && 'bg-[var(--color-surface-2)]',
+        )}
+        style={{ height: s.rowH }}
       >
         {colWidths.map((colW, colIdx) => (
           <React.Fragment key={colIdx}>
             {/* Cell */}
             <div
+              className="flex items-center shrink-0"
               style={{
                 width: colW,
                 height: s.rowH,
-                flexShrink: 0,
                 paddingLeft: s.cellPadX,
                 paddingRight: s.cellPadX,
                 paddingTop: s.cellPadY,
                 paddingBottom: s.cellPadY,
-                display: 'flex',
-                alignItems: 'center',
               }}
             >
               <SkeletonBlock
                 shimmer={shimmer}
                 width={isHeader
-                  ? Math.round(colW * 0.55) // header labels slightly wider
+                  ? Math.round(colW * 0.55)
                   : (lineWidths[colIdx] ?? Math.round(colW * 0.4))}
                 height={s.headerCellH}
-                radius={2}
+                radius="var(--radius-default)"
               />
             </div>
-            {/* Vertical column divider вЂ” not after last col */}
+            {/* Vertical column divider */}
             {colIdx < colWidths.length - 1 && (
               <div
-                style={{ width: 1, height: s.rowH, backgroundColor: 'var(--color-border-base)', flexShrink: 0 }}
+                className="w-px shrink-0 bg-[var(--color-border-base)]"
+                style={{ height: s.rowH }}
                 aria-hidden="true"
               />
             )}
@@ -95,10 +89,14 @@ const SkeletonTableInner = React.forwardRef<HTMLDivElement, SkeletonTableProps>(
   return (
     <div
       ref={ref}
-      className={cn('rounded-[4px] bg-[var(--color-surface-1)] overflow-hidden', className)}
-      style={{ width: totalW, border: '1px solid var(--color-border-base)', ...style }}
+      className={cn(
+        'overflow-hidden border border-solid border-[var(--color-border-base)]',
+        ...containerClasses,
+        className,
+      )}
+      style={style}
       role="status"
-      aria-label="LoadingвЂ¦"
+      aria-label="Loading"
       aria-busy="true"
     >
       {/* Header row */}
@@ -107,7 +105,7 @@ const SkeletonTableInner = React.forwardRef<HTMLDivElement, SkeletonTableProps>(
       {/* Data rows with dividers */}
       {Array.from({ length: rows }).map((_, i) => (
         <React.Fragment key={i}>
-          <div style={{ height: 1, backgroundColor: 'var(--color-border-base)', width: '100%' }} aria-hidden="true" />
+          <div className="h-px w-full bg-[var(--color-border-base)]" aria-hidden="true" />
           {renderRow(i, false)}
         </React.Fragment>
       ))}
@@ -117,4 +115,3 @@ const SkeletonTableInner = React.forwardRef<HTMLDivElement, SkeletonTableProps>(
 
 SkeletonTableInner.displayName = 'SkeletonTable';
 export const SkeletonTable = React.memo(SkeletonTableInner);
-
