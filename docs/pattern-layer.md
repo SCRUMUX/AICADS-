@@ -15,23 +15,44 @@ Generated consumer pages **must** import blocks from `@ai-ds/core/blocks/*`. Do 
 
 ## Spacing recipes
 
+Marketing sections use **`--space-section-*`** tokens (page rhythm), not the component `layout` scale (6–9px).
+
 | Recipe ID | Use for |
 |-----------|---------|
 | `section.hero` | Above-the-fold hero — largest vertical padding |
+| `section.navbar` | Sticky top navigation |
+| `section.logos` | Logo cloud / social proof strip |
+| `section.stats` | Metrics band |
 | `section.features` | Feature grids |
+| `section.steps` | How-it-works numbered steps |
 | `section.pricing` | Pricing tiers |
-| `section.cta` | Call-to-action banner |
+| `section.testimonials` | Quote cards |
+| `section.faq` | FAQ accordion list |
+| `section.cta` | Call-to-action card or brand band |
+| `section.newsletter` | Email capture |
 | `section.footer` | Site footer |
 | `section.app-shell` | Dashboard sidebar + main |
 
-All blocks wrap content in [`SectionShell`](../blocks/_shared/SectionShell.tsx) with the matching recipe.
+All blocks wrap content in [`SectionShell`](../blocks/_shared/SectionShell.tsx) with the matching recipe. Horizontal inset follows `--grid-*-offset` for full-bleed backgrounds with aligned content.
+
+### Landing layout contract
+
+Defined in [`blockLayout.ts`](../blocks/_shared/blockLayout.ts) — B2B SaaS baseline (Linear / Stripe / Vercel):
+
+- **One content column** — `BLOCK_CONTENT_CLASS` on every section (navbar → footer)
+- **Start alignment** — headers, grids, CTAs, stats, footer meta align to the **left edge** of that column
+- **Prose width** — subtitles and forms use `BLOCK_PROSE_CLASS` (`640px` max) but stay **left-anchored**, not centered
+- **Logo cloud** — equal-height tiles in a 5-column grid (`LogoMark`), not floating uppercase labels
+- **Exception** — `marketing.hero.centered` uses `align="center"` on hero only; `marketing.landing.saas` uses split/start hero throughout
+
+Grids use 3-up from **1024px** so cards never orphan on typical desktop widths.
 
 ## Pattern manifest
 
 [`ai-patterns.json`](../ai-patterns.json) lists:
 
 - **patterns** — block name, recipe, primitives, Storybook reference, `whenToUse`
-- **pageTemplates** — ordered section lists (e.g. `marketing.landing.default`)
+- **pageTemplates** — ordered section lists (e.g. `marketing.landing.default`, `marketing.landing.saas`)
 
 ```ts
 import patterns from '@ai-ds/core/patterns' assert { type: 'json' };
@@ -47,8 +68,8 @@ import '@ai-ds/core/tokens';
 // Single section
 <HeroBlock title="..." primaryAction={{ label: 'Start', onClick }} />
 
-// Full landing (pageTemplates.marketing.landing.default)
-<LandingPageTemplate hero={...} features={...} pricing={...} cta={...} footer={...} />
+// Full landing (pageTemplates.marketing.landing.default or .saas)
+<LandingPageTemplate hero={...} features={...} pricing={...} cta={...} footer={...} navbar={...} />
 ```
 
 ## Storybook

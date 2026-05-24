@@ -6,17 +6,6 @@ import { Badge } from '../Badge/Badge';
 import { Chip } from '../Chip/Chip';
 import { Checkbox } from '../Checkbox/Checkbox';
 
-const slotArgs = {
-  iconLeft1: <AicaIcon style={{ width: '100%', height: '100%' }} />,
-  iconLeft2: <AicaIcon style={{ width: '100%', height: '100%' }} />,
-  chevron: <CaretUpFillIcon style={{ width: '1em', height: '1em' }} />,
-  badge: <Badge appearance="outline" size="sm">5</Badge>,
-  showIconLeft1: true,
-  showIconLeft2: true,
-  showBadge: true,
-  content: 'Accordion content...',
-};
-
 const meta: Meta<typeof Accordion> = {
   title: 'Primitives/Accordion',
   component: Accordion,
@@ -40,21 +29,29 @@ const meta: Meta<typeof Accordion> = {
     badge: { control: false },
     content: { control: 'text' },
   },
+  args: {
+    children: 'Accordion',
+    size: 'sm',
+    iconLeft1: <AicaIcon style={{ width: '100%', height: '100%' }} />,
+    iconLeft2: <AicaIcon style={{ width: '100%', height: '100%' }} />,
+    chevron: <CaretUpFillIcon style={{ width: '1em', height: '1em' }} />,
+    badge: <Badge appearance="outline" size="sm">5</Badge>,
+    showIconLeft1: true,
+    showIconLeft2: true,
+    showBadge: true,
+    content: 'Accordion content...',
+  },
 };
 export default meta;
 type Story = StoryObj<typeof Accordion>;
 
-export const Default: Story = {
-  args: { children: 'Accordion', size: 'sm', ...slotArgs },
-};
+export const Default: Story = {};
 
 export const Open: Story = {
-  args: { children: 'Accordion (open)', size: 'sm', state: 'open', ...slotArgs },
+  args: { children: 'Accordion (open)', state: 'open' },
 };
 
-export const AllSlotsVisible: Story = {
-  args: { children: 'Accordion', size: 'sm', ...slotArgs },
-};
+export const AllSlotsVisible: Story = {};
 
 export const AllSizes: Story = {
   render: (args) => (
@@ -73,7 +70,7 @@ export const AllSizes: Story = {
       ))}
     </div>
   ),
-  args: { ...slotArgs, children: 'Accordion' },
+  args: { children: 'Accordion' },
 };
 
 export const AllStates: Story = {
@@ -87,7 +84,7 @@ export const AllStates: Story = {
       ))}
     </div>
   ),
-  args: { size: 'sm', ...slotArgs, children: 'Accordion' },
+  args: { children: 'Accordion' },
 };
 
 export const WithCheckboxSelection: StoryObj = {

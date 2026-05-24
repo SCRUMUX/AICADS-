@@ -34,7 +34,8 @@ CI runs **both** builds on every PR:
 | react / react-dom | 18.3.1 |
 | storybook | 8.6.18 |
 | @storybook/react-vite | 8.6.18 |
-| @storybook/addon-essentials | 8.6.14 |
+| @storybook/addon-essentials | 8.6.18 |
+| @storybook/addon-viewport | 8.6.18 |
 | tailwindcss | 3.4.16 |
 | vite | 5.4.11 |
 | typescript | 5.7.2 |
@@ -49,32 +50,29 @@ Every Storybook preview **must** include:
 
 ```tsx
 import '@ai-ds/core/tokens';
-import '../node_modules/vaul/style.css';   // consumer: from .storybook/
-import 'sonner/dist/styles.css';
-import '../src/index.css';                 // Tailwind entry
+import '@ai-ds/core/storybook/engine-styles';
+import '../src/index.css';
 import { createPreview } from '@ai-ds/core/storybook/createPreview';
 
 const preview = createPreview();
 export default preview;
 ```
 
-Monorepo playground uses `../../node_modules/vaul/style.css` (vaul hoisted to repo root).
-
-> **Why relative vaul path?** The `vaul` package does not export `style.css` in its `exports` map — bare `import 'vaul/style.css'` fails in Vite.
+`engine-styles` resolves vaul/sonner CSS via Vite aliases in `createMainConfig` (works in monorepo + consumer).
 
 ## Checklist A — Monorepo (DS development)
 
 - [ ] Clone AICADS repo
 - [ ] `npm ci` (root)
 - [ ] `cd playground && npm ci`
-- [ ] `npm run storybook` → http://localhost:6006/
+- [ ] `npm run storybook` → http://localhost:6006/ (if the port is busy, Storybook auto-picks the next free port — `--ci` is enabled in the script)
 - [ ] Theme toolbar: Light / Dark switches `data-theme` on `<html>`
 - [ ] Spot-check: **Tooltip → FullMatrix**, **Tab → TicketTabGroup**, **Rating → Default**
 - [ ] `npm run build-storybook` succeeds
 
 ## Checklist B — npm install (new consumer project)
 
-- [ ] `npm install git+https://github.com/SCRUMUX/AICADS-.git#v0.5.1`
+- [ ] `npm install git+https://github.com/SCRUMUX/AICADS-.git#v0.7.0`
 - [ ] Copy [`templates/consumer-storybook/`](../templates/consumer-storybook/) into your app
 - [ ] Install devDependencies from template `package.json`
 - [ ] Add runtime deps: `react`, `react-dom`, `vaul`, `sonner` (or rely on `@ai-ds/core` transitive deps + explicit vaul for Storybook CSS path)

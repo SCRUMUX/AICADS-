@@ -1,4 +1,4 @@
-# @ai-ds/core v0.6.0
+# @ai-ds/core v0.7.0
 
 AI Design System — reusable architectural core. Token-driven,
 contract-driven, source-first React primitives **and pattern blocks**
@@ -7,7 +7,7 @@ powered by Radix UI / cmdk / vaul / sonner under the hood.
 ## Installation
 
 ```bash
-npm install git+https://github.com/SCRUMUX/AICADS-.git#v0.6.0
+npm install git+https://github.com/SCRUMUX/AICADS-.git#v0.7.0
 ```
 
 ## Importing components
@@ -130,11 +130,13 @@ behavior adapters).
 Local verification workspace (not published in npm `files`, but stories ship with `@ai-ds/core`):
 
 ```bash
-npm ci
+npm ci              # installs @ai-ds/core behavior engines (vaul, sonner, …)
 cd playground
 npm ci
-npm run storybook   # http://localhost:6006/
+npm run storybook   # default :6006; if busy, auto-picks next port (--ci)
 ```
+
+From the repo root you can also run `npm run storybook` (delegates to `playground/`).
 
 ### Storybook in a consumer project
 

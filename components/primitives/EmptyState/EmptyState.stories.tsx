@@ -41,6 +41,12 @@ const makeShared = (size: EmptyStateSize = 'sm') => ({
   secondaryButton: <Button appearance="ghost" size="sm">Learn more</Button>,
 });
 
+const sharedMdSlots = {
+  icon: <SearchIcon size={48} />,
+  ctaButton: <Button appearance="brand" size="sm">Add item</Button>,
+  secondaryButton: <Button appearance="ghost" size="sm">Learn more</Button>,
+};
+
 // ─── Default ─────────────────────────────────────────────────────────────────
 export const Default: Story = {
   args: {
@@ -52,7 +58,9 @@ export const Default: Story = {
     showIcon: true,
     showCta: true,
     showSecondary: true,
-    ...makeShared('md'),
+    icon: sharedMdSlots.icon,
+    ctaButton: sharedMdSlots.ctaButton,
+    secondaryButton: sharedMdSlots.secondaryButton,
   },
 };
 
@@ -156,7 +164,9 @@ export const Horizontal: Story = {
     showIcon: true,
     showCta: true,
     showSecondary: true,
-    ...makeShared('md'),
+    icon: sharedMdSlots.icon,
+    ctaButton: sharedMdSlots.ctaButton,
+    secondaryButton: sharedMdSlots.secondaryButton,
   },
 };
 

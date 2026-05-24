@@ -1,5 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import type { Preview, Decorator } from '@storybook/react';
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { MARKETING_VIEWPORTS } from './marketingViewports';
 
 type ThemeName = 'light' | 'dark';
 
@@ -53,6 +55,12 @@ export function createPreview(): Preview {
     parameters: {
       layout: 'padded',
       backgrounds: { disable: true },
+      viewport: {
+        viewports: {
+          ...INITIAL_VIEWPORTS,
+          ...MARKETING_VIEWPORTS,
+        },
+      },
       controls: {
         matchers: {
           color: /(background|color)$/i,

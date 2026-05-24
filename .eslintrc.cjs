@@ -78,5 +78,12 @@ module.exports = {
         'no-hardcoded-tokens': 'off',
       },
     },
+    {
+      // Storybook kit loads engine CSS via Vite aliases — not consumer-facing imports.
+      files: ['storybook/**/*.{ts,tsx}'],
+      rules: {
+        'no-restricted-imports': 'off',
+      },
+    },
   ],
 };

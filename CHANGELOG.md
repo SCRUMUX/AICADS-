@@ -3,6 +3,29 @@
 All notable changes to @ai-ds/core are documented here.
 Format follows [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] — 2026-05-24
+
+> **Marketing blocks v0.7** — 12 landing sections, unified layout contract, consumer Storybook parity.
+
+### Added
+
+- **7 Tier-1 blocks** — `NavbarBlock`, `LogoCloudBlock`, `StatsBlock`, `TestimonialsBlock`, `FAQBlock`, `HowItWorksBlock`, `NewsletterBlock`.
+- **Layout contract** — `blockLayout.ts` (`BLOCK_CONTENT_CLASS`, start-aligned sections, logo tiles via `LogoMark`).
+- **Page template** — `marketing.landing.saas` in `ai-patterns.json` (14 patterns).
+- **Storybook** — `engine-styles`, `marketingViewports`, `storybook-dev.mjs`, GitHub Pages deploy workflow.
+- **CI** — consumer fixture `prebuild-storybook` gate with `@storybook/addon-viewport`.
+
+### Changed
+
+- **SectionShell / BlockGrid** — unified 1440px content column; 3-up grids from 1024px.
+- **All marketing blocks** — left-aligned headers (center reserved for `marketing.hero.centered` only).
+- **LogoCloudBlock** — grid of `LogoMark` tiles instead of uppercase text labels.
+- **Hero / Features / Pricing / CTA / Footer** — enriched props and stories.
+
+### Removed
+
+- **`AppShellBlock` / `AppSidebarBlock`** — deferred from pattern manifest (marketing focus).
+
 ## [0.6.0] — 2026-05-23
 
 > **Pattern Layer** — distributable marketing/app blocks, spacing recipes, and AI pattern manifest.

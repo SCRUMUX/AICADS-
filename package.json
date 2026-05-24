@@ -1,6 +1,6 @@
 {
   "name": "@ai-ds/core",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "AI Design System — reusable architectural core (tokens, contracts, components, hooks, pattern blocks, Figma plugin). Powered by Radix UI / cmdk / vaul / sonner under the hood; consumers see only the AICADS semantic surface.",
   "type": "module",
   "main": "src/index.ts",
@@ -15,7 +15,9 @@
     "lint": "eslint . --ext .ts,.tsx,.js,.cjs,.mjs --rulesdir eslint-rules",
     "api:build-dts": "tsc -p tsconfig.api.json",
     "api:extract": "npm run api:build-dts && api-extractor run --local",
-    "api:check": "npm run api:build-dts && api-extractor run"
+    "api:check": "npm run api:build-dts && api-extractor run",
+    "storybook": "npm run storybook --prefix playground",
+    "storybook:build": "npm run build-storybook --prefix playground"
   },
   "exports": {
     ".": "./src/index.ts",
@@ -41,9 +43,14 @@
     "./blocks/PricingBlock": "./blocks/marketing/PricingBlock/index.ts",
     "./blocks/CTABlock": "./blocks/marketing/CTABlock/index.ts",
     "./blocks/FooterBlock": "./blocks/marketing/FooterBlock/index.ts",
+    "./blocks/NavbarBlock": "./blocks/marketing/NavbarBlock/index.ts",
+    "./blocks/LogoCloudBlock": "./blocks/marketing/LogoCloudBlock/index.ts",
+    "./blocks/StatsBlock": "./blocks/marketing/StatsBlock/index.ts",
+    "./blocks/TestimonialsBlock": "./blocks/marketing/TestimonialsBlock/index.ts",
+    "./blocks/FAQBlock": "./blocks/marketing/FAQBlock/index.ts",
+    "./blocks/HowItWorksBlock": "./blocks/marketing/HowItWorksBlock/index.ts",
+    "./blocks/NewsletterBlock": "./blocks/marketing/NewsletterBlock/index.ts",
     "./blocks/LandingPageTemplate": "./blocks/marketing/LandingPageTemplate/index.ts",
-    "./blocks/AppShellBlock": "./blocks/app/AppShellBlock/index.ts",
-    "./blocks/AppSidebarBlock": "./blocks/app/AppSidebarBlock/index.ts",
     "./behaviors": "./behaviors/index.ts",
     "./utils": "./utils/token-resolver.ts",
     "./images/*": "./images/*",
@@ -51,6 +58,8 @@
     "./storybook": "./storybook/index.ts",
     "./storybook/createMainConfig": "./storybook/createMainConfig.ts",
     "./storybook/createPreview": "./storybook/createPreview.tsx",
+    "./storybook/engine-styles": "./storybook/engine-styles.ts",
+    "./storybook/marketingViewports": "./storybook/marketingViewports.ts",
     "./storybook/tailwind": "./storybook/tailwind.config.cjs",
     "./storybook/postcss": "./storybook/postcss.config.cjs",
     "./storybook/index.css": "./storybook/index.css"
@@ -104,6 +113,9 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.47.0",
+    "@types/node": "^20.17.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.0",
     "typescript": "^5.7.2"

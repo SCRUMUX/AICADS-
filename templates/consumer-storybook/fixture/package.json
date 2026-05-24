@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "prestorybook": "node ../../../scripts/storybook-prep.mjs templates/consumer-storybook/fixture",
+    "prebuild-storybook": "node ../../../scripts/storybook-prep.mjs templates/consumer-storybook/fixture",
     "build-storybook": "storybook build"
   },
   "dependencies": {
@@ -14,7 +16,8 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "8.6.14",
+    "@storybook/addon-essentials": "8.6.18",
+    "@storybook/addon-viewport": "8.6.18",
     "@storybook/react": "8.6.18",
     "@storybook/react-vite": "8.6.18",
     "autoprefixer": "10.4.20",

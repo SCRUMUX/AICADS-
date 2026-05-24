@@ -1,10 +1,9 @@
 /**
  * Named spacing recipes for AICADS pattern blocks.
- * Maps semantic section types to token-driven padding/gap/max-width.
+ * Marketing sections use `--space-section-*` tokens (page rhythm), not component `layout` scale.
  */
 
-import type { SpaceCategory, SpaceSize } from '../layout/spacing/spacing-system';
-import { getSpaceVar } from '../layout/spacing/spacing-system';
+import type { CSSProperties } from 'react';
 
 export type SpacingRecipeId =
   | 'section.hero'
@@ -12,96 +11,119 @@ export type SpacingRecipeId =
   | 'section.pricing'
   | 'section.cta'
   | 'section.footer'
+  | 'section.navbar'
+  | 'section.logos'
+  | 'section.stats'
+  | 'section.testimonials'
+  | 'section.faq'
+  | 'section.steps'
+  | 'section.newsletter'
   | 'section.app-shell';
 
 export type RecipeMaxWidth = 'mobile' | 'tablet' | 'desktop' | 'full';
 
-export interface SpacingIntentRef {
-  category: SpaceCategory;
-  size: SpaceSize;
-}
-
 export interface SpacingRecipe {
-  sectionPaddingY: SpacingIntentRef;
-  sectionPaddingX?: SpacingIntentRef;
-  innerGap: SpacingIntentRef;
+  /** Vertical section padding (top + bottom). */
+  sectionPaddingY: string;
+  /** Gap between major stacks inside the section (header → grid → actions). */
+  innerGap: string;
   maxWidth: RecipeMaxWidth;
 }
 
 export const SPACING_RECIPES: Record<SpacingRecipeId, SpacingRecipe> = {
   'section.hero': {
-    sectionPaddingY: { category: 'layout', size: 'xl' },
-    sectionPaddingX: { category: 'inset', size: 'l' },
-    innerGap: { category: 'content', size: 'l' },
+    sectionPaddingY: 'var(--space-section-y-xl)',
+    innerGap: 'var(--space-section-content-l)',
     maxWidth: 'desktop',
   },
   'section.features': {
-    sectionPaddingY: { category: 'layout', size: 'l' },
-    sectionPaddingX: { category: 'inset', size: 'l' },
-    innerGap: { category: 'content', size: 'l' },
+    sectionPaddingY: 'var(--space-section-y-l)',
+    innerGap: 'var(--space-section-content-l)',
     maxWidth: 'desktop',
   },
   'section.pricing': {
-    sectionPaddingY: { category: 'layout', size: 'l' },
-    sectionPaddingX: { category: 'inset', size: 'l' },
-    innerGap: { category: 'content', size: 'm' },
+    sectionPaddingY: 'var(--space-section-y-l)',
+    innerGap: 'var(--space-section-content-m)',
     maxWidth: 'desktop',
   },
   'section.cta': {
-    sectionPaddingY: { category: 'layout', size: 'l' },
-    sectionPaddingX: { category: 'inset', size: 'l' },
-    innerGap: { category: 'content', size: 'm' },
+    sectionPaddingY: 'var(--space-section-y-l)',
+    innerGap: 'var(--space-section-content-m)',
     maxWidth: 'desktop',
   },
   'section.footer': {
-    sectionPaddingY: { category: 'layout', size: 'm' },
-    sectionPaddingX: { category: 'inset', size: 'l' },
-    innerGap: { category: 'content', size: 'm' },
-    maxWidth: 'full',
+    sectionPaddingY: 'var(--space-section-y-m)',
+    innerGap: 'var(--space-section-content-m)',
+    maxWidth: 'desktop',
+  },
+  'section.navbar': {
+    sectionPaddingY: 'var(--space-section-y-xs)',
+    innerGap: 'var(--space-section-stack-s)',
+    maxWidth: 'desktop',
+  },
+  'section.logos': {
+    sectionPaddingY: 'var(--space-section-y-s)',
+    innerGap: 'var(--space-section-content-m)',
+    maxWidth: 'desktop',
+  },
+  'section.stats': {
+    sectionPaddingY: 'var(--space-section-y-m)',
+    innerGap: 'var(--space-section-content-l)',
+    maxWidth: 'desktop',
+  },
+  'section.testimonials': {
+    sectionPaddingY: 'var(--space-section-y-l)',
+    innerGap: 'var(--space-section-content-l)',
+    maxWidth: 'desktop',
+  },
+  'section.faq': {
+    sectionPaddingY: 'var(--space-section-y-l)',
+    innerGap: 'var(--space-section-content-l)',
+    maxWidth: 'desktop',
+  },
+  'section.steps': {
+    sectionPaddingY: 'var(--space-section-y-l)',
+    innerGap: 'var(--space-section-content-l)',
+    maxWidth: 'desktop',
+  },
+  'section.newsletter': {
+    sectionPaddingY: 'var(--space-section-y-m)',
+    innerGap: 'var(--space-section-content-m)',
+    maxWidth: 'desktop',
   },
   'section.app-shell': {
-    sectionPaddingY: { category: 'layout', size: 's' },
-    sectionPaddingX: { category: 'inset', size: 'm' },
-    innerGap: { category: 'content', size: 's' },
+    sectionPaddingY: 'var(--space-layout-s)',
+    innerGap: 'var(--space-content-s)',
     maxWidth: 'full',
   },
 };
 
 export interface ResolvedRecipe {
   className: string;
-  style: Record<string, string>;
+  style: CSSProperties;
+  innerStyle: CSSProperties;
   maxWidth: RecipeMaxWidth;
-  innerGapClassName: string;
 }
 
-function paddingClass(prefix: 'py' | 'px', ref: SpacingIntentRef): string {
-  return `${prefix}-[${getSpaceVar(ref.category, ref.size)}]`;
-}
-
-function gapClass(ref: SpacingIntentRef): string {
-  return `gap-[${getSpaceVar(ref.category, ref.size)}]`;
-}
-
-/** Resolve a recipe id to Tailwind token classes + maxWidth for SectionShell. */
+/** Resolve a recipe id to styles + maxWidth for SectionShell. */
 export function resolveRecipe(id: SpacingRecipeId): ResolvedRecipe {
   const recipe = SPACING_RECIPES[id];
-  const py = paddingClass('py', recipe.sectionPaddingY);
-  const px = recipe.sectionPaddingX
-    ? paddingClass('px', recipe.sectionPaddingX)
-    : 'px-[var(--space-inset-l)]';
 
   return {
-    className: `${py} ${px} w-full bg-[var(--color-bg-base)]`,
-    style: {},
+    className: 'w-full',
+    style: {
+      paddingTop: recipe.sectionPaddingY,
+      paddingBottom: recipe.sectionPaddingY,
+    },
+    innerStyle: { gap: recipe.innerGap },
     maxWidth: recipe.maxWidth,
-    innerGapClassName: gapClass(recipe.innerGap),
   };
 }
 
 /** Tailwind-only class string for a recipe (documentation / AI hints). */
 export function getRecipeTailwind(id: SpacingRecipeId): string {
-  const r = resolveRecipe(id);
-  return `${r.className} ${r.innerGapClassName}`.trim();
+  const recipe = SPACING_RECIPES[id];
+  return `py-[${recipe.sectionPaddingY}] w-full gap-[${recipe.innerGap}]`.trim();
 }
 
 export function listRecipeIds(): SpacingRecipeId[] {

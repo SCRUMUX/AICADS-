@@ -42,4 +42,4 @@ import { HeroBlock } from '@ai-ds/core/blocks/HeroBlock';
 import { LandingPageTemplate } from '@ai-ds/core/blocks/LandingPageTemplate';
 ```
 
-See [docs/pattern-layer.md](../../docs/pattern-layer.md). Install tag `#v0.6.0` or newer.
+See [docs/pattern-layer.md](../../docs/pattern-layer.md). Install tag `#v0.7.0` or newer.

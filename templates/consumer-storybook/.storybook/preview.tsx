@@ -1,6 +1,5 @@
 import '@ai-ds/core/tokens';
-import '../node_modules/vaul/style.css';
-import 'sonner/dist/styles.css';
+import '@ai-ds/core/storybook/engine-styles';
 import '../src/index.css';
 import { createPreview } from '@ai-ds/core/storybook/createPreview';
 

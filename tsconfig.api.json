@@ -17,11 +17,12 @@
     "isolatedModules": false,
     "noEmitOnError": false,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["react", "react-dom"],
     "baseUrl": ".",
     "paths": {
       "react": ["node_modules/@types/react"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "components/**/*.ts", "components/**/*.tsx", "hooks/**/*.ts", "layout/**/*.ts", "behaviors/**/*.ts", "utils/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "components/**/*.ts", "components/**/*.tsx", "hooks/**/*.ts", "layout/**/*.ts", "behaviors/**/*.ts", "utils/**/*.ts", "blocks/**/*.ts", "recipes/**/*.ts"],
   "exclude": ["**/*.stories.tsx", "node_modules", "dist", "playground", "figma-plugin"]
 }

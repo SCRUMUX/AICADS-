@@ -202,6 +202,18 @@
   --space-pin-cell-lg: var(--space-48);
   --space-pin-cell-md: var(--space-40);
   --space-pin-cell-sm: var(--space-32);
+  --space-section-content-l: var(--space-24);
+  --space-section-content-m: var(--space-16);
+  --space-section-content-s: var(--space-12);
+  --space-section-content-xl: var(--space-32);
+  --space-section-stack-l: var(--space-24);
+  --space-section-stack-m: var(--space-16);
+  --space-section-stack-s: var(--space-12);
+  --space-section-y-l: var(--space-80);
+  --space-section-y-m: var(--space-64);
+  --space-section-y-s: var(--space-48);
+  --space-section-y-xl: var(--space-96);
+  --space-section-y-xs: var(--space-32);
   --space-skeleton-bars-h-lg: var(--space-160);
   --space-skeleton-bars-h-md: var(--space-120);
   --space-skeleton-bars-h-sm: var(--space-80);

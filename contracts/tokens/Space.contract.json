@@ -57,6 +57,24 @@
         "space_inset_xl": { "alias": "space_16" }
       },
       "cssUsage": "padding"
+    },
+    "section": {
+      "description": "Marketing page section rhythm — vertical padding and internal stacks (pattern blocks only)",
+      "tokens": {
+        "space_section_y_xs": { "alias": "space_32" },
+        "space_section_y_s":  { "alias": "space_48" },
+        "space_section_y_m":  { "alias": "space_64" },
+        "space_section_y_l":  { "alias": "space_80" },
+        "space_section_y_xl": { "alias": "space_96" },
+        "space_section_content_s":  { "alias": "space_12" },
+        "space_section_content_m":  { "alias": "space_16" },
+        "space_section_content_l":  { "alias": "space_24" },
+        "space_section_content_xl": { "alias": "space_32" },
+        "space_section_stack_s":  { "alias": "space_12" },
+        "space_section_stack_m":  { "alias": "space_16" },
+        "space_section_stack_l":  { "alias": "space_24" }
+      },
+      "cssUsage": "padding, gap"
     }
   },
   "constraints": {

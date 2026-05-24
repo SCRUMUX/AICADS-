@@ -20,9 +20,14 @@ export const EXPECTED_BLOCKS = [
   'PricingBlock',
   'CTABlock',
   'FooterBlock',
+  'NavbarBlock',
+  'LogoCloudBlock',
+  'StatsBlock',
+  'TestimonialsBlock',
+  'FAQBlock',
+  'HowItWorksBlock',
+  'NewsletterBlock',
   'LandingPageTemplate',
-  'AppShellBlock',
-  'AppSidebarBlock',
 ];
 
 export function readPatternsManifest() {

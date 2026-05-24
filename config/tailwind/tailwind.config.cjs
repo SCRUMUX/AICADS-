@@ -39,6 +39,8 @@ module.exports = {
     relative: false,
     files: [
       path.join(CORE_ROOT, 'components/**/*.{js,ts,jsx,tsx}'),
+      path.join(CORE_ROOT, 'blocks/**/*.{js,ts,jsx,tsx}'),
+      path.join(CORE_ROOT, 'recipes/**/*.{js,ts,jsx,tsx}'),
       path.join(CORE_ROOT, 'contracts/components/*.contract.json'),
       path.join(CORE_ROOT, 'layout/**/*.{js,ts,jsx,tsx}'),
       path.join(CORE_ROOT, 'hooks/**/*.{js,ts,jsx,tsx}'),

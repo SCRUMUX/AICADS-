@@ -1,5 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite';
 import path from 'node:path';
+import fs from 'node:fs';
 import { createRequire } from 'node:module';
 
 export type StorybookMode = 'monorepo' | 'consumer';
@@ -13,6 +14,33 @@ export interface CreateMainConfigOptions {
   projectRoot: string;
   /** Optional extra story globs relative to projectRoot */
   extraStories?: string[];
+}
+
+function resolvePackageRoots(mode: StorybookMode, storybookDir: string, projectRoot: string): string[] {
+  if (mode === 'monorepo') {
+    return [path.resolve(storybookDir, '../..'), projectRoot];
+  }
+  return [projectRoot, path.join(projectRoot, 'node_modules/@ai-ds/core')];
+}
+
+function aliasEngineStyles(
+  alias: Record<string, string>,
+  importId: string,
+  roots: string[],
+  resolveCss: (req: NodeRequire) => string | null,
+): void {
+  for (const root of roots) {
+    try {
+      const rootReq = createRequire(path.join(root, 'package.json'));
+      const cssFile = resolveCss(rootReq);
+      if (cssFile && fs.existsSync(cssFile)) {
+        alias[importId] = cssFile;
+        return;
+      }
+    } catch {
+      // try next root
+    }
+  }
 }
 
 function storyGlobs(opts: CreateMainConfigOptions): string[] {
@@ -67,25 +95,31 @@ export function createMainConfig(opts: CreateMainConfigOptions): StorybookConfig
         ...(cfg.resolve.alias as Record<string, string> | undefined),
         react: path.join(nodeModules, 'react'),
         'react-dom': path.join(nodeModules, 'react-dom'),
+        '@storybook/addon-viewport': path.join(nodeModules, '@storybook/addon-viewport'),
       };
 
-      const vaulRoots = [
-        projectRoot,
-        path.join(projectRoot, 'node_modules/@ai-ds/core'),
-      ];
-      for (const root of vaulRoots) {
-        try {
-          const rootReq = createRequire(path.join(root, 'package.json'));
-          const vaulPkg = rootReq.resolve('vaul/package.json');
-          cfg.resolve.alias['vaul/style.css'] = path.join(path.dirname(vaulPkg), 'style.css');
-          break;
-        } catch {
-          // try next root
-        }
-      }
+      const engineRoots = resolvePackageRoots(mode, storybookDir, projectRoot);
+      const alias = cfg.resolve.alias as Record<string, string>;
+      aliasEngineStyles(alias, 'vaul/style.css', engineRoots, (req) => {
+        const entry = req.resolve('vaul');
+        return path.join(path.dirname(entry), '..', 'style.css');
+      });
+      aliasEngineStyles(alias, 'sonner/dist/styles.css', engineRoots, (req) => {
+        return req.resolve('sonner/dist/styles.css');
+      });
 
       if (mode === 'monorepo') {
         const repoRoot = path.resolve(storybookDir, '../..');
+        const aliasMap = cfg.resolve.alias as Record<string, string>;
+        aliasMap['@ai-ds/core/tokens'] = path.join(repoRoot, 'config/css-variables/tokens.css');
+        aliasMap['@ai-ds/core/storybook/engine-styles'] = path.join(
+          repoRoot,
+          'storybook/engine-styles.ts',
+        );
+        aliasMap['@ai-ds/core/storybook/createPreview'] = path.join(
+          repoRoot,
+          'storybook/createPreview.tsx',
+        );
         cfg.server = cfg.server ?? {};
         cfg.server.fs = cfg.server.fs ?? {};
         cfg.server.fs.allow = [

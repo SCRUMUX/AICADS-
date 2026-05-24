@@ -1,52 +1,81 @@
-import React from 'react';
-import { SectionShell } from '../../_shared/SectionShell';
-import { BlockAction } from '../../_shared/BlockAction';
-import { SectionHeader } from '../../../components/primitives/SectionHeader';
-import { Paragraph } from '../../../components/primitives/Paragraph';
-import { Card } from '../../../components/primitives/Card';
-
-export interface CTABlockAction {
-  label: string;
-  onClick?: () => void;
-  href?: string;
-}
-
-export interface CTABlockProps {
-  title: string;
-  description?: string;
-  action?: CTABlockAction;
-  className?: string;
-}
-
-export const CTABlock: React.FC<CTABlockProps> = ({
-  title,
-  description,
-  action,
-  className,
-}) => (
-  <SectionShell recipe="section.cta" className={className} aria-label="Call to action">
-    <Card variant="filled" size="lg" className="w-full">
-      <div className="flex flex-col items-center text-center gap-[var(--space-content-m)] py-[var(--space-content-l)]">
-        <SectionHeader size="lg" appearance="base" className="justify-center">
-          {title}
-        </SectionHeader>
-        {description && (
-          <Paragraph size="md" align="center" className="text-[var(--color-text-secondary)] max-w-[var(--space-container-content-max)]">
-            {description}
-          </Paragraph>
-        )}
-        {action && (
-          <BlockAction
-            label={action.label}
-            onClick={action.onClick}
-            href={action.href}
-            appearance="brand"
-            size="lg"
-          />
-        )}
-      </div>
-    </Card>
-  </SectionShell>
-);
-
-CTABlock.displayName = 'CTABlock';
+import React from 'react';
+import { SectionShell } from '../../_shared/SectionShell';
+import { BlockAction } from '../../_shared/BlockAction';
+import { BlockSectionHeader } from '../../_shared/BlockSectionHeader';
+import { BLOCK_ACTIONS_ROW_CLASS } from '../../_shared/blockLayout';
+import { cn } from '../../../components/primitives/_shared';
+
+export interface CTABlockAction {
+  label: string;
+  onClick?: () => void;
+  href?: string;
+}
+
+export interface CTABlockProps {
+  title: string;
+  description?: string;
+  action?: CTABlockAction;
+  secondaryAction?: CTABlockAction;
+  variant?: 'card' | 'band';
+  className?: string;
+}
+
+export const CTABlock: React.FC<CTABlockProps> = ({
+  title,
+  description,
+  action,
+  secondaryAction,
+  variant = 'card',
+  className,
+}) => {
+  const band = variant === 'band';
+
+  const actions = (action || secondaryAction) && (
+    <div className={BLOCK_ACTIONS_ROW_CLASS} style={{ gap: 'var(--space-section-stack-m)' }}>
+      {action && (
+        <BlockAction
+          label={action.label}
+          onClick={action.onClick}
+          href={action.href}
+          appearance={band ? 'base' : 'brand'}
+          size="lg"
+        />
+      )}
+      {secondaryAction && (
+        <BlockAction
+          label={secondaryAction.label}
+          onClick={secondaryAction.onClick}
+          href={secondaryAction.href}
+          appearance="outline"
+          size="lg"
+        />
+      )}
+    </div>
+  );
+
+  return (
+    <SectionShell
+      recipe="section.cta"
+      appearance={band ? 'brand' : 'muted'}
+      className={className}
+      aria-label="Call to action"
+    >
+      <div
+        className={cn(
+          'flex flex-col items-start text-left w-full min-w-0',
+          !band &&
+            'rounded-[var(--radius-medium)] border border-[var(--color-border-base)] bg-[var(--color-bg-base)]',
+        )}
+        style={{
+          padding: band ? undefined : 'var(--space-inset-xl)',
+          gap: 'var(--space-section-content-m)',
+        }}
+      >
+        <BlockSectionHeader title={title} subtitle={description} onBrand={band} />
+        {actions}
+      </div>
+    </SectionShell>
+  );
+};
+
+CTABlock.displayName = 'CTABlock';

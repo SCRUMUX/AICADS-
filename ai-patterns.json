@@ -1,7 +1,7 @@
 {
   "$schema": "./schemas/ai-patterns-v1.schema.json",
   "name": "@ai-ds/core",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "AICADS pattern manifest — distributable blocks, spacing recipes, and page templates for AI/Replit assemblers.",
   "conventions": {
     "blockImport": "import { HeroBlock } from '@ai-ds/core/blocks/HeroBlock'",
@@ -14,96 +14,119 @@
       "block": "HeroBlock",
       "recipe": "section.hero",
       "category": "marketing",
-      "primitives": [
-        "SectionHeader",
-        "Button",
-        "Paragraph",
-        "Badge"
-      ],
+      "primitives": ["SectionHeader", "Button", "Paragraph", "Badge"],
       "storyReference": "Blocks/Marketing/HeroBlock",
       "uxReference": "shadcn:hero-01",
       "whenToUse": "Landing page above-the-fold with primary and secondary CTA"
+    },
+    "marketing.hero.split": {
+      "block": "HeroBlock",
+      "recipe": "section.hero",
+      "category": "marketing",
+      "primitives": ["SectionHeader", "Button", "Paragraph", "Badge", "Image"],
+      "storyReference": "Blocks/Marketing/HeroBlock",
+      "uxReference": "shadcn:hero-02",
+      "whenToUse": "Split hero with media column and optional stats row"
+    },
+    "marketing.navbar.sticky": {
+      "block": "NavbarBlock",
+      "recipe": "section.navbar",
+      "category": "marketing",
+      "primitives": ["Link", "Button"],
+      "storyReference": "Blocks/Marketing/NavbarBlock",
+      "whenToUse": "Top navigation with logo, links, and optional CTA"
+    },
+    "marketing.logos.cloud": {
+      "block": "LogoCloudBlock",
+      "recipe": "section.logos",
+      "category": "marketing",
+      "primitives": ["Paragraph"],
+      "storyReference": "Blocks/Marketing/LogoCloudBlock",
+      "whenToUse": "Social proof logo strip below hero"
+    },
+    "marketing.stats.band": {
+      "block": "StatsBlock",
+      "recipe": "section.stats",
+      "category": "marketing",
+      "primitives": ["Paragraph"],
+      "storyReference": "Blocks/Marketing/StatsBlock",
+      "whenToUse": "Key metrics band on brand background"
     },
     "marketing.features.grid": {
       "block": "FeaturesBlock",
       "recipe": "section.features",
       "category": "marketing",
-      "primitives": [
-        "SectionHeader",
-        "Card",
-        "GridContainer",
-        "GridItem",
-        "Paragraph"
-      ],
+      "primitives": ["SectionHeader", "Card", "GridContainer", "GridItem", "Paragraph"],
       "storyReference": "Blocks/Marketing/FeaturesBlock",
       "uxReference": "shadcn:features-01",
-      "whenToUse": "Feature grid with 2 or 3 columns"
+      "whenToUse": "Feature grid with 2 or 3 columns and optional icons"
+    },
+    "marketing.steps.three": {
+      "block": "HowItWorksBlock",
+      "recipe": "section.steps",
+      "category": "marketing",
+      "primitives": ["Paragraph"],
+      "storyReference": "Blocks/Marketing/HowItWorksBlock",
+      "whenToUse": "Numbered how-it-works steps (3–4 columns)"
     },
     "marketing.pricing.three-tier": {
       "block": "PricingBlock",
       "recipe": "section.pricing",
       "category": "marketing",
-      "primitives": [
-        "SectionHeader",
-        "Card",
-        "Button",
-        "Badge",
-        "Divider"
-      ],
+      "primitives": ["SectionHeader", "Card", "Button", "Badge", "Divider"],
       "storyReference": "Blocks/Marketing/PricingBlock",
       "uxReference": "shadcn:pricing-01",
       "whenToUse": "Three-tier pricing comparison with highlighted plan"
+    },
+    "marketing.testimonials.grid": {
+      "block": "TestimonialsBlock",
+      "recipe": "section.testimonials",
+      "category": "marketing",
+      "primitives": ["Paragraph", "Card"],
+      "storyReference": "Blocks/Marketing/TestimonialsBlock",
+      "whenToUse": "Customer quotes in a responsive grid"
+    },
+    "marketing.faq.accordion": {
+      "block": "FAQBlock",
+      "recipe": "section.faq",
+      "category": "marketing",
+      "primitives": ["Accordion", "Paragraph"],
+      "storyReference": "Blocks/Marketing/FAQBlock",
+      "whenToUse": "FAQ section with collapsible answers"
     },
     "marketing.cta.banner": {
       "block": "CTABlock",
       "recipe": "section.cta",
       "category": "marketing",
-      "primitives": [
-        "SectionHeader",
-        "Card",
-        "Button",
-        "Paragraph"
-      ],
+      "primitives": ["SectionHeader", "Card", "Button", "Paragraph"],
       "storyReference": "Blocks/Marketing/CTABlock",
       "uxReference": "shadcn:cta-01",
-      "whenToUse": "Mid-page or pre-footer call-to-action banner"
+      "whenToUse": "Mid-page or pre-footer call-to-action card"
+    },
+    "marketing.cta.band": {
+      "block": "CTABlock",
+      "recipe": "section.cta",
+      "category": "marketing",
+      "primitives": ["SectionHeader", "Button", "Paragraph"],
+      "storyReference": "Blocks/Marketing/CTABlock",
+      "whenToUse": "Full-width brand CTA band before footer"
+    },
+    "marketing.newsletter.inline": {
+      "block": "NewsletterBlock",
+      "recipe": "section.newsletter",
+      "category": "marketing",
+      "primitives": ["Input", "Button", "Paragraph"],
+      "storyReference": "Blocks/Marketing/NewsletterBlock",
+      "whenToUse": "Email capture with inline input and submit"
     },
     "marketing.footer.minimal": {
       "block": "FooterBlock",
       "recipe": "section.footer",
       "category": "marketing",
-      "primitives": [
-        "Link",
-        "Paragraph",
-        "Divider",
-        "GridContainer"
-      ],
+      "primitives": ["Link", "Paragraph", "Divider"],
       "storyReference": "Blocks/Marketing/FooterBlock",
       "uxReference": "shadcn:footer-01",
-      "whenToUse": "Site footer with link columns and copyright"
-    },
-    "app.shell.dashboard": {
-      "block": "AppShellBlock",
-      "recipe": "section.app-shell",
-      "category": "app",
-      "primitives": [
-        "AppSidebarBlock",
-        "Tab",
-        "Card",
-        "SectionHeader"
-      ],
-      "storyReference": "Blocks/App/AppShellBlock",
-      "whenToUse": "Dashboard layout with sidebar and main content"
-    },
-    "app.sidebar.nav": {
-      "block": "AppSidebarBlock",
-      "recipe": "section.app-shell",
-      "category": "app",
-      "primitives": [
-        "Tab"
-      ],
-      "storyReference": "Blocks/App/AppShellBlock",
-      "whenToUse": "Vertical navigation sidebar for app shells"
+      "whenToUse": "Site footer with link columns, social links, and copyright"
     }
   },
   "pageTemplates": {
@@ -114,6 +137,24 @@
         "marketing.features.grid",
         "marketing.pricing.three-tier",
         "marketing.cta.banner",
+        "marketing.footer.minimal"
+      ],
+      "component": "LandingPageTemplate"
+    },
+    "marketing.landing.saas": {
+      "description": "Full SaaS landing with navbar, social proof, FAQ, and newsletter",
+      "sections": [
+        "marketing.navbar.sticky",
+        "marketing.hero.split",
+        "marketing.logos.cloud",
+        "marketing.stats.band",
+        "marketing.features.grid",
+        "marketing.steps.three",
+        "marketing.pricing.three-tier",
+        "marketing.testimonials.grid",
+        "marketing.faq.accordion",
+        "marketing.cta.band",
+        "marketing.newsletter.inline",
         "marketing.footer.minimal"
       ],
       "component": "LandingPageTemplate"
