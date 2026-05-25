@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import type { SelectProps, SelectSize, SelectState, SelectOption } from './Select.types';
-import { cn, findClasses, getFocusRing, MENU_ITEM_CLASSES, MENU_PANEL_PADDING, type VR } from '../_shared';
+import { cn, findClasses, getFocusRing, MENU_ITEM_CLASSES, MENU_PANEL_PADDING, radixSelectTriggerRest, type VR } from '../_shared';
 import { RadixSelect } from '../_internal';
 import contract from '../../../contracts/components/Select.contract.json';
 
@@ -159,7 +159,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>((props, r
         onMouseLeave={handleMouseLeave}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        {...rest}
+        {...(radixSelectTriggerRest(rest) as unknown as React.ComponentPropsWithoutRef<typeof RadixSelect.Trigger>)}
       >
         <RadixSelect.Value placeholder={placeholder} />
         <RadixSelect.Icon asChild>

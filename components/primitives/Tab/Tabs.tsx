@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import type { TabsProps } from './Tabs.types';
 import { RadixTabs } from '../_internal';
+import { radixRootRest } from '../_shared';
 
 type TabsContextValue = {
   size?: TabsProps['size'];
@@ -38,7 +39,7 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>((props, ref) => 
         onValueChange={onValueChange}
         orientation={orientation}
         className={className}
-        {...rest}
+        {...radixRootRest(rest)}
       >
         {children}
       </RadixTabs.Root>

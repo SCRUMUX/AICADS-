@@ -123,7 +123,10 @@ const RatingStar: React.FC<RatingStarProps> = ({
       onMouseEnter={(event) => handlePointer(event.clientX, event.currentTarget)}
       onMouseMove={(event) => handlePointer(event.clientX, event.currentTarget)}
       onMouseLeave={() => onPreview(null)}
-      onFocus={(event) => handlePointer(event.clientX, event.currentTarget)}
+      onFocus={(event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        handlePointer(rect.left + rect.width / 2, event.currentTarget);
+      }}
       onBlur={() => onPreview(null)}
       onClick={(event) => {
         const rect = event.currentTarget.getBoundingClientRect();

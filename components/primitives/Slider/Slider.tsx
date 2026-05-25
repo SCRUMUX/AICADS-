@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import type { SliderProps, SliderSize } from './Slider.types';
-import { cn, findClasses, getFocusRing, type VR } from '../_shared';
+import { cn, findClasses, getFocusRing, radixRootRest, type VR } from '../_shared';
 import { RadixSlider } from '../_internal';
 import contract from '../../../contracts/components/Slider.contract.json';
 
@@ -83,7 +83,7 @@ export const Slider = React.forwardRef<HTMLSpanElement, SliderProps>((props, ref
         ['--track-radius' as string]: `${trackRadius}px`,
         ['--thumb-size' as string]: `${thumbSize}px`,
       }}
-      {...rest}
+      {...radixRootRest(rest)}
     >
       <RadixSlider.Track
         className="relative h-[var(--track-h)] w-full grow rounded-[var(--track-radius)] bg-[var(--track-bg,var(--color-surface-3))]"

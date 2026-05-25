@@ -6,7 +6,7 @@
 import React, { useCallback } from 'react';
 import type { AccordionProps, AccordionSize, AccordionInteraction } from './Accordion.types';
 import contract from '../../../contracts/components/Accordion.contract.json';
-import { cn, findClasses, type VR } from '../_shared';
+import { cn, findClasses, radixRootRest, type VR } from '../_shared';
 import { useControllableState } from '../../../hooks/useControllableState';
 import { RadixAccordion } from '../_internal';
 
@@ -127,7 +127,7 @@ export const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>((props
       )}
       data-state={isOpen ? 'open' : 'closed'}
       style={style}
-      {...rest}
+      {...radixRootRest(rest)}
     >
       {isOpen && (
         <div

@@ -1,6 +1,6 @@
 import React, { useId, useState, useCallback } from 'react';
 import type { CheckboxProps, CheckboxSize, CheckboxState } from './Checkbox.types';
-import { cn, findClasses, type VR } from '../_shared';
+import { cn, findClasses, radixCheckboxRest, type VR } from '../_shared';
 import contract from '../../../contracts/components/Checkbox.contract.json';
 import { useControllableState } from '../../../hooks/useControllableState';
 import { RadixCheckbox } from '../_internal';
@@ -162,7 +162,7 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>((prop
           SIZE_CLASSES[size],
           ...stateClasses,
         )}
-        {...rest}
+        {...(radixCheckboxRest(rest) as React.ComponentPropsWithoutRef<typeof RadixCheckbox.Root>)}
       >
         <RadixCheckbox.Indicator className="flex items-center justify-center">
           {showCheck && <CheckIcon className={ICON_SIZE_CLASS} />}

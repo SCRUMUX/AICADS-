@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useCallback } from 'react';
 import type { RadioGroupProps } from './RadioGroup.types';
 import { RadixRadioGroup } from '../_internal';
+import { radixRootRest } from '../_shared';
 
 type RadioGroupContextValue = {
   value?: string;
@@ -45,7 +46,7 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>((pro
         name={name}
         orientation={orientation}
         className={className}
-        {...rest}
+        {...radixRootRest(rest)}
       >
         {children}
       </RadixRadioGroup.Root>

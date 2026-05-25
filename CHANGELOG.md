@@ -3,6 +3,17 @@
 All notable changes to @ai-ds/core are documented here.
 Format follows [Semantic Versioning](https://semver.org/).
 
+## [0.7.2] — 2026-05-25
+
+> **CI / API surface fix** — `api:check` passes on Node 22+.
+
+### Fixed
+
+- **`tsconfig.api.json`** — include `@types/node` for dev-only `process.env` guards.
+- **Radix adapters** — strip incompatible HTML attrs before spreading onto Radix roots (`radixDomProps.ts`).
+- **`Rating`** — focus handler no longer reads `clientX` from `FocusEvent`.
+- **`tailwind-merge`** — custom `text-style` group typed for API build.
+
 ## [0.7.1] — 2026-05-25
 
 > **Storybook consumer fix** — npm/git installs can evaluate Storybook main config on Node 22+.

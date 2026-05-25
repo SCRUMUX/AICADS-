@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from './utils';
+import { radixRootRest } from './radixDomProps';
 import { RadixScrollArea } from '../_internal';
 
 export interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,7 +17,7 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
       ref={ref}
       className={cn('relative overflow-hidden', className)}
       style={{ maxHeight, ...style }}
-      {...rest}
+      {...radixRootRest(rest)}
     >
       <RadixScrollArea.Viewport className="h-full w-full rounded-[inherit]">
         {children}

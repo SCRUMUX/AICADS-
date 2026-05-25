@@ -1,4 +1,12 @@
 export { cn, findClasses, getFocusRing, type VR } from './utils';
+export {
+  radixCheckboxRest,
+  radixRadioItemRest,
+  radixRootRest,
+  radixSelectTriggerRest,
+  toRadixDirection,
+  type RadixDirection,
+} from './radixDomProps';
 export { IconSlot } from './IconSlot';
 export { ClearButton } from './ClearButton';
 export { SkeletonBlock } from './SkeletonBlock';

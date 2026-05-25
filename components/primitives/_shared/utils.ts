@@ -31,7 +31,7 @@ const twMerge = extendTailwindMerge({
           ],
         },
       ],
-    },
+    } as Record<string, readonly (string | { readonly [key: string]: readonly string[] })[]>,
   },
 });
 

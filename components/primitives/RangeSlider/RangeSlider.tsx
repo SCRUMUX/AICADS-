@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import type { RangeSliderProps, RangeSliderSize, RangeSliderState } from './RangeSlider.types';
-import { cn, findClasses, getFocusRing, type VR } from '../_shared';
+import { cn, findClasses, getFocusRing, radixRootRest, type VR } from '../_shared';
 import { RadixSlider } from '../_internal';
 import contract from '../../../contracts/components/RangeSlider.contract.json';
 
@@ -106,7 +106,7 @@ export const RangeSlider = React.forwardRef<HTMLSpanElement, RangeSliderProps>((
         height: thumbSize,
         ['--track-h' as string]: `${trackH}px`,
       }}
-      {...rest}
+      {...radixRootRest(rest)}
     >
       <RadixSlider.Track
         className="relative h-[var(--track-h)] w-full grow rounded-[var(--radius-full)] bg-[var(--track-color,var(--color-surface-3))]"

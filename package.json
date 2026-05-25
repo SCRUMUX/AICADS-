@@ -1,6 +1,6 @@
 {
   "name": "@ai-ds/core",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "AI Design System — reusable architectural core (tokens, contracts, components, hooks, pattern blocks, Figma plugin). Powered by Radix UI / cmdk / vaul / sonner under the hood; consumers see only the AICADS semantic surface.",
   "type": "module",
   "main": "src/index.ts",

@@ -1,6 +1,6 @@
 import React, { useId } from 'react';
 import type { RadioButtonProps, RadioButtonSize, RadioButtonState } from './RadioButton.types';
-import { cn, findClasses, type VR } from '../_shared';
+import { cn, findClasses, radixRadioItemRest, type VR } from '../_shared';
 import contract from '../../../contracts/components/RadioButton.contract.json';
 import { RadixRadioGroup } from '../_internal';
 import { useRadioGroupContext } from './RadioGroup';
@@ -144,7 +144,7 @@ export const RadioButton = React.forwardRef<HTMLInputElement, RadioButtonProps>(
         <RadixRadioGroup.Item
           ref={ref as React.Ref<HTMLButtonElement>}
           id={id}
-          value={value!}
+          value={String(value)}
           disabled={isDisabled}
           className={cn(
             'relative inline-flex shrink-0 items-center justify-center',
@@ -153,7 +153,7 @@ export const RadioButton = React.forwardRef<HTMLInputElement, RadioButtonProps>(
             sizeClass,
             ...stateClasses,
           )}
-          {...rest}
+          {...(radixRadioItemRest(rest) as React.ComponentPropsWithoutRef<typeof RadixRadioGroup.Item>)}
         >
           <RadioIndicator />
         </RadixRadioGroup.Item>
