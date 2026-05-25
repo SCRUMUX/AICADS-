@@ -3,6 +3,16 @@
 All notable changes to @ai-ds/core are documented here.
 Format follows [Semantic Versioning](https://semver.org/).
 
+## [0.7.1] — 2026-05-25
+
+> **Storybook consumer fix** — npm/git installs can evaluate Storybook main config on Node 22+.
+
+### Fixed
+
+- **`createMainConfig.mjs`** — JS entry for consumer Storybook (`main.mjs`); Node no longer tries to strip TS from `node_modules`.
+- **`storybook-prep.mjs`** — resolves the consumer project root when invoked from `node_modules/@ai-ds/core/scripts/`.
+- **Consumer template** — `.storybook/main.mjs`, `prestorybook` / `prebuild-storybook` hooks, viewport addon in kit config.
+
 ## [0.7.0] — 2026-05-24
 
 > **Marketing blocks v0.7** — 12 landing sections, unified layout contract, consumer Storybook parity.

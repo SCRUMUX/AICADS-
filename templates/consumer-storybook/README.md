@@ -28,7 +28,7 @@ npm run storybook
 
 | File | Role |
 |------|------|
-| `.storybook/main.ts` | `createMainConfig({ mode: 'consumer' })` — loads stories from `node_modules/@ai-ds/core` |
+| `.storybook/main.mjs` | `createMainConfig({ mode: 'consumer' })` — loads stories from `node_modules/@ai-ds/core` |
 | `.storybook/preview.tsx` | Theme toolbar + `@ai-ds/core/tokens` + vaul/sonner CSS |
 | `tailwind.config.cjs` | Extends `@ai-ds/core/tailwind` content paths |
 | `src/index.css` | Tailwind entry via `@ai-ds/core/storybook/index.css` |
@@ -42,4 +42,4 @@ import { HeroBlock } from '@ai-ds/core/blocks/HeroBlock';
 import { LandingPageTemplate } from '@ai-ds/core/blocks/LandingPageTemplate';
 ```
 
-See [docs/pattern-layer.md](../../docs/pattern-layer.md). Install tag `#v0.7.0` or newer.
+See [docs/pattern-layer.md](../../docs/pattern-layer.md). Install tag `#v0.7.1` or newer.

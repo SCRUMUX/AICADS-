@@ -1,4 +1,4 @@
-# @ai-ds/core v0.7.0
+# @ai-ds/core v0.7.1
 
 AI Design System — reusable architectural core. Token-driven,
 contract-driven, source-first React primitives **and pattern blocks**
@@ -7,7 +7,7 @@ powered by Radix UI / cmdk / vaul / sonner under the hood.
 ## Installation
 
 ```bash
-npm install git+https://github.com/SCRUMUX/AICADS-.git#v0.7.0
+npm install git+https://github.com/SCRUMUX/AICADS-.git#v0.7.1
 ```
 
 ## Importing components

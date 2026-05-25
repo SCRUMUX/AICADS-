@@ -9,13 +9,32 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(scriptDir, '..');
 const projectArg = process.argv[2];
-const projectRoot = projectArg
-  ? path.resolve(repoRoot, projectArg)
-  : path.join(repoRoot, 'playground');
+const installedInNodeModules = scriptDir.includes(
+  `${path.sep}node_modules${path.sep}@ai-ds${path.sep}core${path.sep}scripts`,
+);
 
-const requireFromProject = createRequire(path.join(projectRoot, 'package.json'));
+function resolveProjectRoot(arg) {
+  if (arg) {
+    return path.isAbsolute(arg) ? arg : path.resolve(installedInNodeModules ? process.cwd() : repoRoot, arg);
+  }
+  if (installedInNodeModules) {
+    return process.cwd();
+  }
+  return path.join(repoRoot, 'playground');
+}
+
+const projectRoot = resolveProjectRoot(projectArg);
+
+function projectRequire() {
+  const pkgJson = path.join(projectRoot, 'package.json');
+  if (!fs.existsSync(pkgJson)) {
+    throw new Error(`Missing package.json in ${projectRoot}`);
+  }
+  return createRequire(pkgJson);
+}
 
 function resolveVaulCss(req) {
   try {
@@ -29,26 +48,34 @@ function resolveVaulCss(req) {
 
 const missing = [];
 
-try {
-  requireFromProject.resolve('@ai-ds/core/package.json');
-} catch {
+const corePackageJson = path.join(projectRoot, 'node_modules/@ai-ds/core/package.json');
+if (!fs.existsSync(corePackageJson)) {
   missing.push('@ai-ds/core');
 }
 
+let requireFromProject;
 try {
-  requireFromProject.resolve('sonner/dist/styles.css');
+  requireFromProject = projectRequire();
 } catch {
-  missing.push('sonner (Toast engine CSS)');
+  missing.push('package.json (Storybook project root)');
 }
 
-if (!resolveVaulCss(requireFromProject)) {
-  missing.push('vaul (Drawer engine CSS)');
-}
+if (requireFromProject) {
+  try {
+    requireFromProject.resolve('sonner/dist/styles.css');
+  } catch {
+    missing.push('sonner (Toast engine CSS)');
+  }
 
-try {
-  requireFromProject.resolve('@storybook/addon-viewport');
-} catch {
-  missing.push('@storybook/addon-viewport');
+  if (!resolveVaulCss(requireFromProject)) {
+    missing.push('vaul (Drawer engine CSS)');
+  }
+
+  try {
+    requireFromProject.resolve('@storybook/addon-viewport');
+  } catch {
+    missing.push('@storybook/addon-viewport');
+  }
 }
 
 if (missing.length > 0) {
@@ -62,4 +89,4 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-console.log(`Storybook prerequisites OK (${path.relative(repoRoot, projectRoot) || 'playground'})`);
+console.log(`Storybook prerequisites OK (${path.relative(process.cwd(), projectRoot) || '.'})`);
