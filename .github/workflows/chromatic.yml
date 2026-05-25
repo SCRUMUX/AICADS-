@@ -40,4 +40,9 @@ jobs:
         working-directory: playground
         env:
           CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-        run: npx chromatic --exit-zero-on-changes --build-script-name build-storybook --storybook-build-dir storybook-static
+        run: |
+          if [ -z "$CHROMATIC_PROJECT_TOKEN" ]; then
+            echo "::warning title=Chromatic skipped::CHROMATIC_PROJECT_TOKEN is not set in repository secrets. VRT is disabled until you add a token — see docs/vrt.md"
+            exit 0
+          fi
+          npx chromatic --exit-zero-on-changes --build-script-name build-storybook --storybook-build-dir storybook-static
